@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
         lateinit var ditto: Ditto
         try {
             val androidDependencies = DefaultAndroidDittoDependencies(applicationContext)
-            val identity = DittoIdentity.OnlinePlayground(androidDependencies, appId = "7b373411-e54e-4675-9d3d-e6dbd2eb023a", token = "e8ba0855-735d-4b2f-9a7c-928b2844d3f5", enableDittoCloudSync = true)
+            val identity = DittoIdentity.OnlinePlayground(androidDependencies, appId = "YOUR_APP_ID", token = "YOUR_TOKEN", enableDittoCloudSync = true)
             ditto = Ditto(androidDependencies, identity)
             ditto.startSync()
 
