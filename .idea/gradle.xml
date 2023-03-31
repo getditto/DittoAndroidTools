@@ -12,6 +12,8 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/DittoDataBrowser" />
             <option value="$PROJECT_DIR$/DittoDiskUsage" />
+            <option value="$PROJECT_DIR$/DittoExportLogs" />
+            <option value="$PROJECT_DIR$/DittoPresenceViewer" />
             <option value="$PROJECT_DIR$/app" />
           </set>
         </option>

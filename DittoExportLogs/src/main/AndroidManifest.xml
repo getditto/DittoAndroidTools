@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+<!--    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>-->
+
+
+    <application>
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="live.ditto.dittotoolsapp.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+
+            <!-- Define the paths that this provider should be able to access -->
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+
+        </provider>
+    </application>
+
+</manifest>
