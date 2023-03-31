@@ -9,6 +9,7 @@ import androidx.compose.ui.platform.LocalContext
 import java.nio.file.Path
 import live.ditto.DittoLogger
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavHostController
 import java.io.FileInputStream
 
 @Composable

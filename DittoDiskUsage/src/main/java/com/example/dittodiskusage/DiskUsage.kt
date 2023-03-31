@@ -11,7 +11,7 @@ import androidx.navigation.NavHostController
  * Wrapper composable function for `DiskUsageView`.
  */
 @Composable
-fun DiskUsageScreen(navController: NavHostController? = null) {
+fun DiskUsageScreen(navController: NavHostController) {
 //    Text("This is the Disk Usage Screen")
     val ditto = DittoHandler.ditto
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -31,9 +31,6 @@ fun DiskUsageScreen(navController: NavHostController? = null) {
             observerHandle.close()
         }
     }
-
-    DiskUsageView(viewModel = viewModel, onClose = {
-        navController?.popBackStack()
-    })
+    DiskUsageView(viewModel = viewModel, navController = navController)
 }
 

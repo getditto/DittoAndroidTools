@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -88,7 +89,7 @@ class DiskUsageViewModel: ViewModel() {
 @Composable
 fun DiskUsageView(
     viewModel: DiskUsageViewModel = viewModel(),
-    onClose: () -> Unit = {},
+    navController: NavController,
     ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -160,7 +161,7 @@ fun DiskUsageView(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
-                onClick = { onClose }
+                onClick = { navController.popBackStack() }
             ) {
                 Text(
                     text = "Close",

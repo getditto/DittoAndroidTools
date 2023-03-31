@@ -17,10 +17,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.dittodiskusage.DittoDiskUsage
 import live.ditto.*
 import live.ditto.android.DefaultAndroidDittoDependencies
+import live.ditto.dittodatabrowser.Collections
 import live.ditto.dittodatabrowser.DataBrowser
+import live.ditto.dittodatabrowser.DittoHandler
+import live.ditto.dittodatabrowser.Documents
 import live.ditto.dittoexportlogs.ExportLogs
 import live.ditto.dittotoolsapp.ui.theme.DittoToolsAppTheme
 import live.ditto.transports.DittoSyncPermissions
@@ -32,7 +39,8 @@ class MainActivity : ComponentActivity() {
         lateinit var ditto: Ditto
         try {
             val androidDependencies = DefaultAndroidDittoDependencies(applicationContext)
-            val identity = DittoIdentity.OnlinePlayground(androidDependencies, appId = "YOUR_APPID", token = "YOUR_TOKEN", enableDittoCloudSync = true)
+            val identity = DittoIdentity.OnlinePlayground(androidDependencies, appId = "7b373411-e54e-4675-9d3d-e6dbd2eb023a", token = "e8ba0855-735d-4b2f-9a7c-928b2844d3f5", enableDittoCloudSync = true)
+//            val identity = DittoIdentity.OnlinePlayground(androidDependencies, appId = "YOUR_APPID", token = "YOUR_TOKEN", enableDittoCloudSync = true)
             ditto = Ditto(androidDependencies, identity)
             DittoLogger.minimumLogLevel = DittoLogLevel.DEBUG
             ditto.startSync()
@@ -50,7 +58,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    ShowViews(ditto = ditto)
+                    Root(ditto = ditto)
                 }
             }
         }
@@ -67,23 +75,23 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun ShowViews(ditto: Ditto) {
+fun ShowViews(navController: NavHostController, ditto: Ditto) {
     Box(modifier = Modifier.fillMaxSize()) {
-        var showDataBrowser by remember { mutableStateOf(false) }
-        var showDiskUsage by remember { mutableStateOf(false) }
         var showExportDialog by remember { mutableStateOf(false) }
 
         Column(
-            modifier = Modifier.align(Alignment.TopStart).padding(16.dp)
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(16.dp)
         ) {
             Button(
-                onClick = { showDataBrowser = !showDataBrowser },
+                onClick = {navController.navigate("dataBrowser")},
                 modifier = Modifier.padding(bottom = 8.dp)
             ) {
                 Text("Data Browser")
             }
             Button(
-                onClick = { showDiskUsage = !showDiskUsage },
+                onClick = { navController.navigate("diskUsage") },
                 modifier = Modifier.padding(bottom = 8.dp)
             ) {
                 Text("Disk Usage")
@@ -94,18 +102,25 @@ fun ShowViews(ditto: Ditto) {
             ) {
                 Text("Export Logs")
             }
-        }
 
-        if (showDataBrowser) {
-            DataBrowser(ditto = ditto)
+            if (showExportDialog) {
+                ExportLogs(onDismiss = { showExportDialog = false })
+            }
         }
+    }
+}
 
-        if (showDiskUsage) {
-            DittoDiskUsage(ditto = ditto)
-        }
+@Composable
+fun Root(ditto: Ditto) {
 
-        if (showExportDialog) {
-            ExportLogs(onDismiss = { showExportDialog = false })
+    val navController = rememberNavController()
+
+    // A surface container using the 'background' color from the theme
+    Surface(color = MaterialTheme.colors.background) {
+        NavHost(navController = navController, startDestination = "showViews") {
+            composable("showViews") {ShowViews(navController = navController, ditto = ditto) }
+            composable("dataBrowser") { DataBrowser(navController = navController, ditto = ditto) }
+            composable("diskUsage") { DittoDiskUsage(navController = navController, ditto = ditto) }
         }
     }
 }
