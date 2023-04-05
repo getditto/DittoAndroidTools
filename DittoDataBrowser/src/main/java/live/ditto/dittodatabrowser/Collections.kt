@@ -22,7 +22,7 @@ import live.ditto.DittoCollection
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun Collections(navController: NavHostController? = null) {
-    val collectionsViewModel: CollectionsViewModel = viewModel();
+    val collectionsViewModel: CollectionsViewModel = viewModel()
     val collections: List<DittoCollection> by collectionsViewModel.collections.observeAsState(emptyList())
     var showDialog by remember { mutableStateOf(false) }
 
