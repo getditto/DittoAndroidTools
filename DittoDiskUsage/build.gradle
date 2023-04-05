@@ -40,7 +40,7 @@ android {
 
 dependencies {
     //Ditto
-    implementation "live.ditto:ditto:3.0.5"
+    implementation "live.ditto:ditto:4.0.0"
 
     // Jetpack Compose View Model
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07'
