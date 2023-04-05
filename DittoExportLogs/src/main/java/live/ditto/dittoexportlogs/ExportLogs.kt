@@ -1,16 +1,15 @@
 package live.ditto.dittoexportlogs
 
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.Text
-import androidx.compose.ui.platform.LocalContext
-import java.nio.file.Path
-import live.ditto.DittoLogger
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavHostController
+import androidx.compose.ui.platform.LocalContext
+import live.ditto.DittoLogger
 import java.io.FileInputStream
+import java.nio.file.Path
 
 @Composable
 fun ExportLogs(onDismiss: () -> Unit) {

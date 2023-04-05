@@ -24,10 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.dittodiskusage.DittoDiskUsage
 import live.ditto.*
 import live.ditto.android.DefaultAndroidDittoDependencies
-import live.ditto.dittodatabrowser.Collections
 import live.ditto.dittodatabrowser.DataBrowser
-import live.ditto.dittodatabrowser.DittoHandler
-import live.ditto.dittodatabrowser.Documents
 import live.ditto.dittoexportlogs.ExportLogs
 import live.ditto.dittotoolsapp.ui.theme.DittoToolsAppTheme
 import live.ditto.transports.DittoSyncPermissions
@@ -62,8 +59,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
-
 
     private fun checkPermissions() {
         val missing = DittoSyncPermissions(this).missingPermissions()

@@ -1,6 +1,5 @@
 package live.ditto.dittodatabrowser
 
-import androidx.compose.runtime.MutableState
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -9,12 +8,10 @@ class DocumentsViewModel(private val collectionName: String, private val isStand
 
     val docsList: MutableLiveData<MutableList<Document>> = MutableLiveData<MutableList<Document>>(mutableListOf())
     var docProperties: MutableLiveData<List<String>> = MutableLiveData(emptyList())
-//    private var docValues = mutableMapOf<String, Any?>()
     var selectedDoc = MutableLiveData<Document>()
 
-
     val subscription = if (isStandAlone) DittoHandler.ditto.store.collection(collectionName).findAll().limit(1000).subscribe() else null
-    var liveQuery = DittoHandler.ditto.store.collection(collectionName).findAll().limit(1000).observeLocal { docs, _ ->
+    private var liveQuery = DittoHandler.ditto.store.collection(collectionName).findAll().limit(1000).observeLocal { docs, _ ->
 
         docsList.value?.clear()
         for(doc in docs) {
@@ -24,9 +21,7 @@ class DocumentsViewModel(private val collectionName: String, private val isStand
             for((key, value) in doc.value) {
                 docValues[key] = value
             }
-
             docsList.value?.add(Document(doc.id.toString(), docValues))
-//            docsList.postValue(docsList.value)
         }
     }
 
@@ -40,7 +35,6 @@ class DocumentsViewModel(private val collectionName: String, private val isStand
                 for((key, value) in doc.value) {
                     docValues[key] = value
                 }
-
                 docsList.value?.add(Document(doc.id.toString(), docValues))
             }
         }
@@ -57,7 +51,6 @@ class DocumentsViewModel(private val collectionName: String, private val isStand
                 for((key, value) in doc.value) {
                     docValues[key] = value
                 }
-
                 docsList.value?.add(Document(doc.id.toString(), docValues))
             }
         }

@@ -2,7 +2,6 @@ package live.ditto.dittodatabrowser
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import live.ditto.DittoCollection
 import live.ditto.DittoSubscription
 

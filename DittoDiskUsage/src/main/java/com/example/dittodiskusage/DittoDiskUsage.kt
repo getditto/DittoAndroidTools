@@ -8,7 +8,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import live.ditto.Ditto
-import com.example.dittodiskusage.DiskUsageScreen
 
 @Composable
 fun DittoDiskUsage(navController: NavHostController, ditto: Ditto) {

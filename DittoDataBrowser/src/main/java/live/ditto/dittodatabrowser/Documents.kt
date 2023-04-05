@@ -6,15 +6,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,11 +29,6 @@ fun Documents(navController: NavHostController? = null, collectionName: String, 
     val docsList by viewModel.docsList.observeAsState()
     var selectedIndex by remember { mutableStateOf(0) }
     var startUp by remember { mutableStateOf(true) }
-
-
-
-//    val selectedDoc : Document by viewModel.selectedDoc.observeAsState(Document(id = "123", mutableMapOf()))
-
 
         Column(
             modifier = Modifier
@@ -59,10 +51,8 @@ fun Documents(navController: NavHostController? = null, collectionName: String, 
                 text = "Doc ID:  ",
                 textAlign = TextAlign.Start,
                 modifier = Modifier
-//                    .fillMaxWidth()
                     .clickable {
-                        // When text is clicked, expand/collapse dropdown menu
-//                    selectedIndex = if (selectedIndex == -1) 0 else -1
+
                     }
             )
 
@@ -74,11 +64,7 @@ fun Documents(navController: NavHostController? = null, collectionName: String, 
                         textAlign = TextAlign.Start,
                         color = Color.Blue,
                         modifier = Modifier
-//                            .fillMaxWidth()
-//                            .padding(16.dp)
                             .clickable {
-                                // When selected item is clicked, expand/collapse dropdown menu
-//                            selectedIndex = if (selectedIndex == -1) 0 else selectedIndex
                                 showMenu = true
                                 startUp = false
                             }
@@ -102,10 +88,7 @@ fun Documents(navController: NavHostController? = null, collectionName: String, 
             }
         }
 
-
-//        Spacer(modifier = Modifier.height(16.dp))
         Divider()
-//        Spacer(modifier = Modifier.height(16.dp))
 
         LazyColumn {
             items(viewModel.docProperties.value?.map { it } ?: emptyList()) { property ->
@@ -128,7 +111,6 @@ fun DocItem(property: String, viewModel: DocumentsViewModel, selectedDoc: Docume
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-//                navController.navigate("my_item_screen/$item")
             }
             .padding(10.dp)
     ) {
