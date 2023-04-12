@@ -46,7 +46,7 @@ fun Documents(navController: NavHostController? = null, collectionName: String, 
             Text(text = "Docs count: ${docsList?.size}")
             Spacer(modifier = Modifier.height(16.dp))
 
-        Row() {
+        Row {
             Text(
                 text = "Doc ID:  ",
                 textAlign = TextAlign.Start,
@@ -56,7 +56,7 @@ fun Documents(navController: NavHostController? = null, collectionName: String, 
                     }
             )
 
-            Box() {
+            Box {
                 // Show selected item or "None" if no item is selected
                 (if ((startUp)) "None" else docsList?.get(selectedIndex)?.id)?.let {
                     Text(

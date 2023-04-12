@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
-class DocumentsViewModel(private val collectionName: String, private val isStandAlone: Boolean): ViewModel() {
+class DocumentsViewModel(private val collectionName: String, isStandAlone: Boolean): ViewModel() {
 
     val docsList: MutableLiveData<MutableList<Document>> = MutableLiveData<MutableList<Document>>(mutableListOf())
     var docProperties: MutableLiveData<List<String>> = MutableLiveData(emptyList())
@@ -17,7 +17,7 @@ class DocumentsViewModel(private val collectionName: String, private val isStand
         for(doc in docs) {
             this.docProperties.postValue(doc.value.keys.map{it}.sorted())
 
-            var docValues = mutableMapOf<String, Any?>()
+            val docValues = mutableMapOf<String, Any?>()
             for((key, value) in doc.value) {
                 docValues[key] = value
             }
@@ -31,7 +31,7 @@ class DocumentsViewModel(private val collectionName: String, private val isStand
             for(doc in docs) {
                 this.docProperties.postValue(doc.value.keys.map{it}.sorted())
 
-                var docValues = mutableMapOf<String, Any?>()
+                val docValues = mutableMapOf<String, Any?>()
                 for((key, value) in doc.value) {
                     docValues[key] = value
                 }
@@ -47,7 +47,7 @@ class DocumentsViewModel(private val collectionName: String, private val isStand
             for(doc in docs) {
                 this.docProperties.postValue(doc.value.keys.map{it}.sorted())
 
-                var docValues = mutableMapOf<String, Any?>()
+                val docValues = mutableMapOf<String, Any?>()
                 for((key, value) in doc.value) {
                     docValues[key] = value
                 }

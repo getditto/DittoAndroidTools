@@ -3,7 +3,6 @@ package com.example.dittodiskusage
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 
@@ -13,7 +12,6 @@ import androidx.navigation.NavHostController
 @Composable
 fun DiskUsageScreen(navController: NavHostController) {
     val ditto = DittoHandler.ditto
-    val lifecycleOwner = LocalLifecycleOwner.current
 
     val viewModel = viewModel<DiskUsageViewModel>()
     val observerHandle = remember(ditto.diskUsage, viewModel) {

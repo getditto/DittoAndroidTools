@@ -1,7 +1,7 @@
 package live.ditto.dittoexportlogs
 
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.CreateDocument
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -14,7 +14,7 @@ import java.nio.file.Path
 @Composable
 fun ExportLogs(onDismiss: () -> Unit) {
     val context = LocalContext.current
-    val exportLauncher = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument()) { uri ->
+    val exportLauncher = rememberLauncherForActivityResult(CreateDocument("application/zip")) { uri ->
         uri?.let {
             val inputStream = FileInputStream(Config.zippedLogsFile.toFile())
             context.contentResolver.openOutputStream(uri)?.use { outputStream ->
