@@ -8,10 +8,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
+                    color = MaterialTheme.colorScheme.background
                 ) {
                     Root(ditto = ditto)
                 }
@@ -110,10 +110,10 @@ fun Root(ditto: Ditto) {
     val navController = rememberNavController()
 
     // A surface container using the 'background' color from the theme
-    Surface(color = MaterialTheme.colors.background) {
+    Surface(color = MaterialTheme.colorScheme.background) {
         NavHost(navController = navController, startDestination = "showViews") {
             composable("showViews") {ShowViews(navController = navController, ditto = ditto) }
-            composable("dataBrowser") { DataBrowser(navController = navController, ditto = ditto) }
+            composable("dataBrowser") { DataBrowser(ditto = ditto) }
             composable("diskUsage") { DittoDiskUsage(navController = navController, ditto = ditto) }
         }
     }

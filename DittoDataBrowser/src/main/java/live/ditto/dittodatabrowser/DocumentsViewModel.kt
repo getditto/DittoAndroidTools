@@ -25,7 +25,7 @@ class DocumentsViewModel(private val collectionName: String, isStandAlone: Boole
         }
     }
 
-    private fun findAllliveQuery() {
+    private fun findAllLiveQuery() {
         this.liveQuery =  DittoHandler.ditto.store.collection(collectionName).findAll().limit(1000).observeLocal { docs, _ ->
             docsList.value?.clear()
             for(doc in docs) {
@@ -60,7 +60,7 @@ class DocumentsViewModel(private val collectionName: String, isStandAlone: Boole
         liveQuery.close()
 
         if(queryString.isEmpty()) {
-            findAllliveQuery()
+            findAllLiveQuery()
         }
         else {
             findWithFilterLiveQuery(queryString)

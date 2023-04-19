@@ -4,7 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
@@ -16,10 +16,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
 
 @Composable
-fun Documents(navController: NavHostController? = null, collectionName: String, isStandAlone: Boolean) {
+fun Documents(collectionName: String, isStandAlone: Boolean) {
 
     val viewModel: DocumentsViewModel =
         viewModel(factory = DocumentsViewModel.MyViewModelFactory(collectionName, isStandAlone))
@@ -35,7 +34,7 @@ fun Documents(navController: NavHostController? = null, collectionName: String, 
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            Text(text = "Collection: $collectionName", style = MaterialTheme.typography.h4)
+            Text(text = "Collection: $collectionName", style = MaterialTheme.typography.headlineMedium)
             Spacer(modifier = Modifier.height(16.dp))
             SearchBar(onSearch = { searchText ->
                 // Call the search function in the view model
@@ -80,9 +79,9 @@ fun Documents(navController: NavHostController? = null, collectionName: String, 
                         DropdownMenuItem(onClick = {
                             selectedIndex = index
                             viewModel.selectedDoc.value = item
-                        }) {
+                        }, text = {
                             Text(text = item.id)
-                        }
+                        })
                     }
                 }
             }
@@ -128,6 +127,7 @@ fun DocItem(property: String, viewModel: DocumentsViewModel, selectedDoc: Docume
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(onSearch: (String) -> Unit) {
     var searchText by remember { mutableStateOf("") }
