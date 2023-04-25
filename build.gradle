@@ -1,9 +1,9 @@
 buildscript {
     ext {
-        compose_ui_version = "1.5.0-alpha02"
+        compose_ui_version = "1.5.0-alpha03"
         material3_version = "1.0.1"
         nav_version = "2.5.3"
-        activity_version = "1.6.1"
+        activity_version = "1.7.1"
     }
 
 //    allprojects {
