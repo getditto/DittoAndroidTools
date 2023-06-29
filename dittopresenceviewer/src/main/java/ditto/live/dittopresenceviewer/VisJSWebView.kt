@@ -9,6 +9,7 @@ import android.util.Log
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
+//import android.webkit.WebView
 import android.webkit.WebView.setWebContentsDebuggingEnabled
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
@@ -132,37 +133,31 @@ class VisJSWebViewHelper(
 @Composable
 fun VisJSWebView() {
     val viewModel = viewModel<VisJSWebViewViewModel>()
-//    val helper = remember { VisJSWebViewHelper(viewModel) }
-//    val webViewState = rememberWebViewState(url = "file:///android_asset/dist/index.html")
-    LocalContext.current
+    val webViewState = rememberWebViewState(url = "file:///android_asset/dist/index.html")
 
-    AndroidView(
-        factory = { context ->
-            WebView(context).apply {
-                settings.allowFileAccess = true
-                settings.javaScriptEnabled = true
-                webViewClient = object : WebViewClient() {
-                    override fun onPageFinished(view: WebView?, url: String?) {
-                        super.onPageFinished(view, url)
-                        viewModel.isInitialLoadComplete = true
-                        viewModel.processPendingInvocations()
-                    }
+    WebView(
+        state = webViewState,
+        onCreated = { webView ->
+            webView.settings.allowFileAccess = true
+            webView.settings.javaScriptEnabled = true
+            webView.webViewClient = object : WebViewClient() {
+                override fun onPageFinished(view: WebView?, url: String?) {
+                    super.onPageFinished(view, url)
+                    viewModel.isInitialLoadComplete = true
+                    viewModel.processPendingInvocations()
+                }
 
-                    override fun onReceivedError(
-                        view: WebView?,
-                        request: WebResourceRequest?,
-                        error: WebResourceError?
-                    ) {
-                        super.onReceivedError(view, request, error)
-                        val errorCode = error?.errorCode
-                        val message = error?.description
-                        Log.d(TAG, "an error occurred $errorCode with message $message")
-                    }
+                override fun onReceivedError(
+                    view: WebView?,
+                    request: WebResourceRequest?,
+                    error: WebResourceError?
+                ) {
+                    super.onReceivedError(view, request, error)
+                    val errorCode = error?.errorCode
+                    val message = error?.description
+                    Log.d(TAG, "an error occurred $errorCode with message $message")
                 }
             }
-        },
-        update = {
-            it.loadUrl("file:///android_asset/dist/index.html")
         }
     )
 }
