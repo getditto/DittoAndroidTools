@@ -1,34 +1,20 @@
 package ditto.live.dittopresenceviewer
 
-import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
-import android.content.res.AssetManager
-import android.os.Build
 import android.util.Base64
 import android.util.Log
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
-//import android.webkit.WebView
-import android.webkit.WebView.setWebContentsDebuggingEnabled
-import android.webkit.WebViewClient
-import android.widget.FrameLayout
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.accompanist.web.WebView
 import com.google.accompanist.web.AccompanistWebViewClient
+import com.google.accompanist.web.WebView
 import com.google.accompanist.web.rememberWebViewState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -135,30 +121,32 @@ fun VisJSWebView() {
     val viewModel = viewModel<VisJSWebViewViewModel>()
     val webViewState = rememberWebViewState(url = "file:///android_asset/dist/index.html")
 
+    val webViewClient = object : AccompanistWebViewClient() {
+        override fun onPageFinished(view: WebView?, url: String?) {
+            super.onPageFinished(view, url)
+            viewModel.isInitialLoadComplete = true
+            viewModel.processPendingInvocations()
+        }
+
+        override fun onReceivedError(
+            view: WebView?,
+            request: WebResourceRequest?,
+            error: WebResourceError?
+        ) {
+            super.onReceivedError(view, request, error)
+            val errorCode = error?.errorCode
+            val message = error?.description
+            Log.d(TAG, "an error occurred $errorCode with message $message")
+        }
+    }
+
     WebView(
         state = webViewState,
         onCreated = { webView ->
             webView.settings.allowFileAccess = true
             webView.settings.javaScriptEnabled = true
-            webView.webViewClient = object : WebViewClient() {
-                override fun onPageFinished(view: WebView?, url: String?) {
-                    super.onPageFinished(view, url)
-                    viewModel.isInitialLoadComplete = true
-                    viewModel.processPendingInvocations()
-                }
-
-                override fun onReceivedError(
-                    view: WebView?,
-                    request: WebResourceRequest?,
-                    error: WebResourceError?
-                ) {
-                    super.onReceivedError(view, request, error)
-                    val errorCode = error?.errorCode
-                    val message = error?.description
-                    Log.d(TAG, "an error occurred $errorCode with message $message")
-                }
-            }
-        }
+        },
+        client = webViewClient
     )
 }
 
