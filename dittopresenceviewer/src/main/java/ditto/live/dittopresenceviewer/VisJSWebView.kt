@@ -3,150 +3,100 @@ package ditto.live.dittopresenceviewer
 import android.content.ContentValues.TAG
 import android.util.Base64
 import android.util.Log
-import android.webkit.WebResourceError
+import android.view.ViewGroup
 import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.accompanist.web.AccompanistWebViewClient
-import com.google.accompanist.web.WebView
 import com.google.accompanist.web.rememberWebViewState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import androidx.webkit.WebViewAssetLoader
+import androidx.webkit.WebViewAssetLoader.AssetsPathHandler
 import kotlinx.coroutines.launch
 
 typealias JavaScript = String
 
-class VisJSWebViewViewModel : ViewModel() {
-    val pendingInvocations = mutableStateListOf<PendingJavascriptInvocation>()
-    var isInitialLoadComplete by mutableStateOf(false)
-    var isBackgrounded by mutableStateOf(false)
-    var webView by mutableStateOf<android.webkit.WebView?>(null)
-
-    fun processPendingInvocations() {
-        if (!isInitialLoadComplete || isBackgrounded) return
-
-        for (invocation: PendingJavascriptInvocation in pendingInvocations) {
-            webView?.evaluateJavascript(invocation.javascript) { result ->
-                // The result parameter contains the result of the evaluation.
-                // You can handle the success or failure of the evaluation here.
-                if (result != null) {
-                    // Evaluation was successful, handle the result
-                    Log.d(TAG, "evaluateJavascript was successful - $result")
-                } else {
-                    // Evaluation failed
-                    Log.d(TAG, "evaluateJavascript was NOT successful")
-                }
-            }
-        }
-
-        pendingInvocations.clear()
-    }
-}
-
-class VisJSWebViewHelper(
-    private val viewModel: VisJSWebViewViewModel
-) {
-    fun updateNetwork(json: String, completionHandler: () -> Unit?) {
-        // To avoid characters in our JSON string being interpreted as JS, we pass our JSON
-        // as base64 encoded string and decode on the other side.
-        val base64JSON = Base64.encodeToString(json.toByteArray(), Base64.NO_WRAP)
-
-        enqueueInvocation(
-            "Presence.updateNetwork('$base64JSON');",
-            "updateNetwork"
-        ) { result ->
-            if (result != null && result.isFailure) {
-                Log.d(TAG, "failed to update network " + result.exceptionOrNull()?.message)
-            }
-        }
-
-        // In release mode, we should never fail (we control all inputs and outputs an
-        // all resources are offline). An assertion crash should have triggered during
-        // unit tests or development testing if our JS was incorrectly packaged or if
-        // there was drift between the JS code and the JS function names/signatures
-        // hardcoded in Kotlin.
-        //
-        // We log to the console to help catch errors during active development, but
-        // otherwise always report success to our caller.
-        completionHandler()
-    }
-
-    fun updateAppState(newIsBackgrounded: Boolean) {
-        viewModel.isBackgrounded = newIsBackgrounded
-        viewModel.processPendingInvocations()
-    }
-
-    private fun enqueueInvocation(
-        javascript: JavaScript,
-        coalescingIdentifier: String?,
-        completionHandler: (result: Result<Int>?) -> Unit?
-    ) {
-        val completion: (Result<Int>?) -> Unit? = { result ->
-            if (result != null) {
-                if (result.isFailure) {
-                    completionHandler(result.exceptionOrNull()?.let { Result.failure(it) })
-                } else {
-                    completionHandler(result.onSuccess { Result.success(it) })
-                }
-            }
-        }
-
-        if (!coalescingIdentifier.isNullOrEmpty()) {
-            viewModel.pendingInvocations.removeAll { it.coalescingIdentifier == coalescingIdentifier }
-        }
-
-        viewModel.pendingInvocations.add(
-            PendingJavascriptInvocation(
-                coalescingIdentifier,
-                javascript,
-                completion
-            )
-        )
-
-        GlobalScope.launch(Dispatchers.Main) {
-            viewModel.processPendingInvocations()
-        }
-
-    }
-}
 
 @Composable
-fun VisJSWebView() {
-    val viewModel = viewModel<VisJSWebViewViewModel>()
-    val webViewState = rememberWebViewState(url = "file:///android_asset/dist/index.html")
+fun VisJSWebView(viewModel: PresenceViewModel) {
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val lifecycle = lifecycleOwner.lifecycle
 
-    val webViewClient = object : AccompanistWebViewClient() {
-        override fun onPageFinished(view: WebView?, url: String?) {
-            super.onPageFinished(view, url)
-            viewModel.isInitialLoadComplete = true
-            viewModel.processPendingInvocations()
+    DisposableEffect(lifecycle) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_RESUME -> viewModel.updateAppState(false)
+                Lifecycle.Event.ON_PAUSE -> viewModel.updateAppState(true)
+                else -> {}
+            }
         }
-
-        override fun onReceivedError(
-            view: WebView?,
-            request: WebResourceRequest?,
-            error: WebResourceError?
-        ) {
-            super.onReceivedError(view, request, error)
-            val errorCode = error?.errorCode
-            val message = error?.description
-            Log.d(TAG, "an error occurred $errorCode with message $message")
+        lifecycle.addObserver(observer)
+        onDispose {
+            lifecycle.removeObserver(observer)
         }
     }
 
-    WebView(
-        state = webViewState,
-        onCreated = { webView ->
-            webView.settings.allowFileAccess = true
-            webView.settings.javaScriptEnabled = true
+    AndroidView(
+        factory = { context ->
+
+            val assetLoader = WebViewAssetLoader.Builder()
+                .addPathHandler("/assets/dist/", AssetsPathHandler(context))
+                .build()
+
+            WebView(context).apply {
+                viewModel.webView = this
+                layoutParams = ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                )
+                /**
+                 * Enable JavaScript in the WebView
+                 * This is required to load JS in the WebView
+                 * The compiler will warn you that this can cause XSS security issues
+                 * but since we are loading our own assets, this is not a concern
+                 * hence the `@Suppress("SetJavaScriptEnabled")` annotation
+                 */
+                @Suppress("SetJavaScriptEnabled")
+                settings.javaScriptEnabled = true
+
+                webViewClient =  object : WebViewClient() {
+                    override fun shouldInterceptRequest(
+                        view: WebView,
+                        request: WebResourceRequest
+                    ): WebResourceResponse? {
+                        return assetLoader.shouldInterceptRequest(request.url);
+                    }
+
+                    override fun onPageFinished(view: WebView?, url: String?) {
+                        viewModel.isInitialLoadComplete = true
+                        viewModel.processPendingInvocations()
+                        super.onPageFinished(view, url)
+                    }
+
+                }
+                /**
+                 * This is the URL that will be loaded when the WebView is first
+                 * The assets directory is served by a domain `https://assets.androidplatform.net`
+                 * Learn more about the WebViewAssetLoader here:
+                 * https://developer.android.com/reference/androidx/webkit/WebViewAssetLoader
+                 */
+                loadUrl("file:///android_asset/dist/index.html")
+            }
         },
-        client = webViewClient
+        update = {}
     )
 }
 

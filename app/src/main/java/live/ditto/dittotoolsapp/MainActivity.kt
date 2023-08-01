@@ -122,7 +122,7 @@ fun Root(ditto: Ditto) {
             composable("showViews") {ShowViews(navController = navController, ditto = ditto) }
             composable("dataBrowser") { DataBrowser(ditto = ditto) }
             composable("diskUsage") { DittoDiskUsage(navController = navController, ditto = ditto) }
-            composable("presenceViewer") { DittoPresenceViewer()}
+            composable("presenceViewer") { DittoPresenceViewer(ditto = ditto)}
         }
     }
 }
