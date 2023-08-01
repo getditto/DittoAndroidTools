@@ -4,30 +4,14 @@ import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
 import android.util.Base64
 import android.util.Log
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import live.ditto.Ditto
 import live.ditto.DittoPresenceObserver
@@ -51,7 +35,6 @@ class PresenceViewModel : ViewModel() {
             peersObserver?.close()
             value?.let { ditto ->
                 peersObserver = ditto.presence.observe { graph ->
-                    Log.d(TAG,"network " + graph.json())
                     updateNetwork(graph.json()) {}
                 }
             }
@@ -73,7 +56,6 @@ class PresenceViewModel : ViewModel() {
                 // You can handle the success or failure of the evaluation here.
                 if (result != null) {
                     // Evaluation was successful, handle the result
-                    Log.d(TAG, "evaluateJavascript was successful - $result")
                 } else {
                     // Evaluation failed
                     Log.d(TAG, "evaluateJavascript was NOT successful")
@@ -96,7 +78,6 @@ class PresenceViewModel : ViewModel() {
             if (result != null && result.isFailure) {
                 Log.d(TAG, "failed to update network " + result.exceptionOrNull()?.message)
             }
-            Log.d(TAG, "updated network")
 
         }
 
@@ -119,7 +100,7 @@ class PresenceViewModel : ViewModel() {
     private fun enqueueInvocation(
         javascript: JavaScript,
         coalescingIdentifier: String?,
-        completionHandler: (result: Result<Int>?) -> Int
+        completionHandler: (result: Result<Int>?) -> Unit
     ) {
         val completion: (Result<Int>?) -> Unit? = { result ->
             if (result != null) {
