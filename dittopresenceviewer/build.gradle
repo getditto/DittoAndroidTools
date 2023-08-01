@@ -49,9 +49,6 @@ dependencies {
     //Ditto
     implementation "live.ditto:ditto:4.2.1"
 
-    //Accompanist
-    implementation "com.google.accompanist:accompanist-webview:0.30.1"
-
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
     implementation "androidx.compose.runtime:runtime-livedata:1.4.3"
 
