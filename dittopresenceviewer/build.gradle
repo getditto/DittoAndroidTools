@@ -1,73 +1,70 @@
 plugins {
-    id 'com.android.library'
-    id 'org.jetbrains.kotlin.android'
+    id "com.android.library"
+    id "org.jetbrains.kotlin.android"
+    id "com.google.devtools.ksp"
+    id "androidx.navigation.safeargs.kotlin"
 }
 
 android {
-    namespace 'ditto.live.dittopresenceviewer'
-    compileSdk 33
+    namespace "ditto.live.dittopresenceviewer"
+    compileSdk 34
+    defaultConfig {
+        minSdk 26
+        targetSdk 34
 
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlin {
+        jvmToolchain(17)
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion "1.4.8"
+    }
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
     buildscript {
         repositories {
             mavenCentral()
         }
     }
-
-    buildFeatures {
-        compose true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.4"
-    }
-
-    defaultConfig {
-        minSdk 26
-        targetSdk 33
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles "consumer-rules.pro"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
 }
 
 dependencies {
-
     //Ditto
-    implementation "live.ditto:ditto:4.2.1"
+    implementation("live.ditto:ditto:4.3.0")
 
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
-    implementation "androidx.compose.runtime:runtime-livedata:1.4.3"
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+    implementation("androidx.compose.runtime:runtime-livedata:1.4.3")
 
+    implementation("androidx.compose.ui:ui:$compose_ui_version")
+    implementation("androidx.compose.ui:ui-tooling:$compose_ui_version")
+    implementation("androidx.compose.runtime:runtime:$compose_ui_version")
+    implementation("androidx.compose.foundation:foundation:$compose_ui_version")
+    implementation("androidx.compose.foundation:foundation-layout:$compose_ui_version")
+    implementation("androidx.compose.material:material:$compose_ui_version")
+    implementation("androidx.compose.material:material-icons-extended:$compose_ui_version")
+    implementation("androidx.webkit:webkit:1.7.0")
 
-    implementation "androidx.compose.ui:ui:$compose_ui_version"
-    implementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
-    implementation "androidx.compose.runtime:runtime:$compose_ui_version"
-    implementation "androidx.compose.foundation:foundation:$compose_ui_version"
-    implementation "androidx.compose.foundation:foundation-layout:$compose_ui_version"
-    implementation "androidx.compose.material:material:$compose_ui_version"
-    implementation "androidx.compose.material:material-icons-extended:$compose_ui_version"
-//    implementation "androidx.compose.runtime:runtime-livedata:$compose_ui_version"
-//    implementation "androidx.compose.webview:webview:$compose_ui_version"
-    implementation "androidx.webkit:webkit:1.7.0"
-
-    implementation 'androidx.core:core-ktx:1.8.0'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.9.0'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    implementation("androidx.core:core-ktx:1.10.1")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("com.google.android.material:material:1.9.0")
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 }
