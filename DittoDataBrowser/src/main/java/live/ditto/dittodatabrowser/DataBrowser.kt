@@ -9,7 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import live.ditto.Ditto
 
 @Composable
-fun DataBrowser(ditto: Ditto) {
+fun DittoDataBrowser(ditto: Ditto) {
     DittoHandler.ditto = ditto
 
     val navController2 = rememberNavController()

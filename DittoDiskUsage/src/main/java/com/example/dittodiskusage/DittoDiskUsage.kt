@@ -10,16 +10,16 @@ import androidx.navigation.compose.rememberNavController
 import live.ditto.Ditto
 
 @Composable
-fun DittoDiskUsage(navController: NavHostController, ditto: Ditto) {
+fun DittoDiskUsage(ditto: Ditto) {
     DittoHandler.ditto = ditto
 
-    val navController2 = rememberNavController()
+    val navController = rememberNavController()
 
     // A surface container using the 'background' color from the theme
     Surface(color = MaterialTheme.colorScheme.background) {
-        NavHost(navController = navController2, startDestination = "diskusage") {
-            composable("diskusage") { DiskUsageScreen(navController = navController) }
-            composable("diskUsageView") { DiskUsageView(navController = navController) }
+        NavHost(navController = navController, startDestination = "diskusage") {
+            composable("diskusage") { DiskUsageScreen() }
+            composable("diskUsageView") { DiskUsageView() }
 
         }
     }

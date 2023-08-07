@@ -10,7 +10,7 @@ import androidx.navigation.NavHostController
  * Wrapper composable function for `DiskUsageView`.
  */
 @Composable
-fun DiskUsageScreen(navController: NavHostController) {
+fun DiskUsageScreen() {
     val ditto = DittoHandler.ditto
 
     val viewModel = viewModel<DiskUsageViewModel>()
@@ -28,6 +28,6 @@ fun DiskUsageScreen(navController: NavHostController) {
             observerHandle.close()
         }
     }
-    DiskUsageView(viewModel = viewModel, navController = navController)
+    DiskUsageView(viewModel = viewModel)
 }
 

@@ -25,7 +25,7 @@ import com.example.dittodiskusage.DittoDiskUsage
 import ditto.live.dittopresenceviewer.DittoPresenceViewer
 import live.ditto.*
 import live.ditto.android.DefaultAndroidDittoDependencies
-import live.ditto.dittodatabrowser.DataBrowser
+import live.ditto.dittodatabrowser.DittoDataBrowser
 import live.ditto.dittoexportlogs.ExportLogs
 import live.ditto.dittotoolsapp.ui.theme.DittoToolsAppTheme
 import live.ditto.transports.DittoSyncPermissions
@@ -119,9 +119,9 @@ fun Root(ditto: Ditto) {
     // A surface container using the 'background' color from the theme
     Surface(color = MaterialTheme.colorScheme.background) {
         NavHost(navController = navController, startDestination = "showViews") {
-            composable("showViews") {ShowViews(navController = navController, ditto = ditto) }
-            composable("dataBrowser") { DataBrowser(ditto = ditto) }
-            composable("diskUsage") { DittoDiskUsage(navController = navController, ditto = ditto) }
+            composable("showViews") { ShowViews(navController = navController, ditto = ditto) }
+            composable("dataBrowser") { DittoDataBrowser(ditto = ditto) }
+            composable("diskUsage") { DittoDiskUsage( ditto = ditto) }
             composable("presenceViewer") { DittoPresenceViewer(ditto = ditto)}
         }
     }

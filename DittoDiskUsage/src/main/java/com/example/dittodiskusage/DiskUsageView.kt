@@ -83,8 +83,7 @@ class DiskUsageViewModel: ViewModel() {
 
 @Composable
 fun DiskUsageView(
-    viewModel: DiskUsageViewModel = viewModel(),
-    navController: NavController,
+    viewModel: DiskUsageViewModel = viewModel()
     ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -150,18 +149,6 @@ fun DiskUsageView(
                         }
                     }
                 }
-            }
-
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
-                onClick = { navController.popBackStack() }
-            ) {
-                Text(
-                    text = "Close",
-                    fontSize = 18.sp
-                )
             }
         }
     }
