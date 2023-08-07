@@ -22,6 +22,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.dittodiskusage.DittoDiskUsage
+import ditto.live.dittopresenceviewer.DittoPresenceViewer
 import live.ditto.*
 import live.ditto.android.DefaultAndroidDittoDependencies
 import live.ditto.dittodatabrowser.DataBrowser
@@ -96,6 +97,12 @@ fun ShowViews(navController: NavHostController, ditto: Ditto) {
             ) {
                 Text("Export Logs")
             }
+            Button(
+                onClick = { navController.navigate("presenceViewer") },
+                modifier = Modifier.padding(bottom = 8.dp)
+            ) {
+                Text("Presence Viewer")
+            }
 
             if (showExportDialog) {
                 ExportLogs(onDismiss = { showExportDialog = false })
@@ -115,6 +122,7 @@ fun Root(ditto: Ditto) {
             composable("showViews") {ShowViews(navController = navController, ditto = ditto) }
             composable("dataBrowser") { DataBrowser(ditto = ditto) }
             composable("diskUsage") { DittoDiskUsage(navController = navController, ditto = ditto) }
+            composable("presenceViewer") { DittoPresenceViewer(ditto = ditto)}
         }
     }
 }

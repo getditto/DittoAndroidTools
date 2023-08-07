@@ -1,21 +1,24 @@
 plugins {
     id "com.android.library"
     id "org.jetbrains.kotlin.android"
-    id "com.google.devtools.ksp"
-    id "androidx.navigation.safeargs.kotlin"
 }
 
 android {
     namespace "live.ditto.dittoexportlogs"
-    compileSdk 34
+    compileSdk 33
 
     defaultConfig {
         minSdk 26
-        targetSdk 34
+        targetSdk 33
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
+
+    buildFeatures {
+        compose true
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -23,30 +26,23 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
-    }
-    kotlin {
-        jvmToolchain(17)
-    }
-    buildFeatures {
-        compose true
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     composeOptions {
-        kotlinCompilerExtensionVersion "1.4.8"
+        kotlinCompilerExtensionVersion = "1.4.3"
     }
-    packagingOptions {
-        resources {
-            excludes += '/META-INF/{AL2.0,LGPL2.1}'
-        }
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 }
 
 dependencies {
-    //Ditto
-    implementation "live.ditto:ditto:4.3.0"
 
-    implementation "androidx.core:core-ktx:1.10.1"
+    //Ditto
+    implementation "live.ditto:ditto:4.2.1"
+
+    implementation "androidx.core:core-ktx:1.10.0"
     implementation "androidx.appcompat:appcompat:1.6.1"
     testImplementation "junit:junit:4.13.2"
     androidTestImplementation "androidx.test.ext:junit:1.1.5"
@@ -54,7 +50,7 @@ dependencies {
 
     // Compose
     implementation ("androidx.compose.material3:material3:$material3_version")
-    implementation ("androidx.activity:activity-compose:$activity_version")
+    implementation ("androidx.activity:activity-compose:1.7.1")
     implementation ("androidx.compose.ui:ui:$compose_ui_version")
     implementation ("androidx.compose.ui:ui-tooling-preview:$compose_ui_version")
     implementation("androidx.compose.ui:ui-viewbinding:$compose_ui_version")
