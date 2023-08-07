@@ -1,6 +1,6 @@
 # DittoAndroidTools
 
- <img align="left" src="./Img/Ditto_logo.png" alt="Ditto Logo" width="150">  
+ <img align="left" src="/Img/Ditto_logo.png" alt="Ditto Logo" width="150">  
  <br />  
  <br />  
  <br />  
