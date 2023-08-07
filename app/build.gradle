@@ -1,11 +1,12 @@
 plugins {
     id "com.android.application"
     id "org.jetbrains.kotlin.android"
+    id "com.google.devtools.ksp"
 }
 
 android {
     namespace "live.ditto.dittotoolsapp"
-    compileSdk 33
+    compileSdk 34
 
     buildscript {
         repositories {
@@ -16,7 +17,7 @@ android {
     defaultConfig {
         applicationId "live.ditto.dittotoolsapp"
         minSdk 26
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -33,17 +34,17 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
+    kotlin {
+        jvmToolchain(17)
     }
     buildFeatures {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion "1.4.3"
+        kotlinCompilerExtensionVersion "1.4.8"
     }
     packagingOptions {
         resources {
@@ -55,9 +56,9 @@ android {
 dependencies {
 
     //Ditto
-    implementation ("live.ditto:ditto:4.0.1")
+    implementation ("live.ditto:ditto:4.3.0")
 
-    implementation ("androidx.core:core-ktx:1.10.0")
+    implementation ("androidx.core:core-ktx:1.10.1")
     implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
     implementation project(path: ":DittoDiskUsage")
     implementation project(path: ":DittoDataBrowser")
@@ -68,7 +69,7 @@ dependencies {
 
     // Compose
     implementation ("androidx.compose.material3:material3:$material3_version")
-    implementation ("androidx.activity:activity-compose:1.7.1")
+    implementation ("androidx.activity:activity-compose:$activity_version")
     implementation ("androidx.compose.ui:ui:$compose_ui_version")
     implementation ("androidx.compose.ui:ui-tooling-preview:$compose_ui_version")
     implementation("androidx.compose.ui:ui-viewbinding:$compose_ui_version")
