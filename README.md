@@ -1,10 +1,5 @@
 # DittoAndroidTools
 
- <img align="left" src="/Img/Ditto_logo.png" alt="Ditto Logo" width="150">  
- <br />  
- <br />  
- <br />  
- 
 DittoAndroidTools are diagnostic tools for Ditto. You can view connected peers, export debug logs, browse collections/documents and see Ditto's disk usage.
 
 Issues and pull requests welcome!
