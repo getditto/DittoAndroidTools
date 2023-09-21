@@ -1,68 +1,23 @@
 plugins {
-    id "com.android.library"
-    id "org.jetbrains.kotlin.android"
+    alias libs.plugins.com.android.library
+    alias libs.plugins.org.jetbrains.kotlin.android
 }
+
+apply from: "$rootProject.projectDir/gradle/android-common.gradle"
 
 android {
     namespace "com.example.dittodiskusage"
-    compileSdk 33
-
-    defaultConfig {
-        minSdk 24
-        targetSdk 33
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles "consumer-rules.pro"
-    }
-
-    buildFeatures {
-        compose true
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
-        }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.3"
-    }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
 }
 
 dependencies {
-    //Ditto
-    implementation "live.ditto:ditto:4.0.1"
+    androidTestImplementation libs.androidx.test.ext.junit
 
-    // Live Data
-    implementation "androidx.compose.runtime:runtime-livedata:$compose_ui_version"
+    implementation libs.androidx.compose.material3.material3
+    implementation libs.androidx.compose.ui.ui
+    implementation libs.androidx.navigation.navigationCompose
+    implementation libs.live.ditto.ditto
 
-    implementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
-    implementation "androidx.compose.ui:ui-test-junit4:$compose_ui_version"
-    implementation "androidx.core:core-ktx:1.10.0"
-    implementation "androidx.appcompat:appcompat:1.6.1"
-    testImplementation "junit:junit:4.13.2"
-    androidTestImplementation "androidx.test.ext:junit:1.1.5"
-    androidTestImplementation "androidx.test.espresso:espresso-core:3.5.1"
+    implementation platform(libs.androidx.compose.composeBom)
 
-    // Compose
-    implementation ("androidx.compose.material3:material3:$material3_version")
-    implementation ("androidx.activity:activity-compose:1.7.1")
-    implementation ("androidx.compose.ui:ui:$compose_ui_version")
-    implementation ("androidx.compose.ui:ui-tooling-preview:$compose_ui_version")
-    implementation("androidx.compose.ui:ui-viewbinding:$compose_ui_version")
-    implementation("androidx.activity:activity-ktx:$activity_version")
-    implementation("androidx.navigation:navigation-compose:$nav_version")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
-    debugImplementation ("androidx.compose.ui:ui-tooling:$compose_ui_version")
-    debugImplementation ("androidx.compose.ui:ui-test-manifest:$compose_ui_version")
-    androidTestImplementation ("androidx.compose.ui:ui-test-junit4:$compose_ui_version")
+    testImplementation libs.junit.junit
 }
