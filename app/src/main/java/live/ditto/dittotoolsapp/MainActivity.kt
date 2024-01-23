@@ -40,6 +40,11 @@ class MainActivity : ComponentActivity() {
             val identity = DittoIdentity.OnlinePlayground(androidDependencies, appId = "YOUR_APPID", token = "YOUR_TOKEN", enableDittoCloudSync = true)
             ditto = Ditto(androidDependencies, identity)
             DittoLogger.minimumLogLevel = DittoLogLevel.DEBUG
+
+            LogFileConfig.logFile.let { logFile ->
+                DittoLogger.setLogFile(logFile.toString())
+            }
+
             ditto.startSync()
 
         } catch(e: DittoError) {
