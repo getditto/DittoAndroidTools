@@ -47,9 +47,6 @@ fun ExportLogs(onDismiss: () -> Unit) {
 }
 
 fun getZippedLogs(): Path {
-    DittoLogManager.logFile.let { logFile ->
-        DittoLogger.setLogFile(logFile.toString())
-    }
     return DittoLogManager.createLogsZip()
 }
 

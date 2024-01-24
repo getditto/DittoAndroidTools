@@ -58,6 +58,37 @@ If you are using the Data Browser as a standalone app, there is a button, Start 
 ### 3. Export Logs
 Export Logs allows you to export a file of the logs from your applcation.  
 
+**Important**
+
+Before calling `ditto.startSync()` we need to set the `DittoLogger.setLogFileURL(<logFileURL>)`. This registers a file path where logs will be written to, whenever Ditto wants to issue a log (on top of emitting the log to the console). Use the `LogFileConfig` struct:
+
+```
+object LogFileConfig {
+    private const val logsDirectoryName = "debug-logs"
+    private const val logFileName = "logs.txt"
+
+    val logsDirectory: Path by lazy {
+        val directory = Paths.get(System.getProperty("java.io.tmpdir"), logsDirectoryName)
+        Files.createDirectories(directory)
+        directory
+    }
+
+    val logFile: Path by lazy {
+        logsDirectory.resolve(logFileName)
+    }
+}
+```
+
+and then before calling `ditto.startSync()` set the log file url with:
+
+```
+LogFileConfig.logFile.let { logFile ->
+    DittoLogger.setLogFile(logFile.toString())
+}
+```
+
+Now we can call `ExportLogs()`.
+
 ```kotlin
 DittoExportLogs(ditto = ditto)
 ```

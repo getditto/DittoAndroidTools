@@ -11,7 +11,6 @@ import kotlin.io.path.isRegularFile
 
 object Config {
     private const val logsDirectoryName = "debug-logs"
-    private const val logFileName = "logs.txt"
     private const val zippedLogFileName = "logs.zip"
 
     val logsDirectory: Path by lazy {
@@ -20,18 +19,12 @@ object Config {
         directory
     }
 
-    val logFile: Path by lazy {
-        logsDirectory.resolve(logFileName)
-    }
-
     val zippedLogsFile: Path by lazy {
         Paths.get(System.getProperty("java.io.tmpdir"), zippedLogFileName)
     }
 }
 
 object DittoLogManager {
-    val logFile: Path
-        get() = Config.logFile
 
     fun createLogsZip(): Path {
         try {
