@@ -5,6 +5,11 @@ plugins {
 
 apply from: "$rootProject.projectDir/gradle/android-common.gradle"
 
+
+ext.libraryGroupId = "live.ditto.dittodatabrowser"
+ext.libraryVersion = "0.0.1"
+apply from: "$rootProject.projectDir/gradle/deploy.gradle"
+
 android {
     namespace "live.ditto.dittodatabrowser"
 }
