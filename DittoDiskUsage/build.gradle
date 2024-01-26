@@ -3,10 +3,15 @@ plugins {
     alias libs.plugins.org.jetbrains.kotlin.android
 }
 
+
+ext.libraryGroupId = "live.ditto.dittodiskusage"
+ext.libraryVersion = "0.0.1"
+
+apply from: "$rootProject.projectDir/gradle/deploy.gradle"
 apply from: "$rootProject.projectDir/gradle/android-common.gradle"
 
 android {
-    namespace "com.example.dittodiskusage"
+    namespace "live.ditto.dittodiskusage"
 }
 
 dependencies {

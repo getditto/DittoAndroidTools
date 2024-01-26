@@ -3,10 +3,14 @@ plugins {
     alias libs.plugins.org.jetbrains.kotlin.android
 }
 
+ext.libraryGroupId = "live.ditto.dittopresenceviewer"
+ext.libraryVersion = "0.0.1"
+
+apply from: "$rootProject.projectDir/gradle/deploy.gradle"
 apply from: "$rootProject.projectDir/gradle/android-common.gradle"
 
 android {
-    namespace 'ditto.live.dittopresenceviewer'
+    namespace 'live.ditto.dittopresenceviewer'
 }
 
 dependencies {

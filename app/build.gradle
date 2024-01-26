@@ -26,10 +26,10 @@ dependencies {
 
     implementation platform(libs.androidx.compose.composeBom)
 
-    implementation project(path: ":DittoDiskUsage")
-    implementation project(path: ":DittoDataBrowser")
-    implementation project(path: ":DittoExportLogs")
-    implementation project(path: ':DittoPresenceViewer')
+    implementation libs.live.ditto.databrowser
+    implementation libs.live.ditto.exportlogs
+    implementation libs.live.ditto.presenceviewer
+    implementation libs.live.ditto.diskusage
 
     testImplementation libs.junit.junit
 }
