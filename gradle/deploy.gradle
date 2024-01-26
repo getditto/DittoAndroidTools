@@ -41,6 +41,7 @@ afterEvaluate {
             release(MavenPublication) {
                 from components.release
                 groupId libraryGroupId
+                artifactId libraryArtifactId
                 version libraryVersion
 
                 pom {
