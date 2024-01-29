@@ -1,0 +1,25 @@
+plugins {
+    id "com.android.library"
+    id "org.jetbrains.kotlin.android"
+}
+
+apply from: "$rootProject.projectDir/gradle/android-common.gradle"
+
+android {
+    namespace "live.ditto.health"
+}
+
+dependencies {
+    androidTestImplementation libs.androidx.test.ext.junit
+
+    implementation libs.androidx.compose.material3.material3
+    implementation libs.androidx.compose.ui.ui
+    debugImplementation libs.androidx.compose.ui.uiTooling
+    debugImplementation libs.androidx.compose.ui.uiToolingPreview
+    implementation libs.androidx.navigation.navigationCompose
+    implementation libs.live.ditto.ditto
+
+    implementation platform(libs.androidx.compose.composeBom)
+
+    testImplementation libs.junit.junit
+}

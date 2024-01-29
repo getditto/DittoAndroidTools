@@ -24,6 +24,7 @@ androidx-compose-composeBom = { group = "androidx.compose", name = "compose-bom"
 androidx-compose-material3-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-compose-runtime-runtimeLivedata = { group = "androidx.compose.runtime", name = "runtime-livedata" }
 androidx-compose-ui-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-compose-ui-uiTooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-compose-ui-uiToolingPreview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-navigation-navigationCompose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext" }

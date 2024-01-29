@@ -59,6 +59,7 @@ dependencies {
     implementation libs.live.ditto.exportlogs
     implementation libs.live.ditto.presenceviewer
     implementation libs.live.ditto.diskusage
+    implementation project(path: ':DittoHealth')
 
     testImplementation libs.junit.junit
 }
