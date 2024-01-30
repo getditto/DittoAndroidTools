@@ -42,16 +42,16 @@ DittoPresenceViewer(ditto = ditto)
 Gradle:
 ```kotlin
 dependencies {
-  implementation 'live.ditto.dittopresenceviewer:DittoPresenceViewer:0.0.1'
+  implementation 'live.ditto:dittopresenceviewer:0.0.2'
 }
 ```
 
 Maven:
 ```
 <dependency>
-    <groupId>live.ditto.dittopresenceviewer</groupId>
-    <artifactId>DittoPresenceViewer</artifactId>
-    <version>0.0.1</version>
+    <groupId>live.ditto</groupId>
+    <artifactId>dittopresenceviewer</artifactId>
+    <version>0.0.2</version>
 </dependency>
 ```
 
@@ -79,16 +79,16 @@ If you are using the Data Browser as a standalone app, there is a button, Start 
 Gradle:
 ```kotlin
 dependencies {
-  implementation 'live.ditto.dittodatabrowser:DittoDataBrowser:0.0.1'
+  implementation 'live.ditto:dittodatabrowser:0.0.2'
 }
 ```
 
 Maven:
 ```
 <dependency>
-    <groupId>live.ditto.dittodatabrowser</groupId>
+    <groupId>live.ditto.</groupId>
     <artifactId>DittoDataBrowser</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
 </dependency>
 ```
 
@@ -137,16 +137,16 @@ DittoExportLogs(ditto = ditto)
 Gradle:
 ```kotlin
 dependencies {
-  implementation 'live.ditto.dittoexportlogs:DittoExportLogs:0.0.1'
+  implementation 'live.ditto:dittoexportlogs:0.0.2'
 }
 ```
 
 Maven:
 ```
 <dependency>
-    <groupId>live.ditto.dittoexportlogs</groupId>
+    <groupId>live.ditto</groupId>
     <artifactId>DittoExportLogs</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
 </dependency>
 ```
 
@@ -165,16 +165,16 @@ DittoDiskUsage(ditto = ditto)
 Gradle:
 ```kotlin
 dependencies {
-  implementation 'live.ditto.dittodiskusage:DittoDiskUsage:0.0.1'
+  implementation 'live.ditto:dittodiskusage:0.0.2'
 }
 ```
 
 Maven:
 ```
 <dependency>
-    <groupId>live.ditto.dittodiskusage</groupId>
+    <groupId>live.ditto</groupId>
     <artifactId>DittoDiskUsage</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
 </dependency>
 ```
 
