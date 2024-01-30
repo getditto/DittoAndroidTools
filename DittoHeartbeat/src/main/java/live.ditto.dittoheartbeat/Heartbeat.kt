@@ -3,7 +3,6 @@ package live.ditto.dittoheartbeat
 import live.ditto.Ditto
 import android.os.Handler
 import android.os.Looper
-import live.ditto.DittoConnection
 import live.ditto.DittoPeer
 import live.ditto.DittoPresenceObserver
 import java.text.SimpleDateFormat
@@ -25,7 +24,7 @@ data class HeartbeatInfo(
 
 data class Presence(
     val totalConnections: Int,
-    val connections: List<DittoConnection>
+    val connections: List<DittoPeer>,
 )
 fun startHeartbeat(ditto: Ditto, config: HeartbeatConfig, onDataLog: (HeartbeatInfo) -> Unit): Handler {
     val handler = Handler(Looper.getMainLooper())
@@ -40,7 +39,7 @@ fun startHeartbeat(ditto: Ditto, config: HeartbeatConfig, onDataLog: (HeartbeatI
             val info = HeartbeatInfo(
                 id = mapOf("deviceId" to deviceId, "locationId" to locationId),
                 lastUpdated = timestamp,
-                presence = observePeers(ditto)
+                presence = observePeers(ditto),
 //                diskSpace = /* Logic to get disk space from disk utility */
             )
 
@@ -59,9 +58,17 @@ var peersObserver: DittoPresenceObserver? = null
 
 var presence: Presence? = null
 fun observePeers(ditto: Ditto): Presence? {
-    peersObserver = ditto.presence.observe { graph ->
-        presence = Presence(totalConnections = graph.localPeer.connections.size, connections = graph.localPeer.connections)
-    }
+//    peersObserver = ditto.presence.observe { graph ->
+//        presence = Presence(totalConnections = graph.localPeer.connections.size, connections = graph.remotePeers)
+//    }
+//
+//    return presence
+
+    val presenceGraph = ditto.presence.graph
+    val totalConnections = presenceGraph.remotePeers.size
+    val connectionsList = presenceGraph.remotePeers
+    presence = Presence(totalConnections, connectionsList)
+
     return presence
 }
 
