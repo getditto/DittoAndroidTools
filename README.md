@@ -145,7 +145,7 @@ Maven:
 ```
 <dependency>
     <groupId>live.ditto</groupId>
-    <artifactId>DittoExportLogs</artifactId>
+    <artifactId>dittoexportlogs</artifactId>
     <version>0.0.2</version>
 </dependency>
 ```
