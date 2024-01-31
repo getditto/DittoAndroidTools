@@ -2,6 +2,8 @@
 
 DittoAndroidTools are diagnostic tools for Ditto. You can view connected peers, export debug logs, browse collections/documents and see Ditto's disk usage.
 
+These tools are available through Maven.
+
 Issues and pull requests welcome!
 
 ## Requirements
@@ -35,6 +37,24 @@ DittoPresenceViewer(ditto = ditto)
 
  <img src="/Img/presenceViewer.png" alt="Presence Viewer Image" width="300">  
 
+**Download**
+
+Gradle:
+```kotlin
+dependencies {
+  implementation 'live.ditto:dittopresenceviewer:0.0.2'
+}
+```
+
+Maven:
+```
+<dependency>
+    <groupId>live.ditto</groupId>
+    <artifactId>dittopresenceviewer</artifactId>
+    <version>0.0.2</version>
+</dependency>
+```
+
 
 ### 2. Data Browser
 
@@ -53,7 +73,24 @@ DittoDataBrowser(ditto = ditto)
 **Standalone App**
 
 If you are using the Data Browser as a standalone app, there is a button, Start Subscriptions, you must press in order to start syncing data. If you are embedding the Data Browser into another application then you do not need to press Start Subscriptions as you should already have your subscriptions running.
- 
+
+**Download**
+
+Gradle:
+```kotlin
+dependencies {
+  implementation 'live.ditto:dittodatabrowser:0.0.2'
+}
+```
+
+Maven:
+```
+<dependency>
+    <groupId>live.ditto.</groupId>
+    <artifactId>dittodatabrowser</artifactId>
+    <version>0.0.2</version>
+</dependency>
+```
 
 ### 3. Export Logs
 Export Logs allows you to export a file of the logs from your applcation.  
@@ -95,6 +132,24 @@ DittoExportLogs(ditto = ditto)
 
  <img src="/Img/exportLogs.png" alt="Export Logs Image" width="300">  
 
+**Download**
+
+Gradle:
+```kotlin
+dependencies {
+  implementation 'live.ditto:dittoexportlogs:0.0.2'
+}
+```
+
+Maven:
+```
+<dependency>
+    <groupId>live.ditto</groupId>
+    <artifactId>dittoexportlogs</artifactId>
+    <version>0.0.2</version>
+</dependency>
+```
+
 ### 4. Disk Usage
 
 Disk Usage allows you to see Ditto's file space usage.  
@@ -103,8 +158,25 @@ Disk Usage allows you to see Ditto's file space usage.
 DittoDiskUsage(ditto = ditto)
 ```
 
-
  <img src="/Img/diskUsage.png" alt="Disk Usage Image" width="300">  
+
+**Download**
+
+Gradle:
+```kotlin
+dependencies {
+  implementation 'live.ditto:dittodiskusage:0.0.2'
+}
+```
+
+Maven:
+```
+<dependency>
+    <groupId>live.ditto</groupId>
+    <artifactId>dittodiskusage</artifactId>
+    <version>0.0.2</version>
+</dependency>
+```
 
 
 ## License
