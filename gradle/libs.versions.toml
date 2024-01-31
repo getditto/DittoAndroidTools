@@ -13,6 +13,8 @@ live-ditto-databrowser = "0.0.2"
 live-ditto-exportlogs = "0.0.2"
 live-ditto-diskusage = "0.0.2"
 live-ditto-presenceviewer = "0.0.2"
+live-ditto-health = "0.0.2"
+
 junit = "4.13.2"
 kotlin-gradle-plugin = "1.8.10"
 androidComposeKotlinCompiler = "1.4.4"
@@ -33,6 +35,7 @@ live-ditto-databrowser = { module = "live.ditto:dittodatabrowser", version.ref =
 live-ditto-exportlogs = { module = "live.ditto:dittoexportlogs", version.ref = "live-ditto-exportlogs" }
 live-ditto-diskusage = { module = "live.ditto:dittodiskusage", version.ref = "live-ditto-diskusage" }
 live-ditto-presenceviewer = { module = "live.ditto:dittopresenceviewer", version.ref = "live-ditto-presenceviewer" }
+live-ditto-health = { module = "live.ditto:health", version.ref = "live-ditto-health" }
 live-ditto-ditto = { group = "live.ditto", name = "ditto", version.ref = "ditto" }
 junit-junit = { group = "junit", name = "junit", version.ref = "junit" }
 
