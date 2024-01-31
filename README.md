@@ -9,6 +9,14 @@ Issues and pull requests welcome!
 * Android 8.0+
 * Jetpack Compose
 
+## Repository
+Ditto tools are deployed in Maven Central. Be sure to include it in your list of repositories. 
+```properties
+repositories {
+    mavenCentral()
+}
+```
+
 ## Usage
 
 First, you must initialize Ditto:
