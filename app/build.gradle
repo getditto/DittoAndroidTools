@@ -5,6 +5,28 @@ plugins {
 
 apply from: "$rootProject.projectDir/gradle/android-common.gradle"
 
+def getValueFromPropertiesFile = { propFile, key ->
+    if (!propFile.isFile() || !propFile.canRead())
+        return null
+    def prop = new Properties()
+    def reader = propFile.newReader()
+    try {
+        prop.load(reader)
+    } finally {
+        reader.close()
+    }
+    return prop.get(key)
+}
+
+def getProperty = { name, defValue ->
+    def prop = project.properties[name] ?:
+            getValueFromPropertiesFile(project.rootProject.file('local.properties'), name)
+    return (null == prop) ? defValue : prop
+}
+
+ext.dittoOnlinePlaygroundAppId = getProperty('ditto.onlinePlayground.appId', "null")
+ext.dittoOnlinePlaygroundToken = getProperty('ditto.onlinePlayground.token', "null")
+
 android {
     namespace "live.ditto.dittotoolsapp"
 
@@ -12,6 +34,13 @@ android {
         applicationId "live.ditto.dittotoolsapp"
         versionCode 1
         versionName "1.0"
+
+        buildConfigField "String", "DITTO_ONLINE_PLAYGROUND_APP_ID", dittoOnlinePlaygroundAppId
+        buildConfigField "String", "DITTO_ONLINE_PLAYGROUND_TOKEN", dittoOnlinePlaygroundToken
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 }
 

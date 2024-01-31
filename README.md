@@ -11,6 +11,14 @@ Issues and pull requests welcome!
 * Android 8.0+
 * Jetpack Compose
 
+## Repository
+Ditto tools are deployed in Maven Central. Be sure to include it in your list of repositories. 
+```properties
+repositories {
+    mavenCentral()
+}
+```
+
 ## Usage
 
 First, you must initialize Ditto:
@@ -21,6 +29,12 @@ val identity = DittoIdentity.OnlinePlayground(androidDependencies, appId = "YOUR
 ditto = Ditto(androidDependencies, identity)
 DittoLogger.minimumLogLevel = DittoLogLevel.DEBUG
 ditto.startSync()
+```
+
+_NOTICE:_ This project loads ditto's credentials from `local.properties`
+```properties
+ditto.onlinePlayground.appId="YOUR_APPID"
+ditto.onlinePlayground.token="YOUR_TOKEN"
 ```
 
 
