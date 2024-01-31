@@ -21,6 +21,12 @@ DittoLogger.minimumLogLevel = DittoLogLevel.DEBUG
 ditto.startSync()
 ```
 
+_NOTICE:_ This project loads ditto's credentials from `local.properties`
+```properties
+ditto.onlinePlayground.appId="YOUR_APPID"
+ditto.onlinePlayground.token="YOUR_TOKEN"
+```
+
 
 There are four components in this package: Presence Viewer, Data Browser, Export Logs, Disk Usage.
 
