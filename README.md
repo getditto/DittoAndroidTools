@@ -87,7 +87,7 @@ Maven:
 ```
 <dependency>
     <groupId>live.ditto.</groupId>
-    <artifactId>DittoDataBrowser</artifactId>
+    <artifactId>dittodatabrowser</artifactId>
     <version>0.0.2</version>
 </dependency>
 ```
