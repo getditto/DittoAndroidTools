@@ -173,7 +173,7 @@ Maven:
 ```
 <dependency>
     <groupId>live.ditto</groupId>
-    <artifactId>DittoDiskUsage</artifactId>
+    <artifactId>dittodiskusage</artifactId>
     <version>0.0.2</version>
 </dependency>
 ```
