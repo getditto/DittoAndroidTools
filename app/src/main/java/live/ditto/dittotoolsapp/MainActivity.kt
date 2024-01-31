@@ -38,6 +38,7 @@ import live.ditto.DittoLogger
 import live.ditto.android.DefaultAndroidDittoDependencies
 import live.ditto.dittodatabrowser.DittoDataBrowser
 import live.ditto.dittotoolsapp.ui.theme.DittoToolsAppTheme
+import live.ditto.health.HealthScreen
 import live.ditto.transports.DittoSyncPermissions
 
 class MainActivity : ComponentActivity() {
@@ -130,6 +131,7 @@ private fun Root(ditto: Ditto) {
             composable("dataBrowser") { DittoDataBrowser(ditto = ditto) }
             composable("diskUsage") { DittoDiskUsage(ditto = ditto) }
             composable("presenceViewer") { DittoPresenceViewer(ditto = ditto) }
+            composable("health") { HealthScreen() }
         }
     }
 }

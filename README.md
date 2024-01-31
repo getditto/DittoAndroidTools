@@ -38,7 +38,7 @@ ditto.onlinePlayground.token="YOUR_TOKEN"
 ```
 
 
-There are four components in this package: Presence Viewer, Data Browser, Export Logs, Disk Usage.
+There are five components in this package: Presence Viewer, Data Browser, Export Logs, Disk Usage, Health.
 
 ### 1. Presence Viewer
 The Presence Viewer displays a mesh graph that allows you to see all connected peers within the mesh and the transport that each peer is using to make a connection.  
@@ -192,6 +192,35 @@ Maven:
 </dependency>
 ```
 
+### 5. Health
+
+Health allows you to see the status of ditto's required services.
+
+Example: Wi-Fi, Bluetooth, Missing Permissions. 
+
+```kotlin
+HealthScreen()
+```
+
+ <img src="/Img/health.png" alt="Health" width="300">  
+
+**Download**
+
+Gradle:
+```kotlin
+dependencies {
+  implementation 'live.ditto:health:0.0.2'
+}
+```
+
+Maven:
+```
+<dependency>
+    <groupId>live.ditto</groupId>
+    <artifactId>health</artifactId>
+    <version>0.0.2</version>
+</dependency>
+```
 
 ## License
 

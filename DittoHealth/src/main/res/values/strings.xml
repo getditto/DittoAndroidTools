@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="missing_permissions">Missing Permissions</string>
+    <string name="required_permissions">Required Permissions</string>
+    <string name="required_permissions_granted">All required permissions are granted</string>
+    <string name="wifi_status">Wi-fi Status</string>
+    <string name="wifi_enabled">Wi-fi Enabled</string>
+    <string name="wifi_not_enabled">Wi-fi Not Enabled</string>
+    <string name="enable_wifi">Enable Wi-fi</string>
+    <string name="request_permissions">Request Permissions</string>
+    <string name="bluetooth_status">Bluetooth Status</string>
+    <string name="bluetooth_enabled">Bluetooth Enabled</string>
+    <string name="bluetooth_not_enabled">Bluetooth Not Enabled</string>
+    <string name="enable_bluetooth">Enable Bluetooth</string>
+</resources>
