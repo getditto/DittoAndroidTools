@@ -29,10 +29,10 @@ fun ShowHeartbeatData(ditto: Ditto) {
     var heartbeatInfo by remember { mutableStateOf<HeartbeatInfo?>(null) }
 
     val config = HeartbeatConfig(
-        interval = 10000,
+        interval = 30000,
         collectionName = "devices",
         metaData = mapOf(
-         "locationId" to "Tusla, OK",
+         "locationId" to "Tulsa, OK",
          "deviceId" to "123abc"
         )
     )
@@ -98,6 +98,7 @@ fun HeartbeatInfoCard(heartbeatInfo: HeartbeatInfo) {
                 val connectionsMap = getConnectionTypeCount(connection = connection)
                 Text("\nConnection: ${connection.deviceName}")
                 Text(text = if (connection.isConnectedToDittoCloud) "Online" else "Offline")
+                Text("Total Connections: ${connection.connections.size}")
                 Text("BT: ${connectionsMap["bt"]}")
                 Text("P2PWifi: ${connectionsMap["p2pWifi"]}")
                 Text("LAN: ${connectionsMap["lan"]}")
