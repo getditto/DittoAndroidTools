@@ -3,18 +3,19 @@ package live.ditto.dittoheartbeat
 import live.ditto.Ditto
 import android.os.Handler
 import android.os.Looper
-import androidx.compose.material3.Text
 import live.ditto.DittoConnectionType
 import live.ditto.DittoPeer
-import live.ditto.DittoPresenceObserver
+import java.math.BigInteger
+import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 data class HeartbeatConfig(
+    val id: Map<String, String>,
     val interval: Long,
     val collectionName: String,
-    val metaData: Map<String, Any>
+//    val metaData: Map<String, Any>
 )
 
 data class HeartbeatInfo(
@@ -24,9 +25,12 @@ data class HeartbeatInfo(
 )
 
 data class Presence(
-    val totalConnections: Int,
-    val connections: List<DittoPeer>,
+    val totalPeers: Int,
+    val peers: List<DittoPeer>,
 )
+
+var presence: Presence? = null
+
 fun startHeartbeat(ditto: Ditto, config: HeartbeatConfig, onDataLog: (HeartbeatInfo) -> Unit): Handler {
     val handler = Handler(Looper.getMainLooper())
 
@@ -34,17 +38,16 @@ fun startHeartbeat(ditto: Ditto, config: HeartbeatConfig, onDataLog: (HeartbeatI
         override fun run() {
 
             val timestamp = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.getDefault()).format(Date())
-            val deviceId = config.metaData["deviceId"] as? String ?: ""
-            val locationId = config.metaData["locationId"] as? String ?: ""
+//            val deviceId = config.metaData["deviceId"] as? String ?: ""
+//            val locationId = config.metaData["locationId"] as? String ?: ""
 
             val info = HeartbeatInfo(
-                id = mapOf("deviceId" to deviceId, "locationId" to locationId),
+                id = createCompositeId(config.id, ditto),
                 lastUpdated = timestamp,
                 presence = observePeers(ditto),
             )
 
             addToCollection(info, config, ditto)
-
             onDataLog(info)
             handler.postDelayed(this, config.interval) // Repeat every config.interval milliseconds
         }
@@ -55,14 +58,26 @@ fun startHeartbeat(ditto: Ditto, config: HeartbeatConfig, onDataLog: (HeartbeatI
     return handler
 }
 
+fun createCompositeId(configId: Map<String, String>, ditto: Ditto): Map<String, String> {
+    val compositeId: MutableMap<String, String> = configId.toMutableMap()
+    val presenceGraph = ditto.presence.graph
+    compositeId["dittoPeerKey"] = byteArrayToHash(presenceGraph.localPeer.peerKey)
+    return compositeId
+}
 
+fun byteArrayToHash(byteArray: ByteArray): String {
+    val md5 = MessageDigest.getInstance("md5")
 
-var presence: Presence? = null
+    return BigInteger(1, md5.digest(byteArray))
+        .toString(16)
+        .padStart(32, '0')
+}
+
 fun observePeers(ditto: Ditto): Presence? {
     val presenceGraph = ditto.presence.graph
-    val totalConnections = presenceGraph.remotePeers.size
+    val totalPeers = presenceGraph.remotePeers.size
     val connectionsList = presenceGraph.remotePeers
-    presence = Presence(totalConnections, connectionsList)
+    presence = Presence(totalPeers, connectionsList)
 
     return presence
 }
@@ -70,12 +85,9 @@ fun observePeers(ditto: Ditto): Presence? {
 fun addToCollection(info: HeartbeatInfo, config: HeartbeatConfig, ditto: Ditto) {
 
     val doc = mapOf(
-        "_id" to mapOf(
-            "deviceId" to config.metaData["deviceId"],
-            "locationId" to config.metaData["locationId"]
-        ),
+        "_id" to info.id,
         "interval" to "${config.interval / 1000} sec",
-        "totalConnections" to (info.presence?.totalConnections ?: 0),
+        "totalPeers" to (info.presence?.totalPeers ?: 0),
         "lastUpdated" to info.lastUpdated,
         "presence" to getConnections(info.presence)
     )
@@ -87,19 +99,20 @@ fun getConnections(presence: Presence?): Map<String, Any> {
 
     val connectionsMap: MutableMap<String, Any> = mutableMapOf()
 
-    presence?.connections?.forEach { connection ->
+    presence?.peers?.forEach { connection ->
         val connectionsTypeMap = getConnectionTypeCount(connection = connection)
 
         val connectionMap: Map<String, Any?> = mapOf(
             "deviceName" to connection.deviceName,
+            "devicePeerKey" to byteArrayToHash(connection.peerKey),
             "isConnectedToDittoCloud" to connection.isConnectedToDittoCloud,
-            "totalConnections" to connection.connections.size,
+//            "totalPeers" to connection.connections.size,
             "bluetooth" to connectionsTypeMap["bt"],
             "p2pWifi" to connectionsTypeMap["p2pWifi"],
             "lan" to connectionsTypeMap["lan"],
             )
 
-        connectionsMap["connection ${connectionsMap.size + 1}"] = connectionMap
+        connectionsMap["peer ${connectionsMap.size + 1}"] = connectionMap
     }
 
     return connectionsMap
@@ -120,30 +133,3 @@ fun getConnectionTypeCount(connection: DittoPeer): Map<String, Int> {
 
     return mapOf("bt" to bt, "p2pWifi" to p2pWifi, "lan" to lan)
 }
-
-
-
-
-
-
-
-
-
-// Usage Example:
-
-// val config = HeartbeatConfig(
-//     interval = 30000,
-//     collectionName = "devices",
-//     metadata = mapOf(
-//         "locationId" to "...",
-//         "deviceId" to "..."
-//     )
-// )
-
-//val handler = startHeartbeat(dittoInstance, config) { info ->
-//    // Custom logic for onDataLog
-//     DataDog.log(info)
-//}
-//
-// To stop the Heartbeat
-//handler.removeCallbacksAndMessages(null)

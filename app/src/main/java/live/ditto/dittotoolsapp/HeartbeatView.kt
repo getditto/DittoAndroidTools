@@ -5,6 +5,8 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
@@ -29,18 +31,15 @@ fun ShowHeartbeatData(ditto: Ditto) {
     var heartbeatInfo by remember { mutableStateOf<HeartbeatInfo?>(null) }
 
     val config = HeartbeatConfig(
+        id = mapOf(
+            "storeId" to "Tulsa, OK",
+            "venueId" to "Food Truck",
+            "deviceId" to "123abc"
+        ),
         interval = 30000,
-        collectionName = "devices",
-        metaData = mapOf(
-         "locationId" to "Tulsa, OK",
-         "deviceId" to "123abc"
-        )
+        collectionName = "devices2",
+//        metaData = mapOf()
     )
-
-//    // Start heartbeat and observe the data
-//    val handler = startHeartbeat(ditto, config) {
-//        heartbeatInfo = it
-//    }
 
     // Cleanup when the composable is disposed
     DisposableEffect(Unit) {
@@ -82,28 +81,47 @@ fun HeartbeatInfoCard(heartbeatInfo: HeartbeatInfo) {
         modifier = Modifier
             .padding(16.dp)
     ) {
-        Text("Device ID: ${heartbeatInfo.id["deviceId"]}")
-        Text("Location ID: ${heartbeatInfo.id["locationId"]}")
+        HeartbeatHeader(heartbeatInfo)
+
+        // Display presence information if available
+        heartbeatInfo.presence?.let {
+            LazyColumn {
+                items(it.peers) { connection ->
+                    ConnectionInfo(connection)
+                }
+            }
+        }
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun HeartbeatHeader(heartbeatInfo: HeartbeatInfo) {
+    Column {
+        Text("Mesh ID: ${heartbeatInfo.id}")
+//        Text("Location ID: ${heartbeatInfo.id["locationId"]}")
         // Parse the ISO-8601 string to LocalDateTime
         val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
         val dateTime = LocalDateTime.parse(heartbeatInfo.lastUpdated, dateTimeFormatter)
         val customFormatter = DateTimeFormatter.ofPattern("hh:mm a MM/dd/yyyy")
         val formattedDateTime = dateTime.format(customFormatter)
-        Text("\nLast Updated: $formattedDateTime")
-
-        // Display presence information if available
+        Text("Last Updated: $formattedDateTime")
         heartbeatInfo.presence?.let {
-            Text("\nTotal Connections: ${it.totalConnections}", color = Color.Black)
-            it.connections.forEach { connection ->
-                val connectionsMap = getConnectionTypeCount(connection = connection)
-                Text("\nConnection: ${connection.deviceName}")
-                Text(text = if (connection.isConnectedToDittoCloud) "Online" else "Offline")
-                Text("Total Connections: ${connection.connections.size}")
-                Text("BT: ${connectionsMap["bt"]}")
-                Text("P2PWifi: ${connectionsMap["p2pWifi"]}")
-                Text("LAN: ${connectionsMap["lan"]}")
-            }
+            Text("Total Peers in Mesh: ${it.totalPeers}", color = Color.Black)
         }
+    }
+}
+
+@Composable
+fun ConnectionInfo(connection: DittoPeer) {
+    Column {
+        Text("\nConnection: ${connection.deviceName}")
+        Text(text = if (connection.isConnectedToDittoCloud) "Online" else "Offline")
+//        Text("Total Connections: ${connection.connections.size}")
+        val connectionsMap = getConnectionTypeCount(connection = connection)
+        Text("BT: ${connectionsMap["bt"]}")
+        Text("P2PWifi: ${connectionsMap["p2pWifi"]}")
+        Text("LAN: ${connectionsMap["lan"]}")
     }
 }
 
@@ -119,7 +137,6 @@ fun getConnectionTypeCount(connection: DittoPeer): Map<String, Int> {
             DittoConnectionType.AccessPoint, DittoConnectionType.WebSocket -> lan += 1
         }
     }
-
     return mapOf("bt" to bt, "p2pWifi" to p2pWifi, "lan" to lan)
 }
 
