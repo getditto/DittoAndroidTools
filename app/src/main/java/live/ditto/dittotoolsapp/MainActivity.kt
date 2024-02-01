@@ -132,6 +132,8 @@ private fun Root(ditto: Ditto) {
             composable("diskUsage") { DittoDiskUsage(ditto = ditto) }
             composable("presenceViewer") { DittoPresenceViewer(ditto = ditto) }
             composable("health") { HealthScreen() }
+            composable("heartbeatInfo") { ShowHeartbeatData(ditto = ditto)}
+
         }
     }
 }

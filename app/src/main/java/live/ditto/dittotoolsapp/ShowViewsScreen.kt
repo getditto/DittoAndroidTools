@@ -59,6 +59,12 @@ fun ShowViewsScreen(navController: NavHostController, ditto: Ditto) {
             ) {
                 Text("Health Viewer")
             }
+            Button(
+                onClick = { navController.navigate("heartbeatInfo") },
+                modifier = Modifier.padding(bottom = 8.dp)
+            ) {
+                Text("Heartbeat Info")
+            }
 
             if (showExportDialog) {
                 ExportLogs(onDismiss = { showExportDialog = false })
