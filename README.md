@@ -260,13 +260,14 @@ startHeartbeat(ditto, config).collect { heartbeatInfo = it }
 ```
 
 **User Interface**
+
 You will need to provide your own UI. You can see an example [here](https://github.com/getditto/DittoAndroidTools/blob/HeartBeatTool/app/src/main/java/live/ditto/dittotoolsapp/HeartbeatView.kt).
 
 There are two ways you can access the data:
 1. The Ditto collection you provided
 2. startHeartBeat() provides a callback with the data
 
-*Ditto Collection*
+1. *Ditto Collection:*
 
 This is the model of the data and what you can use for reference
 ```kotlin
@@ -291,7 +292,7 @@ This is the model of the data and what you can use for reference
 }
 ```
 
-*Callback*
+2. *Callback:*
 
 You will receive a `HeartbeatInfo` data class back
 ```kotlin
