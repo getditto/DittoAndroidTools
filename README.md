@@ -267,7 +267,7 @@ There are two ways you can access the data:
 1. The Ditto collection you provided
 2. startHeartBeat() provides a callback with the data
 
-1. *Ditto Collection:*
+**Ditto Collection:**
 
 This is the model of the data and what you can use for reference
 ```kotlin
@@ -292,7 +292,7 @@ This is the model of the data and what you can use for reference
 }
 ```
 
-2. *Callback:*
+**Callback:**
 
 You will receive a `HeartbeatInfo` data class back
 ```kotlin
