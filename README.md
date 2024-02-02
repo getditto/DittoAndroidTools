@@ -222,7 +222,7 @@ Maven:
 </dependency>
 ```
 
-### 2. Heartbeat
+### 6. Heartbeat
 
 The Ditto Heartbeat tool allows you to monitor, locally or remotely, the peers in your mesh.
 
