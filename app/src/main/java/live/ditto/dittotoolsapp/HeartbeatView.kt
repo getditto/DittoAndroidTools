@@ -3,11 +3,9 @@ package live.ditto.dittotoolsapp
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -15,6 +13,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import live.ditto.Ditto
 import live.ditto.DittoConnectionType
 import live.ditto.DittoPeer
@@ -37,19 +38,16 @@ fun ShowHeartbeatData(ditto: Ditto) {
             "deviceId" to "123abc"
         ),
         interval = 30000,
-        collectionName = "devices2",
-//        metaData = mapOf()
+        collectionName = "devices",
     )
 
-    // Cleanup when the composable is disposed
     DisposableEffect(Unit) {
-        // Start heartbeat and observe the data
-        val handler = startHeartbeat(ditto, config) {
-            heartbeatInfo = it
+        val job = CoroutineScope(Dispatchers.Main).launch {
+            startHeartbeat(ditto, config).collect { heartbeatInfo = it }
         }
 
         onDispose {
-            handler.removeCallbacksAndMessages(null)
+            job.cancel()
         }
     }
 
@@ -98,16 +96,14 @@ fun HeartbeatInfoCard(heartbeatInfo: HeartbeatInfo) {
 @Composable
 fun HeartbeatHeader(heartbeatInfo: HeartbeatInfo) {
     Column {
-        Text("Mesh ID: ${heartbeatInfo.id}")
-//        Text("Location ID: ${heartbeatInfo.id["locationId"]}")
-        // Parse the ISO-8601 string to LocalDateTime
+        Text("ID: ${heartbeatInfo.id}")
         val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
         val dateTime = LocalDateTime.parse(heartbeatInfo.lastUpdated, dateTimeFormatter)
         val customFormatter = DateTimeFormatter.ofPattern("hh:mm a MM/dd/yyyy")
         val formattedDateTime = dateTime.format(customFormatter)
         Text("Last Updated: $formattedDateTime")
         heartbeatInfo.presence?.let {
-            Text("Total Peers in Mesh: ${it.totalPeers}", color = Color.Black)
+            Text("remotePeersCount: ${it.remotePeersCount}", color = Color.Black)
         }
     }
 }
@@ -117,7 +113,6 @@ fun ConnectionInfo(connection: DittoPeer) {
     Column {
         Text("\nConnection: ${connection.deviceName}")
         Text(text = if (connection.isConnectedToDittoCloud) "Online" else "Offline")
-//        Text("Total Connections: ${connection.connections.size}")
         val connectionsMap = getConnectionTypeCount(connection = connection)
         Text("BT: ${connectionsMap["bt"]}")
         Text("P2PWifi: ${connectionsMap["p2pWifi"]}")
