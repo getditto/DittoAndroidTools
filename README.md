@@ -222,6 +222,105 @@ Maven:
 </dependency>
 ```
 
+### 2. Heartbeat
+
+The Ditto Heartbeat tool allows you to monitor, locally or remotely, the peers in your mesh.
+
+**Configure Heartbeat**
+
+There are three values you need to provide to the Heartbeat:
+1. Id/Id's - Provide all the Id's needed in order to identify a peer
+2. Interval - The frequency at which the Heartbeat will scrape the data
+3. Collection Name - The Ditto collection you want to add this data to
+
+There is a `HeartbeatConfig` data class you can use to construct your configuration.
+
+```kotlin
+// Provided with the Heartbeat tool
+data class HeartbeatConfig(
+    val id: Map<String, String>,
+    val interval: Long,
+    val collectionName: String,
+)
+
+// User defines the values here
+// Passed into Heartbeat tool
+  val config = HeartbeatConfig(
+      id: Map<<IdName>, <IdValue>>,
+      interval: Int,
+      collectionName: String
+  )
+
+// Provide the config and your Ditto instance to startHearbeat()
+startHeartbeat(ditto, config).collect { heartbeatInfo = it }
+```
+
+**User Interface**
+You will need to provide your own UI. You can see an example [here](https://github.com/getditto/DittoAndroidTools/blob/HeartBeatTool/app/src/main/java/live/ditto/dittotoolsapp/HeartbeatView.kt).
+
+There are two ways you can access the data:
+1. The Ditto collection you provided
+2. startHeartBeat() provides a callback with the data
+
+*Ditto Collection:*
+
+This is the model of the data and what you can use for reference
+```kotlin
+{
+    _id: {
+        *passed in by user + dittoPeerKey
+    },
+    interval: String,
+    remotePeersCount: Int,
+    lastUpdated: String (ISO-8601)
+    presence: {
+        <peerKey>: {
+            deviceName: String,
+            isConnectedToDittoCloud: Bool,
+            bluetooth: Int,
+            p2pWifi: Int,
+            lan: Int,
+        },
+        <peerKey>…,
+        …
+    }
+}
+```
+
+*Callback:*
+
+You will receive a `HeartbeatInfo` data class back
+```kotlin
+data class HeartbeatInfo(
+    val id: Map<String, String>,
+    val lastUpdated: String,
+    val presence: Presence?,
+)
+
+data class Presence(
+    val remotePeersCount: Int,
+    val peers: List<DittoPeer>,
+)
+```
+
+**Download**
+
+Gradle:
+```kotlin
+dependencies {
+  implementation 'live.ditto:dittoheartbeat:0.0.2'
+}
+```
+
+Maven:
+```
+<dependency>
+    <groupId>live.ditto.</groupId>
+    <artifactId>dittoheartbeat</artifactId>
+    <version>0.0.2</version>
+</dependency>
+```
+
 ## License
 
 MIT
