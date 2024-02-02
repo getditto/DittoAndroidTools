@@ -243,13 +243,17 @@ data class HeartbeatConfig(
     val collectionName: String,
 )
 
+// Example:
 // User defines the values here
 // Passed into Heartbeat tool
-  val config = HeartbeatConfig(
-      id: Map<<IdName>, <IdValue>>,
-      interval: Int,
-      collectionName: String
-  )
+val config = HeartbeatConfig(
+    id = mapOf(
+        "storeId" to "Tulsa, OK",
+        "deviceId" to "123abc"
+    ),
+    interval = 30000, //ms
+    collectionName = "devices",
+)
 
 // Provide the config and your Ditto instance to startHearbeat()
 startHeartbeat(ditto, config).collect { heartbeatInfo = it }
@@ -262,7 +266,7 @@ There are two ways you can access the data:
 1. The Ditto collection you provided
 2. startHeartBeat() provides a callback with the data
 
-*Ditto Collection:*
+*Ditto Collection*
 
 This is the model of the data and what you can use for reference
 ```kotlin
@@ -287,7 +291,7 @@ This is the model of the data and what you can use for reference
 }
 ```
 
-*Callback:*
+*Callback*
 
 You will receive a `HeartbeatInfo` data class back
 ```kotlin
