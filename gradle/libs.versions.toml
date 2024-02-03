@@ -8,7 +8,8 @@ androidx-compose = "2023.03.00"
 androidx-navigation = "2.5.3"
 androidx-test-ext = "1.1.5"
 androidx-webkit = "1.7.0"
-ditto = "4.0.1"
+datastorePreferences = "1.0.0"
+ditto = "4.5.2"
 live-ditto-databrowser = "0.0.2"
 live-ditto-exportlogs = "0.0.2"
 live-ditto-diskusage = "0.0.2"
@@ -28,6 +29,7 @@ androidx-compose-runtime-runtimeLivedata = { group = "androidx.compose.runtime",
 androidx-compose-ui-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-compose-ui-uiTooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-compose-ui-uiToolingPreview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-navigation-navigationCompose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext" }
 androidx-webkit-webkit = { group = "androidx.webkit", name = "webkit", version.ref = "androidx-webkit" }
