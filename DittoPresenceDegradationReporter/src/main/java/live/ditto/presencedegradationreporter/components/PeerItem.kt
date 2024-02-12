@@ -40,7 +40,9 @@ fun PeerItem(peer: Peer) {
                 fontWeight = FontWeight.Bold,
             )
 
-            Text(text = "Last Seen: ${peer.lastSeenFormatted}")
+            Text(text = stringResource(R.string.key, peer.key))
+
+            Text(text = stringResource(R.string.last_seen, peer.lastSeenFormatted))
 
             Divider(modifier = Modifier.padding(vertical = 4.dp))
             Transports(
@@ -88,6 +90,7 @@ private fun PeerItemConnectedPreview() {
                 ),
                 connected = true,
                 lastSeen = 0L,
+                key = "Key123"
             )
         )
     }
@@ -108,6 +111,7 @@ private fun PeerItemNotConnectedPreview() {
                 ),
                 connected = false,
                 lastSeen = 0L,
+                key = "Key123"
             )
         )
     }

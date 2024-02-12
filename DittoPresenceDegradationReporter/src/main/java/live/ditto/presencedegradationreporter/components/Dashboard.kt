@@ -177,7 +177,8 @@ private fun DashboardPreview() {
                     cloudConnections = 1
                 ),
                 connected = true,
-                lastSeen = 0L
+                lastSeen = 0L,
+                key = "Key123",
             ),
             remotePeers = listOf(
                 Peer(
@@ -189,7 +190,8 @@ private fun DashboardPreview() {
                         cloudConnections = 1
                     ),
                     connected = false,
-                    lastSeen = 0L
+                    lastSeen = 0L,
+                    key = "Key123",
                 ),
                 Peer(
                     name = "B",
@@ -200,7 +202,8 @@ private fun DashboardPreview() {
                         cloudConnections = 1
                     ),
                     connected = true,
-                    lastSeen = 0L
+                    lastSeen = 0L,
+                    key = "Key123",
                 )
             )
         )

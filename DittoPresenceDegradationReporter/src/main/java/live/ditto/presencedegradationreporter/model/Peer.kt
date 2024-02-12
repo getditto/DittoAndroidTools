@@ -8,6 +8,7 @@ data class Peer(
     val transportInfo: PeerTransportInfo,
     val connected: Boolean,
     val lastSeen: Long,
+    val key: String,
 ) {
     val lastSeenFormatted = GetDateFromTimestampUseCase().invoke(lastSeen)
 }
@@ -20,6 +21,7 @@ fun Peer.toMap() = mapOf(
     "cloudConnections" to transportInfo.cloudConnections.toString(),
     "connected" to connected.toString(),
     "lastSeen" to lastSeen.toString(),
+    "key" to key,
 )
 
 fun DittoDocument.toPeer() = Peer(
@@ -32,4 +34,5 @@ fun DittoDocument.toPeer() = Peer(
     ),
     connected = this["connected"].stringValue.toBoolean(),
     lastSeen = this["lastSeen"].stringValue.toLong(),
+    key = this["key"].stringValue,
 )

@@ -18,4 +18,6 @@
     <string name="report_api">Report Api:</string>
     <string name="new_session">New Session</string>
     <string name="session_started_at">Session started at:</string>
+    <string name="key">Key: %1$s</string>
+    <string name="last_seen">Last Seen: %1$s</string>
 </resources>
