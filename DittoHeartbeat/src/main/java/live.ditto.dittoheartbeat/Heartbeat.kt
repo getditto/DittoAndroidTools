@@ -3,6 +3,7 @@ package live.ditto.dittoheartbeat
 import live.ditto.Ditto
 import android.os.Handler
 import android.os.Looper
+import jdk.jshell.JShell.Subscription
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -12,11 +13,14 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import live.ditto.DittoConnectionType
 import live.ditto.DittoPeer
+import live.ditto.DittoSyncSubscription
 import java.math.BigInteger
 import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
+import java.util.concurrent.atomic.AtomicBoolean
 
 data class HeartbeatConfig(
     val id: Map<String, String>,
@@ -36,18 +40,31 @@ data class Presence(
 )
 
 var presence: Presence? = null
+var heartbeatSubscription: DittoSyncSubscription? = null
 
 fun startHeartbeat(ditto: Ditto, config: HeartbeatConfig): Flow<HeartbeatInfo> = flow {
-    while (true) {
-        delay(config.interval)
-        val timestamp = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.getDefault()).format(Date())
-        val info = HeartbeatInfo(
-            id = createCompositeId(config.id, ditto),
-            lastUpdated = timestamp,
-            presence = observePeers(ditto),
-        )
-        addToCollection(info, config, ditto)
-        emit(info)
+    val cancelable = AtomicBoolean(false)
+
+    if (heartbeatSubscription == null) {
+        heartbeatSubscription = ditto.sync.registerSubscription("SELECT * FROM ${config.collectionName}")
+    }
+
+    try {
+        while (!cancelable.get()) {
+            delay(config.interval)
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
+            dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+            val timestamp = dateFormat.format(Date())
+            val info = HeartbeatInfo(
+                id = createCompositeId(config.id, ditto),
+                lastUpdated = timestamp,
+                presence = observePeers(ditto),
+            )
+            addToCollection(info, config, ditto)
+            emit(info)
+        }
+    } finally {
+        heartbeatSubscription!!.close()
     }
 }
 
