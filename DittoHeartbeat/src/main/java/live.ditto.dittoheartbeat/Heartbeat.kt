@@ -1,25 +1,20 @@
 package live.ditto.dittoheartbeat
 
-import live.ditto.Ditto
-import android.os.Handler
-import android.os.Looper
-import jdk.jshell.JShell.Subscription
+import android.os.Build
+import androidx.annotation.RequiresApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import live.ditto.Ditto
 import live.ditto.DittoConnectionType
 import live.ditto.DittoPeer
 import live.ditto.DittoSyncSubscription
+import org.joda.time.DateTime
 import java.math.BigInteger
 import java.security.MessageDigest
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import java.util.TimeZone
 import java.util.concurrent.atomic.AtomicBoolean
 
 data class HeartbeatConfig(
@@ -42,6 +37,7 @@ data class Presence(
 var presence: Presence? = null
 var heartbeatSubscription: DittoSyncSubscription? = null
 
+@RequiresApi(Build.VERSION_CODES.O)
 fun startHeartbeat(ditto: Ditto, config: HeartbeatConfig): Flow<HeartbeatInfo> = flow {
     val cancelable = AtomicBoolean(false)
 
@@ -52,9 +48,7 @@ fun startHeartbeat(ditto: Ditto, config: HeartbeatConfig): Flow<HeartbeatInfo> =
     try {
         while (!cancelable.get()) {
             delay(config.interval)
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
-            dateFormat.timeZone = TimeZone.getTimeZone("UTC")
-            val timestamp = dateFormat.format(Date())
+            val timestamp = DateTime().toISOString()
             val info = HeartbeatInfo(
                 id = createCompositeId(config.id, ditto),
                 lastUpdated = timestamp,
@@ -144,3 +138,4 @@ fun getConnectionTypeCount(connection: DittoPeer): Map<String, Int> {
     }
     return mapOf("bt" to bt, "p2pWifi" to p2pWifi, "lan" to lan)
 }
+

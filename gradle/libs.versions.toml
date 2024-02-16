@@ -38,6 +38,7 @@ live-ditto-presenceviewer = { module = "live.ditto:dittopresenceviewer", version
 live-ditto-health = { module = "live.ditto:health", version.ref = "live-ditto-health" }
 live-ditto-ditto = { group = "live.ditto", name = "ditto", version.ref = "ditto" }
 junit-junit = { group = "junit", name = "junit", version.ref = "junit" }
+joda-time-joda-time = { group = "joda-time", name = "joda-time", version = "2.10.10" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }

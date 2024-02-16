@@ -97,11 +97,7 @@ fun HeartbeatInfoCard(heartbeatInfo: HeartbeatInfo) {
 fun HeartbeatHeader(heartbeatInfo: HeartbeatInfo) {
     Column {
         Text("ID: ${heartbeatInfo.id}")
-        val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-        val dateTime = LocalDateTime.parse(heartbeatInfo.lastUpdated, dateTimeFormatter)
-        val customFormatter = DateTimeFormatter.ofPattern("hh:mm a MM/dd/yyyy")
-        val formattedDateTime = dateTime.format(customFormatter)
-        Text("Last Updated: $formattedDateTime")
+        Text("Last Updated: $heartbeatInfo.lastUpdated")
         heartbeatInfo.presence?.let {
             Text("remotePeersCount: ${it.remotePeersCount}", color = Color.Black)
         }
