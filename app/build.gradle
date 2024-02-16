@@ -60,6 +60,7 @@ dependencies {
     implementation libs.live.ditto.presenceviewer
     implementation libs.live.ditto.diskusage
     implementation libs.live.ditto.health
+    implementation(project(":DittoPresenceDegradationReporter"))
 
     testImplementation libs.junit.junit
 }
