@@ -222,7 +222,7 @@ Maven:
 </dependency>
 ```
 
-### 5. Presence Degradation Reporter
+### 6. Presence Degradation Reporter
 Tracks the status of your mesh, allowing to define the minimum of required peers that needs to be connected.
 Exposes an API to notify when the condition of minimum required peers is not met.
 
