@@ -65,7 +65,7 @@ fun startHeartbeat(ditto: Ditto, config: HeartbeatConfig): Flow<HeartbeatInfo> =
 fun createCompositeId(configId: Map<String, String>, ditto: Ditto): Map<String, String> {
     val compositeId: MutableMap<String, String> = configId.toMutableMap()
     val presenceGraph = ditto.presence.graph
-    compositeId["dittoPeerKey"] = byteArrayToHash(presenceGraph.localPeer.peerKey)
+    compositeId["pk"] = byteArrayToHash(presenceGraph.localPeer.peerKey)
     return compositeId
 }
 
