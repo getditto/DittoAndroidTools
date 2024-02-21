@@ -306,6 +306,7 @@ data class HeartbeatInfo(
     val id: Map<String, String>,
     val lastUpdated: String,
     val presence: Presence?,
+    val metaData: Map<String, Any>?
 )
 
 data class Presence(

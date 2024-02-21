@@ -27,6 +27,7 @@ data class HeartbeatInfo(
     val id: Map<String, String>,
     val lastUpdated: String,
     val presence: Presence?,
+    val metaData: Map<String, Any>?
 )
 
 data class Presence(
@@ -53,6 +54,7 @@ fun startHeartbeat(ditto: Ditto, config: HeartbeatConfig): Flow<HeartbeatInfo> =
                 id = createCompositeId(config.id, ditto),
                 lastUpdated = timestamp,
                 presence = observePeers(ditto),
+                metaData = config.metaData
             )
             addToCollection(info, config, ditto)
             emit(info)
