@@ -232,6 +232,7 @@ There are three values you need to provide to the Heartbeat:
 1. Id/Id's - Provide all the Id's needed in order to identify a peer
 2. Interval - The frequency at which the Heartbeat will scrape the data
 3. Collection Name - The Ditto collection you want to add this data to
+4. Meta Data -  This field is optional
 
 There is a `HeartbeatConfig` data class you can use to construct your configuration.
 
@@ -241,6 +242,7 @@ data class HeartbeatConfig(
     val id: Map<String, String>,
     val interval: Long,
     val collectionName: String,
+    val metaData: Map<String, Any>?
 )
 
 // Example:
@@ -253,6 +255,9 @@ val config = HeartbeatConfig(
     ),
     interval = 30000, //ms
     collectionName = "devices",
+    metaData = mapOf(
+        "deviceType" to "KDS"
+    )
 )
 
 // Provide the config and your Ditto instance to startHearbeat()
@@ -273,11 +278,11 @@ This is the model of the data and what you can use for reference
 ```kotlin
 {
     _id: {
-        *passed in by user + dittoPeerKey
+        *passed in by user + <ditto peerKey>
     },
     interval: String,
     remotePeersCount: Int,
-    lastUpdated: String (ISO-8601)
+    lastUpdated: String (ISO-8601),
     presence: {
         <peerKey>: {
             deviceName: String,
@@ -288,7 +293,8 @@ This is the model of the data and what you can use for reference
         },
         <peerKey>…,
         …
-    }
+    },
+    metaData: {}
 }
 ```
 

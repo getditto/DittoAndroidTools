@@ -21,6 +21,7 @@ data class HeartbeatConfig(
     val id: Map<String, String>,
     val interval: Long,
     val collectionName: String,
+    val metaData: Map<String, Any>? = null
 )
 
 data class HeartbeatInfo(
@@ -87,17 +88,16 @@ fun observePeers(ditto: Ditto): Presence? {
 }
 val myCoroutineScope = CoroutineScope(Dispatchers.Main)
 fun addToCollection(info: HeartbeatInfo, config: HeartbeatConfig, ditto: Ditto) {
-
+    val metaData = config.metaData ?: emptyMap()
     val doc = mapOf(
         "_id" to info.id,
         "interval" to "${config.interval / 1000} sec",
         "remotePeersCount" to (info.presence?.remotePeersCount ?: 0),
         "lastUpdated" to info.lastUpdated,
-        "presence" to getConnections(info.presence)
+        "presence" to getConnections(info.presence),
+        "metaData" to metaData
     )
-
     val query = "INSERT INTO ${config.collectionName} DOCUMENTS (:doc) ON ID CONFLICT DO UPDATE"
-
     myCoroutineScope.launch {
         ditto.store.execute(query, mapOf("doc" to doc))
     }
