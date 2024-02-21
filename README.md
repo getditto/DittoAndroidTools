@@ -332,6 +332,44 @@ Maven:
 </dependency>
 ```
 
+### 6. Presence Degradation Reporter
+Tracks the status of your mesh, allowing to define the minimum of required peers that needs to be connected.
+Exposes an API to notify when the condition of minimum required peers is not met.
+
+```kotlin
+## UI Composable
+PresenceDegradationReporterScreen(ditto = ditto)
+```
+
+```kotlin
+## API
+ditto.presenceDegradationReporterFlow().collect { state ->
+    // state.settings
+    // state.localPeer
+    // state.remotePeers
+}
+```
+
+<img src="/Img/presencedegradationreporter.png" alt="Health" width="300">  
+
+**Download**
+
+Gradle:
+```kotlin
+dependencies {
+  implementation 'live.ditto:presencedegradationreporter:0.0.2'
+}
+```
+
+Maven:
+```
+<dependency>
+    <groupId>live.ditto</groupId>
+    <artifactId>presencedegradationreporter</artifactId>
+    <version>0.0.2</version>
+</dependency>
+```
+
 ## License
 
 MIT
