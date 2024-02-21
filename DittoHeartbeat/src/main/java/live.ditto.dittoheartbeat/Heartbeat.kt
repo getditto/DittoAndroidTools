@@ -13,8 +13,7 @@ import live.ditto.DittoConnectionType
 import live.ditto.DittoPeer
 import live.ditto.DittoSyncSubscription
 import org.joda.time.DateTime
-import java.math.BigInteger
-import java.security.MessageDigest
+import java.util.Base64
 import java.util.concurrent.atomic.AtomicBoolean
 
 data class HeartbeatConfig(
@@ -70,12 +69,10 @@ fun createCompositeId(configId: Map<String, String>, ditto: Ditto): Map<String, 
     return compositeId
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 fun byteArrayToHash(byteArray: ByteArray): String {
-    val md5 = MessageDigest.getInstance("md5")
-
-    return BigInteger(1, md5.digest(byteArray))
-        .toString(16)
-        .padStart(32, '0')
+    val base64String = Base64.getEncoder().encodeToString(byteArray)
+    return "pk:$base64String"
 }
 
 fun observePeers(ditto: Ditto): Presence? {
