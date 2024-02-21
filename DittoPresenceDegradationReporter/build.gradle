@@ -1,0 +1,31 @@
+plugins {
+    id "com.android.library"
+    id "org.jetbrains.kotlin.android"
+}
+
+ext.libraryGroupId = "live.ditto"
+ext.libraryArtifactId = "presencedegradationreporter"
+ext.libraryVersion = "0.0.2"
+
+apply from: "$rootProject.projectDir/gradle/deploy.gradle"
+apply from: "$rootProject.projectDir/gradle/android-common.gradle"
+
+android {
+    namespace "live.ditto.presencedegradationreporter"
+}
+
+dependencies {
+    androidTestImplementation libs.androidx.test.ext.junit
+
+    implementation libs.androidx.datastore.preferences
+    implementation libs.androidx.compose.material3.material3
+    implementation libs.androidx.compose.ui.ui
+    implementation libs.androidx.compose.ui.uiTooling
+    implementation libs.androidx.compose.ui.uiToolingPreview
+    implementation libs.androidx.navigation.navigationCompose
+    implementation libs.live.ditto.ditto
+
+    implementation platform(libs.androidx.compose.composeBom)
+
+    testImplementation libs.junit.junit
+}

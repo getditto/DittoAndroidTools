@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="expected_number_of_peers_in_the_mesh">Expected minimum number of peers in the mesh</string>
+    <string name="status">Status</string>
+    <string name="cancel">Cancel</string>
+    <string name="connected_to_cloud">Connected To Cloud</string>
+    <string name="not_connected_to_cloud">Not Connected To Cloud</string>
+    <string name="enabled">Enabled</string>
+    <string name="disabled">Disabled</string>
+    <string name="bt">BT: %1$s</string>
+    <string name="lan">LAN: %1$s</string>
+    <string name="p2p">P2P: %1$s</string>
+    <string name="cloud">CLOUD: %1$s</string>
+    <string name="connection_placeholder">--</string>
+    <string name="local_device">Local Device</string>
+    <string name="remote_devices">Remote Devices (%1$s/%2$s)</string>
+    <string name="expected_minimum_peers">Expected Minimum Peers:</string>
+    <string name="report_api">Report Api:</string>
+    <string name="new_session">New Session</string>
+    <string name="session_started_at">Session started at:</string>
+    <string name="key">Key: %1$s</string>
+    <string name="last_seen">Last Seen: %1$s</string>
+</resources>

@@ -39,6 +39,7 @@ import live.ditto.android.DefaultAndroidDittoDependencies
 import live.ditto.dittodatabrowser.DittoDataBrowser
 import live.ditto.dittotoolsapp.ui.theme.DittoToolsAppTheme
 import live.ditto.health.HealthScreen
+import live.ditto.presencedegradationreporter.PresenceDegradationReporterScreen
 import live.ditto.transports.DittoSyncPermissions
 
 class MainActivity : ComponentActivity() {
@@ -49,8 +50,7 @@ class MainActivity : ComponentActivity() {
             DittoToolsAppTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
                     var ditto: Ditto? by remember { mutableStateOf(null) }
                     var dittoError: String? by remember { mutableStateOf(null) }
@@ -124,8 +124,7 @@ private fun Root(ditto: Ditto) {
         NavHost(navController = navController, startDestination = "showViews") {
             composable("showViews") {
                 ShowViewsScreen(
-                    navController = navController,
-                    ditto = ditto
+                    navController = navController, ditto = ditto
                 )
             }
             composable("dataBrowser") { DittoDataBrowser(ditto = ditto) }
@@ -133,7 +132,7 @@ private fun Root(ditto: Ditto) {
             composable("presenceViewer") { DittoPresenceViewer(ditto = ditto) }
             composable("health") { HealthScreen() }
             composable("heartbeatInfo") { ShowHeartbeatData(ditto = ditto)}
-
+            composable("presencedegradationreporter") { PresenceDegradationReporterScreen(ditto = ditto) }
         }
     }
 }
@@ -148,8 +147,7 @@ private fun DittoError(text: String) {
                     .align(Alignment.Center)
             ) {
                 Text(
-                    text = "Ditto Error",
-                    fontWeight = FontWeight.Bold
+                    text = "Ditto Error", fontWeight = FontWeight.Bold
                 )
                 Divider(modifier = Modifier.padding(vertical = 4.dp))
                 Text(text = text)
