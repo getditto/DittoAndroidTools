@@ -19,8 +19,8 @@ import kotlinx.coroutines.launch
 import live.ditto.Ditto
 import live.ditto.DittoConnectionType
 import live.ditto.DittoPeer
-import live.ditto.dittoheartbeat.HeartbeatConfig
-import live.ditto.dittoheartbeat.HeartbeatInfo
+import live.ditto.dittoheartbeat.DittoHeartbeatConfig
+import live.ditto.dittoheartbeat.DittoHeartbeatInfo
 import live.ditto.dittoheartbeat.startHeartbeat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -29,16 +29,16 @@ import java.util.*
 @Composable
 fun ShowHeartbeatData(ditto: Ditto) {
 
-    var heartbeatInfo by remember { mutableStateOf<HeartbeatInfo?>(null) }
+    var heartbeatInfo by remember { mutableStateOf<DittoHeartbeatInfo?>(null) }
 
-    val config = HeartbeatConfig(
+    val config = DittoHeartbeatConfig(
         id = mapOf(
             "storeId" to "Tulsa, OK",
             "venueId" to "Food Truck",
             "deviceId" to "123abc"
         ),
-        interval = 30000,
-        collectionName = "devices",
+        secondsInterval = 30,
+        collectionName = "devices4",
     )
 
     DisposableEffect(Unit) {
@@ -74,7 +74,7 @@ fun ShowHeartbeatData(ditto: Ditto) {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HeartbeatInfoCard(heartbeatInfo: HeartbeatInfo) {
+fun HeartbeatInfoCard(heartbeatInfo: DittoHeartbeatInfo) {
     Column(
         modifier = Modifier
             .padding(16.dp)
@@ -82,10 +82,14 @@ fun HeartbeatInfoCard(heartbeatInfo: HeartbeatInfo) {
         HeartbeatHeader(heartbeatInfo)
 
         // Display presence information if available
-        heartbeatInfo.presence?.let {
-            LazyColumn {
-                items(it.peers) { connection ->
-                    ConnectionInfo(connection)
+        if (heartbeatInfo.remotePeersCount > 0) {
+            for (entry in heartbeatInfo.peerConnections) {
+                val connection = entry.value
+                if (connection is Map<*, *>) { // Check if connection is a Map
+                    @Suppress("UNCHECKED_CAST")
+                    val typedConnection = connection as Map<String, Any> // Type cast connection to Map<String, Any>
+                    ConnectionInfo(connection = typedConnection)
+                } else {
                 }
             }
         }
@@ -94,40 +98,25 @@ fun HeartbeatInfoCard(heartbeatInfo: HeartbeatInfo) {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HeartbeatHeader(heartbeatInfo: HeartbeatInfo) {
+fun HeartbeatHeader(heartbeatInfo: DittoHeartbeatInfo) {
     Column {
         Text("ID: ${heartbeatInfo.id}")
-        Text("Last Updated: $heartbeatInfo.lastUpdated")
-        heartbeatInfo.presence?.let {
-            Text("remotePeersCount: ${it.remotePeersCount}", color = Color.Black)
-        }
+        Text("SDK: ${heartbeatInfo.sdk}")
+        Text("Last Updated: ${heartbeatInfo.lastUpdated}")
+        Text("remotePeersCount: ${heartbeatInfo.remotePeersCount}", color = Color.Black)
     }
 }
 
 @Composable
-fun ConnectionInfo(connection: DittoPeer) {
+fun ConnectionInfo(connection: Map<String, Any>) {
     Column {
-        Text("\nConnection: ${connection.deviceName}")
-        Text(text = if (connection.isConnectedToDittoCloud) "Online" else "Offline")
-        val connectionsMap = getConnectionTypeCount(connection = connection)
-        Text("BT: ${connectionsMap["bt"]}")
-        Text("P2PWifi: ${connectionsMap["p2pWifi"]}")
-        Text("LAN: ${connectionsMap["lan"]}")
+        Text("\nConnection: ${connection["deviceName"]}")
+        Text("SDK: ${connection["sdk"]}")
+        Text(text = if (connection["isConnectedToDittoCloud"] as Boolean) "Online" else "Offline")
+        Text("BT: ${connection["bluetooth"]}")
+        Text("P2PWifi: ${connection["p2pWifi"]}")
+        Text("LAN: ${connection["lan"]}")
     }
 }
 
-fun getConnectionTypeCount(connection: DittoPeer): Map<String, Int> {
-    var bt = 0
-    var p2pWifi = 0
-    var lan = 0
-
-    connection.connections.forEach { connection ->
-        when (connection.connectionType) {
-            DittoConnectionType.Bluetooth -> bt += 1
-            DittoConnectionType.P2PWiFi -> p2pWifi += 1
-            DittoConnectionType.AccessPoint, DittoConnectionType.WebSocket -> lan += 1
-        }
-    }
-    return mapOf("bt" to bt, "p2pWifi" to p2pWifi, "lan" to lan)
-}
 
