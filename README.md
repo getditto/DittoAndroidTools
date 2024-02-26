@@ -234,11 +234,11 @@ There are three values you need to provide to the Heartbeat:
 3. Collection Name - The Ditto collection you want to add this data to
 4. Meta Data -  This field is optional
 
-There is a `HeartbeatConfig` data class you can use to construct your configuration.
+There is a `DittoHeartbeatConfig` data class you can use to construct your configuration.
 
 ```kotlin
 // Provided with the Heartbeat tool
-data class HeartbeatConfig(
+data class DittoHeartbeatConfig(
     val id: Map<String, String>,
     val interval: Long,
     val collectionName: String,
@@ -248,7 +248,7 @@ data class HeartbeatConfig(
 // Example:
 // User defines the values here
 // Passed into Heartbeat tool
-val config = HeartbeatConfig(
+val config = DittoHeartbeatConfig(
     id = mapOf(
         "storeId" to "Tulsa, OK",
         "deviceId" to "123abc"
@@ -286,6 +286,7 @@ This is the model of the data and what you can use for reference
     presence: {
         <peerKey>: {
             deviceName: String,
+            sdk: String,
             isConnectedToDittoCloud: Bool,
             bluetooth: Int,
             p2pWifi: Int,
@@ -302,16 +303,14 @@ This is the model of the data and what you can use for reference
 
 You will receive a `HeartbeatInfo` data class back
 ```kotlin
-data class HeartbeatInfo(
+data class DittoHeartbeatInfo(
     val id: Map<String, String>,
     val lastUpdated: String,
-    val presence: Presence?,
-    val metaData: Map<String, Any>?
-)
-
-data class Presence(
+    val metaData: Map<String, Any>?,
+    val secondsInterval: Int,
     val remotePeersCount: Int,
-    val peers: List<DittoPeer>,
+    val peerConnections: Map<String, Any>,
+    val sdk: String
 )
 ```
 

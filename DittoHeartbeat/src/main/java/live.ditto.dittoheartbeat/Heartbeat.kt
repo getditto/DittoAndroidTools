@@ -16,30 +16,27 @@ import org.joda.time.DateTime
 import java.util.Base64
 import java.util.concurrent.atomic.AtomicBoolean
 
-data class HeartbeatConfig(
+data class DittoHeartbeatConfig(
     val id: Map<String, String>,
-    val interval: Long,
+    val secondsInterval: Int,
     val collectionName: String,
     val metaData: Map<String, Any>? = null
 )
 
-data class HeartbeatInfo(
+data class DittoHeartbeatInfo(
     val id: Map<String, String>,
     val lastUpdated: String,
-    val presence: Presence?,
-    val metaData: Map<String, Any>?
-)
-
-data class Presence(
+    val metaData: Map<String, Any>?,
+    val secondsInterval: Int,
     val remotePeersCount: Int,
-    val peers: List<DittoPeer>,
+    val peerConnections: Map<String, Any>,
+    val sdk: String
 )
 
-var presence: Presence? = null
 var heartbeatSubscription: DittoSyncSubscription? = null
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun startHeartbeat(ditto: Ditto, config: HeartbeatConfig): Flow<HeartbeatInfo> = flow {
+fun startHeartbeat(ditto: Ditto, config: DittoHeartbeatConfig): Flow<DittoHeartbeatInfo> = flow {
     val cancelable = AtomicBoolean(false)
 
     if (heartbeatSubscription == null) {
@@ -48,14 +45,21 @@ fun startHeartbeat(ditto: Ditto, config: HeartbeatConfig): Flow<HeartbeatInfo> =
 
     try {
         while (!cancelable.get()) {
-            delay(config.interval)
+            delay((config.secondsInterval * 1000L))
             val timestamp = DateTime().toISOString()
-            val info = HeartbeatInfo(
-                id = createCompositeId(config.id, ditto),
-                lastUpdated = timestamp,
-                presence = observePeers(ditto),
-                metaData = config.metaData
-            )
+            val presenceData = observePeers(ditto)
+
+            val info =
+                DittoHeartbeatInfo(
+                    id = createCompositeId(config.id, ditto),
+                    lastUpdated = timestamp,
+                    peerConnections = getConnections(presenceData, ditto) ,
+                    metaData = config.metaData,
+                    remotePeersCount = presenceData?.size ?: 0,
+                    secondsInterval = config.secondsInterval,
+                    sdk = ditto.sdkVersion
+                )
+
             addToCollection(info, config, ditto)
             emit(info)
         }
@@ -77,24 +81,22 @@ fun byteArrayToHash(byteArray: ByteArray): String {
     return "pk:$base64String"
 }
 
-fun observePeers(ditto: Ditto): Presence? {
+fun observePeers(ditto: Ditto): List<DittoPeer>? {
     val presenceGraph = ditto.presence.graph
-    val remotePeersCount = presenceGraph.remotePeers.size
-    val connectionsList = presenceGraph.remotePeers
-    presence = Presence(remotePeersCount, connectionsList)
-
-    return presence
+    return presenceGraph.remotePeers
 }
+
 val myCoroutineScope = CoroutineScope(Dispatchers.Main)
-fun addToCollection(info: HeartbeatInfo, config: HeartbeatConfig, ditto: Ditto) {
+fun addToCollection(info: DittoHeartbeatInfo, config: DittoHeartbeatConfig, ditto: Ditto) {
     val metaData = config.metaData ?: emptyMap()
     val doc = mapOf(
         "_id" to info.id,
-        "interval" to "${config.interval / 1000} sec",
-        "remotePeersCount" to (info.presence?.remotePeersCount ?: 0),
+        "secondsInterval" to info.secondsInterval,
+        "remotePeersCount" to (info.remotePeersCount),
         "lastUpdated" to info.lastUpdated,
-        "presence" to getConnections(info.presence),
-        "metaData" to metaData
+        "peerConnections" to info.peerConnections,
+        "metaData" to metaData,
+        "sdk" to info.sdk
     )
     val query = "INSERT INTO ${config.collectionName} DOCUMENTS (:doc) ON ID CONFLICT DO UPDATE"
     myCoroutineScope.launch {
@@ -102,15 +104,16 @@ fun addToCollection(info: HeartbeatInfo, config: HeartbeatConfig, ditto: Ditto) 
     }
 }
 
-fun getConnections(presence: Presence?): Map<String, Any> {
+fun getConnections(peerConnections: List<DittoPeer>?, ditto: Ditto): Map<String, Any> {
 
     val connectionsMap: MutableMap<String, Any> = mutableMapOf()
 
-    presence?.peers?.forEach { connection ->
+    peerConnections?.forEach { connection ->
         val connectionsTypeMap = getConnectionTypeCount(connection = connection)
 
         val connectionMap: Map<String, Any?> = mapOf(
             "deviceName" to connection.deviceName,
+            "sdk" to ditto.sdkVersion,
             "isConnectedToDittoCloud" to connection.isConnectedToDittoCloud,
             "bluetooth" to connectionsTypeMap["bt"],
             "p2pWifi" to connectionsTypeMap["p2pWifi"],
