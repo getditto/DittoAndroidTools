@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="disk_usage">Disk Usage</string>
+    <string name="total">Total</string>
+</resources>

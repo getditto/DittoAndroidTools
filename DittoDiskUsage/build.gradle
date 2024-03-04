@@ -17,8 +17,11 @@ android {
 dependencies {
     androidTestImplementation libs.androidx.test.ext.junit
 
+    debugImplementation libs.androidx.compose.ui.uiTooling
+
     implementation libs.androidx.compose.material3.material3
     implementation libs.androidx.compose.ui.ui
+    implementation libs.androidx.compose.ui.uiToolingPreview
     implementation libs.androidx.navigation.navigationCompose
     implementation libs.live.ditto.ditto
 
