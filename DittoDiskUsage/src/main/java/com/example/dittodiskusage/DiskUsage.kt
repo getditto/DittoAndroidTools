@@ -31,3 +31,8 @@ fun DiskUsageScreen() {
     DiskUsageView(viewModel = viewModel)
 }
 
+data class DiskUsage(
+    val relativePath: String = "ditto/ditto_store",
+    val sizeInBytes: Int = 0,
+    val size: String = "Calculating...",
+)
