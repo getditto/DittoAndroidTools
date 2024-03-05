@@ -6,9 +6,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FolderZip
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -16,14 +21,21 @@ import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import live.ditto.dittodiskusage.R
+import live.ditto.dittoexportlogs.ExportLogs
+
 
 private val ScreenTypography = Typography()
 
@@ -36,40 +48,37 @@ fun DiskUsageView(
 }
 
 @Composable
-private fun Item(
-    leftText: String,
-    rightText: String,
-    style: TextStyle,
+private fun DiskUsageView(
+    uiState: DiskUsageState,
 ) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = leftText,
-            style = style
-        )
+    var isExportLogsOpen by remember { mutableStateOf(false) }
 
-        Spacer(modifier = Modifier.weight(1f))
-
-        Text(
-            text = rightText,
-            style = style
-        )
-    }
-}
-
-@Composable
-private fun DiskUsageView(uiState: DiskUsageState) {
     Surface {
         Column(modifier = Modifier.padding(horizontal = 16.dp)) {
             Spacer(modifier = Modifier.height(24.dp))
 
-            Text(
-                text = stringResource(R.string.disk_usage),
-                style = ScreenTypography.headlineLarge,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
+            Row {
+                Text(
+                    text = stringResource(R.string.disk_usage),
+                    style = ScreenTypography.headlineLarge,
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                IconButton(
+                    enabled = !isExportLogsOpen,
+                    onClick = {
+                        isExportLogsOpen = true
+                    }
+                ) {
+                    Icon(
+                        painter = rememberVectorPainter(image = Icons.Default.FolderZip),
+                        contentDescription = null,
+                        modifier = Modifier.size(44.dp),
+                        tint = Color.DarkGray
+                    )
+                }
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -94,7 +103,39 @@ private fun DiskUsageView(uiState: DiskUsageState) {
                     )
                 }
             }
+
+            if (isExportLogsOpen) {
+                ExportLogs(
+                    onDismiss = {
+                        isExportLogsOpen = false
+                    }
+                )
+            }
         }
+    }
+}
+
+@Composable
+private fun Item(
+    leftText: String,
+    rightText: String,
+    style: TextStyle,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = leftText,
+            style = style
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Text(
+            text = rightText,
+            style = style
+        )
     }
 }
 
@@ -139,8 +180,8 @@ private fun DiskUsageViewPreview() {
                     DiskUsage(size = "200"),
                     DiskUsage(size = "200"),
                     DiskUsage(size = "200"),
-                )
-            )
+                ),
+            ),
         )
     }
 }
