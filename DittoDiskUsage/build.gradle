@@ -19,7 +19,6 @@ dependencies {
 
     debugImplementation libs.androidx.compose.ui.uiTooling
 
-    implementation libs.androidx.compose.material.iconsExtended
     implementation libs.androidx.compose.material3.material3
     implementation libs.androidx.compose.ui.ui
     implementation libs.androidx.compose.ui.uiToolingPreview
