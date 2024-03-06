@@ -1,16 +1,24 @@
 package com.example.dittodiskusage
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import live.ditto.DiskUsageItem
+import live.ditto.android.DefaultAndroidDittoDependencies
+import live.ditto.exporter.ZipFolderUseCase
+import java.io.File
 import java.text.DecimalFormat
 import kotlin.math.log10
 import kotlin.math.pow
 
-class DiskUsageViewModel : ViewModel() {
+class DiskUsageViewModel(
+    private val zipFolderUseCase: ZipFolderUseCase = ZipFolderUseCase()
+) : ViewModel() {
     /* Private mutable state */
     private val _uiState = MutableStateFlow(DiskUsageState())
 
@@ -49,5 +57,18 @@ class DiskUsageViewModel : ViewModel() {
                 children = children,
             )
         }
+    }
+
+    suspend fun exportButtonOnClick(applicationContext: Context): File {
+        val dittoDependencies = DefaultAndroidDittoDependencies(applicationContext)
+        val inputDirectory = File(dittoDependencies.persistenceDirectory())
+        val outputZipFile = File.createTempFile("ditto_", ".zip")
+
+        zipFolderUseCase(
+            inputDirectory = inputDirectory,
+            outputZipFile = outputZipFile
+        )
+
+        return outputZipFile
     }
 }

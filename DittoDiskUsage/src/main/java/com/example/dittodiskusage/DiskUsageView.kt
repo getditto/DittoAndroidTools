@@ -28,13 +28,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import live.ditto.dittodiskusage.R
-import live.ditto.dittoexportlogs.ExportLogs
+import live.ditto.exporter.ExportDialog
+import java.io.File
 
 
 private val ScreenTypography = Typography()
@@ -44,14 +46,22 @@ fun DiskUsageView(
     viewModel: DiskUsageViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    DiskUsageView(uiState = uiState)
+    val context = LocalContext.current
+
+    DiskUsageView(
+        uiState = uiState,
+        fileProvider = {
+            viewModel.exportButtonOnClick(context.applicationContext)
+        },
+    )
 }
 
 @Composable
 private fun DiskUsageView(
     uiState: DiskUsageState,
+    fileProvider: suspend () -> File,
 ) {
-    var isExportLogsOpen by remember { mutableStateOf(false) }
+    var isExportDialogOpen by remember { mutableStateOf(false) }
 
     Surface {
         Column(modifier = Modifier.padding(horizontal = 16.dp)) {
@@ -66,10 +76,8 @@ private fun DiskUsageView(
                 Spacer(modifier = Modifier.weight(1f))
 
                 IconButton(
-                    enabled = !isExportLogsOpen,
-                    onClick = {
-                        isExportLogsOpen = true
-                    }
+                    enabled = !isExportDialogOpen,
+                    onClick = { isExportDialogOpen = true }
                 ) {
                     Icon(
                         painter = rememberVectorPainter(image = Icons.Default.FolderZip),
@@ -104,11 +112,15 @@ private fun DiskUsageView(
                 }
             }
 
-            if (isExportLogsOpen) {
-                ExportLogs(
-                    onDismiss = {
-                        isExportLogsOpen = false
-                    }
+            if (isExportDialogOpen) {
+                ExportDialog(
+                    title = stringResource(R.string.export_ditto_directory),
+                    text = stringResource(R.string.do_you_want_to_export_ditto_directory),
+                    confirmText = stringResource(R.string.export),
+                    cancelText = stringResource(R.string.cancel),
+                    fileProvider = fileProvider,
+                    mimeType = stringResource(R.string.application_x_zip),
+                    onDismiss = { isExportDialogOpen = false }
                 )
             }
         }
@@ -182,6 +194,7 @@ private fun DiskUsageViewPreview() {
                     DiskUsage(size = "200"),
                 ),
             ),
+            fileProvider = { File("") }
         )
     }
 }
