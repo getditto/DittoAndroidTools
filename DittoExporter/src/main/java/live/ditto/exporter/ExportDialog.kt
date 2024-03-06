@@ -20,13 +20,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toFile
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileInputStream
 
 /**
- * A customized AlertDialog to export the given [file]
+ * A customized AlertDialog to export the given [fileProvider]
  *
  * @param title: Dialog title
  * @param text: Dialog text
