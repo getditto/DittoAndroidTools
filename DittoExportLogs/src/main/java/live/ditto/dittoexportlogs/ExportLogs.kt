@@ -1,52 +1,24 @@
 package live.ditto.dittoexportlogs
 
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts.CreateDocument
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import live.ditto.DittoLogger
-import java.io.FileInputStream
+import androidx.compose.ui.res.stringResource
+import live.ditto.exporter.ExportDialog
 import java.nio.file.Path
 
 @Composable
 fun ExportLogs(onDismiss: () -> Unit) {
-    val context = LocalContext.current
-    val exportLauncher = rememberLauncherForActivityResult(CreateDocument("application/zip")) { uri ->
-        uri?.let {
-            val inputStream = FileInputStream(Config.zippedLogsFile.toFile())
-            context.contentResolver.openOutputStream(uri)?.use { outputStream ->
-                inputStream.copyTo(outputStream)
-            }
-        }
-        onDismiss()
-    }
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Export Logs") },
-        text = { Text("Do you want to export logs?") },
-        confirmButton = {
-            Button(onClick = {
-                val zippedLogsFile = getZippedLogs()
-                zippedLogsFile.let {
-                    exportLauncher.launch(it.fileName.toString())
-                }
-            }) {
-                Text("Export")
-            }
-        },
-        dismissButton = {
-            Button(onClick = onDismiss) {
-                Text("Cancel")
-            }
-        }
+    ExportDialog(
+        title = stringResource(R.string.export_logs),
+        text = stringResource(R.string.do_you_want_to_export_logs),
+        confirmText = stringResource(R.string.export),
+        cancelText = stringResource(R.string.cancel),
+        fileProvider = { getZippedLogs().toFile() },
+        mimeType = stringResource(R.string.application_x_zip),
+        onDismiss = onDismiss
     )
 }
 
-fun getZippedLogs(): Path {
+private fun getZippedLogs(): Path {
     return DittoLogManager.createLogsZip()
 }
 

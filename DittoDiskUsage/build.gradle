@@ -24,6 +24,7 @@ dependencies {
     implementation libs.androidx.compose.ui.uiToolingPreview
     implementation libs.androidx.navigation.navigationCompose
     implementation libs.live.ditto.ditto
+    implementation project(":DittoExporter")
 
     implementation platform(libs.androidx.compose.composeBom)
 

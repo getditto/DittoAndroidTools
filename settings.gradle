@@ -16,6 +16,7 @@ rootProject.name = "DittoToolsApp"
 include ':app'
 include ':DittoDataBrowser'
 include ':DittoDiskUsage'
+include ':DittoExporter'
 include ':DittoExportLogs'
 include ':DittoPresenceViewer'
 include ':DittoHealth'

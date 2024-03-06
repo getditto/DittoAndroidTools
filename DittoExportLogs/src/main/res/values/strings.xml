@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="export_logs">Export Logs</string>
+    <string name="do_you_want_to_export_logs">Do you want to export logs?</string>
+    <string name="export">Export</string>
+    <string name="cancel">Cancel</string>
+    <string name="application_x_zip">application/x-zip</string>
+</resources>
