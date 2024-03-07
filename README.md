@@ -222,6 +222,116 @@ Maven:
 </dependency>
 ```
 
+### 6. Heartbeat
+
+The Ditto Heartbeat tool allows you to monitor, locally or remotely, the peers in your mesh.
+
+**Configure Heartbeat**
+
+There are three values you need to provide to the Heartbeat:
+1. Id/Id's - Provide all the Id's needed in order to identify a peer
+2. Interval - The frequency at which the Heartbeat will scrape the data
+3. Collection Name - The Ditto collection you want to add this data to
+4. Meta Data -  This field is optional
+
+There is a `DittoHeartbeatConfig` data class you can use to construct your configuration.
+
+```kotlin
+// Provided with the Heartbeat tool
+data class DittoHeartbeatConfig(
+    val id: Map<String, String>,
+    val interval: Long,
+    val collectionName: String,
+    val metaData: Map<String, Any>?
+)
+
+// Example:
+// User defines the values here
+// Passed into Heartbeat tool
+val config = DittoHeartbeatConfig(
+    id = mapOf(
+        "storeId" to "Tulsa, OK",
+        "deviceId" to "123abc"
+    ),
+    interval = 30000, //ms
+    collectionName = "devices",
+    metaData = mapOf(
+        "deviceType" to "KDS"
+    )
+)
+
+// Provide the config and your Ditto instance to startHearbeat()
+startHeartbeat(ditto, config).collect { heartbeatInfo = it }
+```
+
+**User Interface**
+
+You will need to provide your own UI. You can see an example [here](https://github.com/getditto/DittoAndroidTools/blob/HeartBeatTool/app/src/main/java/live/ditto/dittotoolsapp/HeartbeatView.kt).
+
+There are two ways you can access the data:
+1. The Ditto collection you provided
+2. startHeartBeat() provides a callback with the data
+
+**Ditto Collection:**
+
+This is the model of the data and what you can use for reference
+```kotlin
+{
+    _id: {
+        *passed in by user + <ditto peerKey>
+    },
+    interval: String,
+    remotePeersCount: Int,
+    lastUpdated: String (ISO-8601),
+    presence: {
+        <peerKey>: {
+            deviceName: String,
+            sdk: String,
+            isConnectedToDittoCloud: Bool,
+            bluetooth: Int,
+            p2pWifi: Int,
+            lan: Int,
+        },
+        <peerKey>…,
+        …
+    },
+    metaData: {}
+}
+```
+
+**Callback:**
+
+You will receive a `HeartbeatInfo` data class back
+```kotlin
+data class DittoHeartbeatInfo(
+    val id: Map<String, String>,
+    val lastUpdated: String,
+    val metaData: Map<String, Any>?,
+    val secondsInterval: Int,
+    val remotePeersCount: Int,
+    val peerConnections: Map<String, Any>,
+    val sdk: String
+)
+```
+
+**Download**
+
+Gradle:
+```kotlin
+dependencies {
+  implementation 'live.ditto:dittoheartbeat:0.0.2'
+}
+```
+
+Maven:
+```
+<dependency>
+    <groupId>live.ditto.</groupId>
+    <artifactId>dittoheartbeat</artifactId>
+    <version>0.0.2</version>
+</dependency>
+```
+
 ### 6. Presence Degradation Reporter
 Tracks the status of your mesh, allowing to define the minimum of required peers that needs to be connected.
 Exposes an API to notify when the condition of minimum required peers is not met.
