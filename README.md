@@ -283,7 +283,8 @@ This is the model of the data and what you can use for reference
     interval: String,
     remotePeersCount: Int,
     lastUpdated: String (ISO-8601),
-    presence: {
+    sdk: String,
+    peerConnections: {
         <peerKey>: {
             deviceName: String,
             sdk: String,
