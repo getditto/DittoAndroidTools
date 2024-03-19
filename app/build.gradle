@@ -45,7 +45,6 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':DittoHeartbeat')
     androidTestImplementation libs.androidx.test.ext.junit
 
     implementation libs.androidx.compose.material3.material3
@@ -59,6 +58,7 @@ dependencies {
     implementation libs.live.ditto.databrowser
     implementation libs.live.ditto.exportlogs
     implementation libs.live.ditto.presenceviewer
+    implementation libs.live.ditto.heartbeat
 
     // TODO: Use maven version once this ticket is done
     //       https://github.com/getditto/DittoAndroidTools/issues/31
