@@ -17,19 +17,20 @@ import java.util.Base64
 import java.util.concurrent.atomic.AtomicBoolean
 
 data class DittoHeartbeatConfig(
-    val id: Map<String, String>,
+    //remove:
+//    val id: Map<String, String>,
     val secondsInterval: Int,
     val collectionName: String,
     val metaData: Map<String, Any>? = null
 )
 
 data class DittoHeartbeatInfo(
-    val id: Map<String, String>,
+    val id: String,
     val lastUpdated: String,
     val metaData: Map<String, Any>?,
     val secondsInterval: Int,
-    val remotePeersCount: Int,
-    val peerConnections: Map<String, Any>,
+    val presenceSnapshotDirectlyConnectedPeersCount: Int,
+    val presenceSnapshotDirectlyConnectedPeers: Map<String, Any>,
     val sdk: String
 )
 
@@ -51,11 +52,11 @@ fun startHeartbeat(ditto: Ditto, config: DittoHeartbeatConfig): Flow<DittoHeartb
 
             val info =
                 DittoHeartbeatInfo(
-                    id = createCompositeId(config.id, ditto),
+                    id = byteArrayToHash(ditto.presence.graph.localPeer.peerKey),
                     lastUpdated = timestamp,
-                    peerConnections = getConnections(presenceData, ditto) ,
+                    presenceSnapshotDirectlyConnectedPeers = getConnections(presenceData, ditto) ,
                     metaData = config.metaData,
-                    remotePeersCount = presenceData?.size ?: 0,
+                    presenceSnapshotDirectlyConnectedPeersCount = presenceData?.size ?: 0,
                     secondsInterval = config.secondsInterval,
                     sdk = ditto.sdkVersion
                 )
@@ -68,12 +69,13 @@ fun startHeartbeat(ditto: Ditto, config: DittoHeartbeatConfig): Flow<DittoHeartb
     }
 }
 
-fun createCompositeId(configId: Map<String, String>, ditto: Ditto): Map<String, String> {
-    val compositeId: MutableMap<String, String> = configId.toMutableMap()
-    val presenceGraph = ditto.presence.graph
-    compositeId["pk"] = byteArrayToHash(presenceGraph.localPeer.peerKey)
-    return compositeId
-}
+//remove:
+//fun createCompositeId(configId: Map<String, String>, ditto: Ditto): Map<String, String> {
+//    val compositeId: MutableMap<String, String> = configId.toMutableMap()
+//    val presenceGraph = ditto.presence.graph
+//    compositeId["pk"] = byteArrayToHash(presenceGraph.localPeer.peerKey)
+//    return compositeId
+//}
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun byteArrayToHash(byteArray: ByteArray): String {
@@ -92,9 +94,9 @@ fun addToCollection(info: DittoHeartbeatInfo, config: DittoHeartbeatConfig, ditt
     val doc = mapOf(
         "_id" to info.id,
         "secondsInterval" to info.secondsInterval,
-        "remotePeersCount" to (info.remotePeersCount),
+        "presenceSnapshotDirectlyConnectedPeersCount" to (info.presenceSnapshotDirectlyConnectedPeersCount),
         "lastUpdated" to info.lastUpdated,
-        "peerConnections" to info.peerConnections,
+        "presenceSnapshotDirectlyConnectedPeers" to info.presenceSnapshotDirectlyConnectedPeers,
         "metaData" to metaData,
         "sdk" to info.sdk
     )
@@ -104,11 +106,11 @@ fun addToCollection(info: DittoHeartbeatInfo, config: DittoHeartbeatConfig, ditt
     }
 }
 
-fun getConnections(peerConnections: List<DittoPeer>?, ditto: Ditto): Map<String, Any> {
+fun getConnections(presenceSnapshotDirectlyConnectedPeers: List<DittoPeer>?, ditto: Ditto): Map<String, Any> {
 
     val connectionsMap: MutableMap<String, Any> = mutableMapOf()
 
-    peerConnections?.forEach { connection ->
+    presenceSnapshotDirectlyConnectedPeers?.forEach { connection ->
         val connectionsTypeMap = getConnectionTypeCount(connection = connection)
 
         val connectionMap: Map<String, Any?> = mapOf(
