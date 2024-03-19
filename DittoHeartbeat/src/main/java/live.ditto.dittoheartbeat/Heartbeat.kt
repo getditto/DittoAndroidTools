@@ -17,8 +17,6 @@ import java.util.Base64
 import java.util.concurrent.atomic.AtomicBoolean
 
 data class DittoHeartbeatConfig(
-    //remove:
-//    val id: Map<String, String>,
     val secondsInterval: Int,
     val collectionName: String,
     val metaData: Map<String, Any>? = null
@@ -68,14 +66,6 @@ fun startHeartbeat(ditto: Ditto, config: DittoHeartbeatConfig): Flow<DittoHeartb
         heartbeatSubscription!!.close()
     }
 }
-
-//remove:
-//fun createCompositeId(configId: Map<String, String>, ditto: Ditto): Map<String, String> {
-//    val compositeId: MutableMap<String, String> = configId.toMutableMap()
-//    val presenceGraph = ditto.presence.graph
-//    compositeId["pk"] = byteArrayToHash(presenceGraph.localPeer.peerKey)
-//    return compositeId
-//}
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun byteArrayToHash(byteArray: ByteArray): String {
