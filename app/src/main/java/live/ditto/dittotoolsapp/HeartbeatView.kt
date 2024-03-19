@@ -32,11 +32,6 @@ fun ShowHeartbeatData(ditto: Ditto) {
     var heartbeatInfo by remember { mutableStateOf<DittoHeartbeatInfo?>(null) }
 
     val config = DittoHeartbeatConfig(
-        id = mapOf(
-            "storeId" to "Tulsa, OK",
-            "venueId" to "Food Truck",
-            "deviceId" to "123abc"
-        ),
         secondsInterval = 30,
         collectionName = "devices4",
     )
@@ -82,8 +77,8 @@ fun HeartbeatInfoCard(heartbeatInfo: DittoHeartbeatInfo) {
         HeartbeatHeader(heartbeatInfo)
 
         // Display presence information if available
-        if (heartbeatInfo.remotePeersCount > 0) {
-            for (entry in heartbeatInfo.peerConnections) {
+        if (heartbeatInfo.presenceSnapshotDirectlyConnectedPeersCount > 0) {
+            for (entry in heartbeatInfo.presenceSnapshotDirectlyConnectedPeers) {
                 val connection = entry.value
                 if (connection is Map<*, *>) { // Check if connection is a Map
                     @Suppress("UNCHECKED_CAST")
@@ -103,7 +98,7 @@ fun HeartbeatHeader(heartbeatInfo: DittoHeartbeatInfo) {
         Text("ID: ${heartbeatInfo.id}")
         Text("SDK: ${heartbeatInfo.sdk}")
         Text("Last Updated: ${heartbeatInfo.lastUpdated}")
-        Text("remotePeersCount: ${heartbeatInfo.remotePeersCount}", color = Color.Black)
+        Text("remotePeersCount: ${heartbeatInfo.presenceSnapshotDirectlyConnectedPeersCount}", color = Color.Black)
     }
 }
 
