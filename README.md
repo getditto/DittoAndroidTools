@@ -239,7 +239,6 @@ There is a `DittoHeartbeatConfig` data class you can use to construct your confi
 ```kotlin
 // Provided with the Heartbeat tool
 data class DittoHeartbeatConfig(
-    val id: Map<String, String>,
     val interval: Long,
     val collectionName: String,
     val metaData: Map<String, Any>?
@@ -249,11 +248,7 @@ data class DittoHeartbeatConfig(
 // User defines the values here
 // Passed into Heartbeat tool
 val config = DittoHeartbeatConfig(
-    id = mapOf(
-        "storeId" to "Tulsa, OK",
-        "deviceId" to "123abc"
-    ),
-    interval = 30000, //ms
+    interval = 30, //seconds
     collectionName = "devices",
     metaData = mapOf(
         "deviceType" to "KDS"
@@ -277,14 +272,12 @@ There are two ways you can access the data:
 This is the model of the data and what you can use for reference
 ```kotlin
 {
-    _id: {
-        *passed in by user + <ditto peerKey>
-    },
-    interval: String,
-    remotePeersCount: Int,
+    _id: <ditto peerKey>,
+    secondsInterval: String,
+    presenceSnapshotDirectlyConnectedPeersCount: Int,
     lastUpdated: String (ISO-8601),
     sdk: String,
-    peerConnections: {
+    presenceSnapshotDirectlyConnectedPeers: {
         <peerKey>: {
             deviceName: String,
             sdk: String,
@@ -305,12 +298,12 @@ This is the model of the data and what you can use for reference
 You will receive a `HeartbeatInfo` data class back
 ```kotlin
 data class DittoHeartbeatInfo(
-    val id: Map<String, String>,
+    val id: String,
     val lastUpdated: String,
     val metaData: Map<String, Any>?,
     val secondsInterval: Int,
-    val remotePeersCount: Int,
-    val peerConnections: Map<String, Any>,
+    val presenceSnapshotDirectlyConnectedPeersCount: Int,
+    val presenceSnapshotDirectlyConnectedPeers: Map<String, Any>,
     val sdk: String
 )
 ```
