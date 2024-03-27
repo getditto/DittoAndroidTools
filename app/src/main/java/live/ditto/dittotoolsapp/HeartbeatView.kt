@@ -32,8 +32,7 @@ fun ShowHeartbeatData(ditto: Ditto) {
     var heartbeatInfo by remember { mutableStateOf<DittoHeartbeatInfo?>(null) }
 
     val config = DittoHeartbeatConfig(
-        secondsInterval = 30,
-        collectionName = "devices4",
+        secondsInterval = 30
     )
 
     DisposableEffect(Unit) {

@@ -1,6 +1,7 @@
 package live.ditto.dittoheartbeat
 
 import android.os.Build
+import android.provider.SyncStateContract.Constants
 import androidx.annotation.RequiresApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +19,6 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 data class DittoHeartbeatConfig(
     val secondsInterval: Int,
-    val collectionName: String,
     val metaData: Map<String, Any>? = null
 )
 
@@ -40,7 +40,7 @@ fun startHeartbeat(ditto: Ditto, config: DittoHeartbeatConfig): Flow<DittoHeartb
     val cancelable = AtomicBoolean(false)
 
     if (heartbeatSubscription == null) {
-        heartbeatSubscription = ditto.sync.registerSubscription("SELECT * FROM ${config.collectionName}")
+        heartbeatSubscription = ditto.sync.registerSubscription("SELECT * FROM $HEARTBEAT_COLLECTION_COLLECTION_NAME")
     }
 
     try {
@@ -93,7 +93,7 @@ fun addToCollection(info: DittoHeartbeatInfo, config: DittoHeartbeatConfig, ditt
         "sdk" to info.sdk,
         "_schema" to info.schema
     )
-    val query = "INSERT INTO ${config.collectionName} DOCUMENTS (:doc) ON ID CONFLICT DO UPDATE"
+    val query = "INSERT INTO $HEARTBEAT_COLLECTION_COLLECTION_NAME DOCUMENTS (:doc) ON ID CONFLICT DO UPDATE"
     myCoroutineScope.launch {
         ditto.store.execute(query, mapOf("doc" to doc))
     }
