@@ -228,11 +228,9 @@ The Ditto Heartbeat tool allows you to monitor, locally or remotely, the peers i
 
 **Configure Heartbeat**
 
-There are three values you need to provide to the Heartbeat:
-1. Id/Id's - Provide all the Id's needed in order to identify a peer
-2. Interval - The frequency at which the Heartbeat will scrape the data
-4. Meta Data -  This field is optional
-5. Schema - Constant (string) value to represent the current version of the schema
+There are the values you need to provide to the Heartbeat:
+1. Interval - The frequency at which the Heartbeat will scrape the data
+2. Meta Data -  This field is optional
 
 There is a `DittoHeartbeatConfig` data class you can use to construct your configuration.
 
@@ -241,7 +239,6 @@ There is a `DittoHeartbeatConfig` data class you can use to construct your confi
 data class DittoHeartbeatConfig(
     val interval: Long,
     val metaData: Map<String, Any>?,
-    val schema: String
 )
 
 // Example:
@@ -252,7 +249,6 @@ val config = DittoHeartbeatConfig(
     metaData = mapOf(
         "deviceType" to "KDS"
     ),
-    schema = HEARTBEAT_COLLECTION_SCHEMA_VALUE  // constant value that should be updated from from Constants.kt file
 )
 
 // Provide the config and your Ditto instance to startHearbeat()
@@ -273,6 +269,7 @@ This is the model of the data and what you can use for reference
 ```kotlin
 {
     _id: <ditto peerKey>,
+    _schema: String,
     secondsInterval: String,
     presenceSnapshotDirectlyConnectedPeersCount: Int,
     lastUpdated: String (ISO-8601),
@@ -299,6 +296,7 @@ You will receive a `HeartbeatInfo` data class back
 ```kotlin
 data class DittoHeartbeatInfo(
     val id: String,
+    val schema: String,
     val lastUpdated: String,
     val metaData: Map<String, Any>?,
     val secondsInterval: Int,
