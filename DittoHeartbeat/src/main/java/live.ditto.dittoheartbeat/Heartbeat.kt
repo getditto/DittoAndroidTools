@@ -29,7 +29,8 @@ data class DittoHeartbeatInfo(
     val secondsInterval: Int,
     val presenceSnapshotDirectlyConnectedPeersCount: Int,
     val presenceSnapshotDirectlyConnectedPeers: Map<String, Any>,
-    val sdk: String
+    val sdk: String,
+    val schema: String
 )
 
 var heartbeatSubscription: DittoSyncSubscription? = null
@@ -56,7 +57,8 @@ fun startHeartbeat(ditto: Ditto, config: DittoHeartbeatConfig): Flow<DittoHeartb
                     metaData = config.metaData,
                     presenceSnapshotDirectlyConnectedPeersCount = presenceData?.size ?: 0,
                     secondsInterval = config.secondsInterval,
-                    sdk = ditto.sdkVersion
+                    sdk = ditto.sdkVersion,
+                    schema = HEARTBEAT_COLLECTION_SCHEMA_VALUE
                 )
 
             addToCollection(info, config, ditto)
@@ -73,7 +75,7 @@ fun byteArrayToHash(byteArray: ByteArray): String {
     return "pk:$base64String"
 }
 
-fun observePeers(ditto: Ditto): List<DittoPeer>? {
+fun observePeers(ditto: Ditto): List<DittoPeer> {
     val presenceGraph = ditto.presence.graph
     return presenceGraph.remotePeers
 }
@@ -88,7 +90,8 @@ fun addToCollection(info: DittoHeartbeatInfo, config: DittoHeartbeatConfig, ditt
         "lastUpdated" to info.lastUpdated,
         "presenceSnapshotDirectlyConnectedPeers" to info.presenceSnapshotDirectlyConnectedPeers,
         "metaData" to metaData,
-        "sdk" to info.sdk
+        "sdk" to info.sdk,
+        "_schema" to info.schema
     )
     val query = "INSERT INTO ${config.collectionName} DOCUMENTS (:doc) ON ID CONFLICT DO UPDATE"
     myCoroutineScope.launch {
@@ -96,6 +99,7 @@ fun addToCollection(info: DittoHeartbeatInfo, config: DittoHeartbeatConfig, ditt
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 fun getConnections(presenceSnapshotDirectlyConnectedPeers: List<DittoPeer>?, ditto: Ditto): Map<String, Any> {
 
     val connectionsMap: MutableMap<String, Any> = mutableMapOf()
