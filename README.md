@@ -233,6 +233,7 @@ There are three values you need to provide to the Heartbeat:
 2. Interval - The frequency at which the Heartbeat will scrape the data
 3. Collection Name - The Ditto collection you want to add this data to
 4. Meta Data -  This field is optional
+5. Schema - Constant (string) value to represent the current version of the schema
 
 There is a `DittoHeartbeatConfig` data class you can use to construct your configuration.
 
@@ -241,7 +242,8 @@ There is a `DittoHeartbeatConfig` data class you can use to construct your confi
 data class DittoHeartbeatConfig(
     val interval: Long,
     val collectionName: String,
-    val metaData: Map<String, Any>?
+    val metaData: Map<String, Any>?,
+    val schema: String
 )
 
 // Example:
@@ -252,7 +254,8 @@ val config = DittoHeartbeatConfig(
     collectionName = "devices",
     metaData = mapOf(
         "deviceType" to "KDS"
-    )
+    ),
+    schema = HEARTBEAT_COLLECTION_SCHEMA_VALUE  // constant value that should be updated from from Constants.kt file
 )
 
 // Provide the config and your Ditto instance to startHearbeat()
