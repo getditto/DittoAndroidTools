@@ -4,8 +4,6 @@ package live.ditto.dittotoolsapp
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -17,14 +15,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import live.ditto.Ditto
-import live.ditto.DittoConnectionType
-import live.ditto.DittoPeer
 import live.ditto.dittoheartbeat.DittoHeartbeatConfig
 import live.ditto.dittoheartbeat.DittoHeartbeatInfo
 import live.ditto.dittoheartbeat.startHeartbeat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
+
 
 @Composable
 fun ShowHeartbeatData(ditto: Ditto) {
@@ -32,6 +27,8 @@ fun ShowHeartbeatData(ditto: Ditto) {
     var heartbeatInfo by remember { mutableStateOf<DittoHeartbeatInfo?>(null) }
 
     val config = DittoHeartbeatConfig(
+        //id for testing only. Unique id will not persist
+        id = UUID.randomUUID().toString(),
         secondsInterval = 30
     )
 
