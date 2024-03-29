@@ -141,7 +141,7 @@ LogFileConfig.logFile.let { logFile ->
 Now we can call `ExportLogs()`.
 
 ```kotlin
-DittoExportLogs(ditto = ditto)
+ExportLogs(onDismiss: () -> Unit)
 ```
 
  <img src="/Img/exportLogs.png" alt="Export Logs Image" width="300">  
