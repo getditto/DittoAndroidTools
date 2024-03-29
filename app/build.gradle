@@ -58,7 +58,9 @@ dependencies {
     implementation libs.live.ditto.databrowser
     implementation libs.live.ditto.exportlogs
     implementation libs.live.ditto.presenceviewer
-    implementation libs.live.ditto.heartbeat
+
+    // TODO: Use maven version once this ticket is done
+    implementation(project(":DittoHeartbeat"))
 
     // TODO: Use maven version once this ticket is done
     //       https://github.com/getditto/DittoAndroidTools/issues/31

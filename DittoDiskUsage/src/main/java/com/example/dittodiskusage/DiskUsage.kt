@@ -28,7 +28,10 @@ fun DiskUsageScreen() {
             observerHandle.close()
         }
     }
-    DiskUsageView(viewModel = viewModel)
+    DiskUsageView(
+        ditto = ditto,
+        viewModel = viewModel
+    )
 }
 
 data class DiskUsage(
