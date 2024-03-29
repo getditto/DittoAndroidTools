@@ -18,6 +18,7 @@ import java.util.Base64
 import java.util.concurrent.atomic.AtomicBoolean
 
 data class DittoHeartbeatConfig(
+    val id: String,
     val secondsInterval: Int,
     val metaData: Map<String, Any>? = null
 )
@@ -30,7 +31,8 @@ data class DittoHeartbeatInfo(
     val presenceSnapshotDirectlyConnectedPeersCount: Int,
     val presenceSnapshotDirectlyConnectedPeers: Map<String, Any>,
     val sdk: String,
-    val schema: String
+    val schema: String,
+    val peerKey: String
 )
 
 var heartbeatSubscription: DittoSyncSubscription? = null
@@ -51,14 +53,15 @@ fun startHeartbeat(ditto: Ditto, config: DittoHeartbeatConfig): Flow<DittoHeartb
 
             val info =
                 DittoHeartbeatInfo(
-                    id = byteArrayToHash(ditto.presence.graph.localPeer.peerKey),
+                    id = config.id,
                     lastUpdated = timestamp,
                     presenceSnapshotDirectlyConnectedPeers = getConnections(presenceData, ditto) ,
                     metaData = config.metaData,
-                    presenceSnapshotDirectlyConnectedPeersCount = presenceData?.size ?: 0,
+                    presenceSnapshotDirectlyConnectedPeersCount = presenceData.size,
                     secondsInterval = config.secondsInterval,
                     sdk = ditto.sdkVersion,
-                    schema = HEARTBEAT_COLLECTION_SCHEMA_VALUE
+                    schema = HEARTBEAT_COLLECTION_SCHEMA_VALUE,
+                    peerKey = byteArrayToHash(ditto.presence.graph.localPeer.peerKey)
                 )
 
             addToCollection(info, config, ditto)
@@ -91,7 +94,8 @@ fun addToCollection(info: DittoHeartbeatInfo, config: DittoHeartbeatConfig, ditt
         "presenceSnapshotDirectlyConnectedPeers" to info.presenceSnapshotDirectlyConnectedPeers,
         "metaData" to metaData,
         "sdk" to info.sdk,
-        "_schema" to info.schema
+        "_schema" to info.schema,
+        "peerKey" to info.peerKey
     )
     val query = "INSERT INTO $HEARTBEAT_COLLECTION_COLLECTION_NAME DOCUMENTS (:doc) ON ID CONFLICT DO UPDATE"
     myCoroutineScope.launch {
