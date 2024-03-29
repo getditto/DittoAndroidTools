@@ -1,15 +1,15 @@
 package com.example.dittodiskusage
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import live.ditto.DiskUsageItem
-import live.ditto.android.DefaultAndroidDittoDependencies
+import live.ditto.Ditto
 import live.ditto.exporter.ZipFolderUseCase
 import java.io.File
 import java.text.DecimalFormat
@@ -17,7 +17,8 @@ import kotlin.math.log10
 import kotlin.math.pow
 
 class DiskUsageViewModel(
-    private val zipFolderUseCase: ZipFolderUseCase = ZipFolderUseCase()
+    private val zipFolderUseCase: ZipFolderUseCase = ZipFolderUseCase(),
+    private val dispatcherIO: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
     /* Private mutable state */
     private val _uiState = MutableStateFlow(DiskUsageState())
@@ -59,10 +60,11 @@ class DiskUsageViewModel(
         }
     }
 
-    suspend fun exportButtonOnClick(applicationContext: Context): File {
-        val dittoDependencies = DefaultAndroidDittoDependencies(applicationContext)
-        val inputDirectory = File(dittoDependencies.persistenceDirectory())
-        val outputZipFile = File.createTempFile("ditto_", ".zip")
+    suspend fun exportButtonOnClick(ditto: Ditto): File {
+        val inputDirectory = File(ditto.persistenceDirectory)
+        val outputZipFile = withContext(dispatcherIO) {
+            File.createTempFile("ditto_", ".zip")
+        }
 
         zipFolderUseCase(
             inputDirectory = inputDirectory,

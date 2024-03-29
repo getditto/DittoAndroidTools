@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,14 +25,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import live.ditto.Ditto
 import live.ditto.dittodiskusage.R
 import live.ditto.exporter.ExportDialog
 import java.io.File
@@ -43,15 +41,15 @@ private val ScreenTypography = Typography()
 
 @Composable
 fun DiskUsageView(
+    ditto: Ditto,
     viewModel: DiskUsageViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val context = LocalContext.current
 
     DiskUsageView(
         uiState = uiState,
         fileProvider = {
-            viewModel.exportButtonOnClick(context.applicationContext)
+            viewModel.exportButtonOnClick(ditto)
         },
     )
 }

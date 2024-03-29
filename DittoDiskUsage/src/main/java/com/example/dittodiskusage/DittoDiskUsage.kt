@@ -19,8 +19,7 @@ fun DittoDiskUsage(ditto: Ditto) {
     Surface(color = MaterialTheme.colorScheme.background) {
         NavHost(navController = navController, startDestination = "diskusage") {
             composable("diskusage") { DiskUsageScreen() }
-            composable("diskUsageView") { DiskUsageView() }
-
+            composable("diskUsageView") { DiskUsageView(ditto = ditto) }
         }
     }
 }
