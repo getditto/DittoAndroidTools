@@ -95,7 +95,7 @@ fun addToCollection(info: DittoHeartbeatInfo, config: DittoHeartbeatConfig, ditt
         "metaData" to metaData,
         "sdk" to info.sdk,
         "_schema" to info.schema,
-        "pk" to info.peerKey
+        "peerKey" to info.peerKey
     )
 
     ditto.store.collection(HEARTBEAT_COLLECTION_COLLECTION_NAME).upsert(doc)
