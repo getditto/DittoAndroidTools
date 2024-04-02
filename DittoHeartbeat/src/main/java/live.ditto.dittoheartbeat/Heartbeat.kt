@@ -97,10 +97,8 @@ fun addToCollection(info: DittoHeartbeatInfo, config: DittoHeartbeatConfig, ditt
         "_schema" to info.schema,
         "peerKey" to info.peerKey
     )
-    val query = "INSERT INTO $HEARTBEAT_COLLECTION_COLLECTION_NAME DOCUMENTS (:doc) ON ID CONFLICT DO UPDATE"
-    myCoroutineScope.launch {
-        ditto.store.execute(query, mapOf("doc" to doc))
-    }
+
+    ditto.store.collection(HEARTBEAT_COLLECTION_COLLECTION_NAME).upsert(doc)
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
