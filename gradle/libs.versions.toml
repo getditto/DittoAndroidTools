@@ -15,7 +15,7 @@ live-ditto-exportlogs = "0.0.2"
 live-ditto-diskusage = "0.0.3"
 live-ditto-presenceviewer = "0.0.2"
 live-ditto-health = "0.0.2"
-live-ditto-heartbeat = "0.0.2"
+live-ditto-heartbeat = "0.0.3"
 
 junit = "4.13.2"
 kotlin-gradle-plugin = "1.8.10"

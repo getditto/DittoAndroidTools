@@ -8,7 +8,7 @@ apply from: "$rootProject.projectDir/gradle/deploy.gradle"
 
 ext.libraryGroupId = "live.ditto"
 ext.libraryArtifactId = "dittoheartbeat"
-ext.libraryVersion = "0.0.2"
+ext.libraryVersion = "0.0.3"
 
 android {
     namespace 'live.ditto.dittoheartbeat'
