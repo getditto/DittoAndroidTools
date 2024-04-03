@@ -1,9 +1,12 @@
 package live.ditto.dittodatabrowser
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -12,6 +15,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,35 +59,51 @@ fun Documents(collectionName: String, isStandAlone: Boolean) {
                     }
             )
 
-            Box {
-                // Show selected item or "None" if no item is selected
-                (if ((startUp)) "None" else docsList?.get(selectedIndex)?.id)?.let {
-                    Text(
-                        text = it,
-                        textAlign = TextAlign.Start,
-                        color = Color.Blue,
-                        modifier = Modifier
-                            .clickable {
-                                showMenu = true
-                                startUp = false
-                            }
-                    )
-                }
+            if(!docsList.isNullOrEmpty()) {
+                Box {
+                    // Show selected item or "select" if no item is selected
+                    (if ((startUp)) "select" else docsList?.get(selectedIndex)?.id)?.let {
+                        Text(
+                            text = it,
+                            textAlign = TextAlign.Start,
+                            color = Color.Blue,
+                            modifier = Modifier
+                                .clickable {
+                                    showMenu = true
 
-                // Dropdown menu
-                DropdownMenu(
-                    expanded = showMenu,
-                    onDismissRequest = { showMenu = false }
-                ) {
-                    docsList?.forEachIndexed { index, item ->
-                        DropdownMenuItem(onClick = {
-                            selectedIndex = index
-                            viewModel.selectedDoc.value = item
-                        }, text = {
-                            Text(text = item.id)
-                        })
+                                    startUp = false
+                                }
+                        )
+                    }
+
+                    // Dropdown menu
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false }
+                    ) {
+                        docsList?.forEachIndexed { index, item ->
+                            DropdownMenuItem(onClick = {
+                                selectedIndex = index
+                                viewModel.selectedDoc.value = item
+                            }, text = {
+                                Text(text = item.id)
+                            })
+                        }
                     }
                 }
+            }
+            else {
+                Text(
+                    text = "No Docs",
+                    textAlign = TextAlign.Start,
+                    color = Color.Blue,
+                    modifier = Modifier
+                        .clickable {
+                            showMenu = true
+
+                            startUp = false
+                        }
+                )
             }
         }
 
@@ -105,7 +125,6 @@ fun Documents(collectionName: String, isStandAlone: Boolean) {
 
 @Composable
 fun DocItem(property: String, viewModel: DocumentsViewModel, selectedDoc: Document) {
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -127,21 +146,33 @@ fun DocItem(property: String, viewModel: DocumentsViewModel, selectedDoc: Docume
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(onSearch: (String) -> Unit) {
-    var searchText by remember { mutableStateOf("") }
+    var searchText by remember { mutableStateOf(TextFieldValue("")) }
 
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        TextField(
-            modifier = Modifier.weight(1f),
-            value = searchText,
-            onValueChange = { searchText = it },
-            placeholder = { Text("Search") }
-        )
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .border(1.dp, Color.Gray, RoundedCornerShape(4.dp))
+            .padding(horizontal = 16.dp),
+        contentAlignment = Alignment.CenterStart
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            IconButton(onClick = { onSearch(searchText.text) }) {
+                Icon(Icons.Default.Search, contentDescription = "Search")
+            }
 
-        IconButton(onClick = { onSearch(searchText) }) {
-            Icon(Icons.Default.Search, contentDescription = "Search")
+            BasicTextField(
+                modifier = Modifier
+                    .padding(),
+                value = searchText,
+                onValueChange = { searchText = it },
+                singleLine = true,
+                decorationBox = { innerTextField ->
+                    innerTextField()
+                }
+            )
         }
     }
 }
