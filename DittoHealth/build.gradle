@@ -23,7 +23,14 @@ dependencies {
     implementation libs.androidx.compose.ui.uiToolingPreview
     implementation libs.androidx.navigation.navigationCompose
     implementation libs.live.ditto.ditto
-
+    // Dependency constraint for ditto
+    constraints {
+        implementation(libs.live.ditto.ditto) {
+            version {
+                strictly '>= 4.4.0'
+            }
+        }
+    }
     implementation platform(libs.androidx.compose.composeBom)
 
     testImplementation libs.junit.junit
