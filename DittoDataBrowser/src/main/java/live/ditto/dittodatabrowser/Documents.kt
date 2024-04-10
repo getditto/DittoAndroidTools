@@ -97,12 +97,6 @@ fun Documents(collectionName: String, isStandAlone: Boolean) {
                     text = "No Docs",
                     textAlign = TextAlign.Start,
                     color = Color.Blue,
-                    modifier = Modifier
-                        .clickable {
-                            showMenu = true
-
-                            startUp = false
-                        }
                 )
             }
         }
