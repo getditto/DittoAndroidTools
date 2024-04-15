@@ -5,7 +5,7 @@ plugins {
 
 ext.libraryGroupId = "live.ditto"
 ext.libraryArtifactId = "dittodiskusage"
-ext.libraryVersion = "0.0.3"
+ext.libraryVersion = "0.0.6"
 
 apply from: "$rootProject.projectDir/gradle/deploy.gradle"
 apply from: "$rootProject.projectDir/gradle/android-common.gradle"
@@ -28,7 +28,7 @@ dependencies {
     constraints {
         implementation(libs.live.ditto.ditto) {
             version {
-                strictly "[4.4.0,)"
+                strictly "[4.5.0,)"
             }
         }
     }
