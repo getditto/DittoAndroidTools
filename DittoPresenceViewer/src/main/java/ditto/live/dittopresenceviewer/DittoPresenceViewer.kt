@@ -13,11 +13,11 @@ import live.ditto.Ditto
 fun DittoPresenceViewer(
     modifier: Modifier = Modifier,
     ditto: Ditto,
-    viewModel: PresenceViewModel = PresenceViewModel(ditto)
+    coroutineScope: CoroutineScope = rememberCoroutineScope(),
+    viewModel: PresenceViewModel = PresenceViewModel(ditto, coroutineScope)
 ) {
 
-    val coroutineScope: CoroutineScope = rememberCoroutineScope()
-    val graphJson by viewModel.graphJson.collectAsState(initial = null)
+    val graphJson by viewModel.graphJson.collectAsState()
 
     AndroidView(
         factory = { context ->
