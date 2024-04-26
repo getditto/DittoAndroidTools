@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Base64
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
@@ -18,6 +20,7 @@ import kotlinx.coroutines.sync.withLock
 @SuppressLint("ViewConstructor")
 class DittoPresenceViewerWebView(
     context: Context,
+    params: ViewGroup.LayoutParams = LayoutParams(MATCH_PARENT, MATCH_PARENT),
     private val coroutineScope: CoroutineScope
 ): WebView(context) {
 
@@ -29,10 +32,7 @@ class DittoPresenceViewerWebView(
             .addPathHandler("/assets/dist/", WebViewAssetLoader.AssetsPathHandler(context))
             .build()
 
-        layoutParams = LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT,
-        )
+        layoutParams = params
 
         @Suppress("SetJavaScriptEnabled")
         settings.javaScriptEnabled = true
