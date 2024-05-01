@@ -15,20 +15,22 @@ import live.ditto.Presence
 class PresenceViewModel(
     ditto: Ditto,
     coroutineScope: CoroutineScope
-): ViewModel() {
+) : ViewModel() {
 
     private var _graphJson: Flow<String> = ditto.presence.observeAsFlow().map { it.json() }
     val graphJson = _graphJson.stateIn(
         coroutineScope,
-        SharingStarted.WhileSubscribed(5000L),
+        SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000L),
         null
     )
 
 }
 
 private fun Presence.observeAsFlow(): Flow<DittoPresenceGraph> = callbackFlow {
-    this@observeAsFlow.observe { graph ->
+    val dittoPresenceObserver = this@observeAsFlow.observe { graph ->
         trySend(graph)
     }
-    awaitClose()
+    awaitClose {
+        dittoPresenceObserver.close()
+    }
 }
