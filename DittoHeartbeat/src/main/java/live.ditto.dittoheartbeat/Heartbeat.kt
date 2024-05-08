@@ -22,8 +22,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 data class DittoHeartbeatConfig(
     val id: String,
     val secondsInterval: Int,
-    val metaData: Map<String, Any>? = null
-    val healthMetricProviders: List<HealthMetricProvider>
+    val metaData: Map<String, Any>? = null,
+    val healthMetricProviders: List<HealthMetricProvider>?
 )
 
 data class DittoHeartbeatInfo(
