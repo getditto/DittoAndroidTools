@@ -13,6 +13,8 @@ import live.ditto.Ditto
 import live.ditto.DittoConnectionType
 import live.ditto.DittoPeer
 import live.ditto.DittoSyncSubscription
+import live.ditto.dittohealthmetrics.HealthMetric
+import live.ditto.dittohealthmetrics.HealthMetricProvider
 import org.joda.time.DateTime
 import java.util.Base64
 import java.util.concurrent.atomic.AtomicBoolean
@@ -20,7 +22,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 data class DittoHeartbeatConfig(
     val id: String,
     val secondsInterval: Int,
-    val metaData: Map<String, Any>? = null
+    val metaData: Map<String, Any>? = null,
+    val healthMetricProviders: List<HealthMetricProvider>?
 )
 
 data class DittoHeartbeatInfo(
@@ -32,10 +35,24 @@ data class DittoHeartbeatInfo(
     val presenceSnapshotDirectlyConnectedPeers: Map<String, Any>,
     val sdk: String,
     val schema: String,
-    val peerKey: String
+    val peerKey: String,
+
+    /**
+     * The current state of any `HealthMetric`s tracked by the Heartbeat Tool.
+     */
+    var healthMetrics: MutableMap<String, HealthMetric> = mutableMapOf()
 )
 
 var heartbeatSubscription: DittoSyncSubscription? = null
+lateinit var info: DittoHeartbeatInfo
+
+private fun updateHealthMetrics(config: DittoHeartbeatConfig) {
+    val newHealthMetrics = mutableMapOf<String, HealthMetric>()
+    config.healthMetricProviders.forEach { provider ->
+        newHealthMetrics[provider.metricName] = provider.getCurrentState()
+    }
+    info.healthMetrics = newHealthMetrics
+}
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun startHeartbeat(ditto: Ditto, config: DittoHeartbeatConfig): Flow<DittoHeartbeatInfo> = flow {
@@ -51,7 +68,7 @@ fun startHeartbeat(ditto: Ditto, config: DittoHeartbeatConfig): Flow<DittoHeartb
             val timestamp = DateTime().toISOString()
             val presenceData = observePeers(ditto)
 
-            val info =
+            info =
                 DittoHeartbeatInfo(
                     id = config.id,
                     lastUpdated = timestamp,
@@ -63,6 +80,8 @@ fun startHeartbeat(ditto: Ditto, config: DittoHeartbeatConfig): Flow<DittoHeartb
                     schema = HEARTBEAT_COLLECTION_SCHEMA_VALUE,
                     peerKey = byteArrayToHash(ditto.presence.graph.localPeer.peerKey)
                 )
+
+            updateHealthMetrics(config)
 
             addToCollection(info, config, ditto)
             emit(info)
