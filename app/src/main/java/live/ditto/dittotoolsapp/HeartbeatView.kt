@@ -29,7 +29,8 @@ fun ShowHeartbeatData(ditto: Ditto) {
     val config = DittoHeartbeatConfig(
         //id for testing only. Unique id will not persist
         id = UUID.randomUUID().toString(),
-        secondsInterval = 30
+        secondsInterval = 30,
+        healthMetricProviders = emptyList()
     )
 
     DisposableEffect(Unit) {

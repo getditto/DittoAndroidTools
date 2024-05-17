@@ -48,7 +48,7 @@ lateinit var info: DittoHeartbeatInfo
 
 private fun updateHealthMetrics(config: DittoHeartbeatConfig) {
     val newHealthMetrics = mutableMapOf<String, HealthMetric>()
-    config.healthMetricProviders.forEach { provider ->
+    config.healthMetricProviders?.forEach { provider ->
         newHealthMetrics[provider.metricName] = provider.getCurrentState()
     }
     info.healthMetrics = newHealthMetrics
