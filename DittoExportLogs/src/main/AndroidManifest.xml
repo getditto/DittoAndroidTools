@@ -7,7 +7,7 @@
     <application>
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="live.ditto.dittotoolsapp.fileprovider"
+            android:authorities="${applicationId}.live.ditto.dittotoolsapp.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
 
