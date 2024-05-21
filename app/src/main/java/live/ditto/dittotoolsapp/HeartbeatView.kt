@@ -29,7 +29,8 @@ fun ShowHeartbeatData(ditto: Ditto) {
     val config = DittoHeartbeatConfig(
         //id for testing only. Unique id will not persist
         id = UUID.randomUUID().toString(),
-        secondsInterval = 30
+        secondsInterval = 30,
+        healthMetricProviders = emptyList()
     )
 
     DisposableEffect(Unit) {
@@ -80,7 +81,6 @@ fun HeartbeatInfoCard(heartbeatInfo: DittoHeartbeatInfo) {
                     @Suppress("UNCHECKED_CAST")
                     val typedConnection = connection as Map<String, Any> // Type cast connection to Map<String, Any>
                     ConnectionInfo(connection = typedConnection)
-                } else {
                 }
             }
         }
@@ -95,6 +95,7 @@ fun HeartbeatHeader(heartbeatInfo: DittoHeartbeatInfo) {
         Text("SDK: ${heartbeatInfo.sdk}")
         Text("Last Updated: ${heartbeatInfo.lastUpdated}")
         Text("remotePeersCount: ${heartbeatInfo.presenceSnapshotDirectlyConnectedPeersCount}", color = Color.Black)
+        Text("Peer key: ${heartbeatInfo.peerKey}")
     }
 }
 
