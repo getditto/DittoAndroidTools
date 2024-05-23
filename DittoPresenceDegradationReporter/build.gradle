@@ -28,7 +28,7 @@ dependencies {
     constraints {
         implementation(libs.live.ditto.ditto) {
             version {
-                strictly "[4.5.0,)"
+                strictly "[4.7.0,)"
             }
         }
     }
