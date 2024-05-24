@@ -11,7 +11,7 @@ apply from: "$rootProject.projectDir/gradle/deploy.gradle"
 apply from: "$rootProject.projectDir/gradle/android-common.gradle"
 
 android {
-    namespace "live.ditto.health"
+    namespace "live.ditto.dittohealthmetrics"
 }
 
 dependencies {
