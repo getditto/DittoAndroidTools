@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import live.ditto.dittohealthmetrics.HealthMetric
+import live.ditto.dittohealthmetrics.HealthMetricProvider
 import live.ditto.health.usecase.GetBluetoothStatusFlow
 import live.ditto.health.usecase.GetDittoMissingPermissionsFlow
 import live.ditto.health.usecase.GetWifiStatusFlow
@@ -21,7 +23,7 @@ class HealthViewModel(
     ),
     getWifiStatusFlow: GetWifiStatusFlow = GetWifiStatusFlow(context = context),
     getBluetoothStatusFlow: GetBluetoothStatusFlow = GetBluetoothStatusFlow(context = context),
-) : ViewModel() {
+) : ViewModel(), HealthMetricProvider {
     private var _state = MutableStateFlow(HealthUiState())
     val state = _state.asStateFlow()
 
@@ -58,5 +60,26 @@ class HealthViewModel(
         _state.update {
             it.copy(bluetoothEnabled = status)
         }
+    }
+
+    override val metricName: String
+        get() = "DittoPermissionsHealth"
+
+    override fun getCurrentState(): HealthMetric {
+        val currentState = _state.value
+        val isHealthy = currentState.missingPermissions.isEmpty() && currentState.wifiEnabled && currentState.bluetoothEnabled
+        val details = mutableMapOf<String, String>()
+
+        if (currentState.missingPermissions.isNotEmpty()) {
+            details["Missing Permissions"] = currentState.missingPermissions.joinToString()
+        }
+
+        details["WiFi Enabled"] = currentState.wifiEnabled.toString()
+        details["Bluetooth Enabled"] = currentState.bluetoothEnabled.toString()
+
+        return HealthMetric(
+            isHealthy = isHealthy,
+            details = details
+        )
     }
 }
