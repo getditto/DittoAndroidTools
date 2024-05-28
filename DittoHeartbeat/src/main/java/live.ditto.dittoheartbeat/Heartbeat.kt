@@ -23,7 +23,8 @@ data class DittoHeartbeatConfig(
     val id: String,
     val secondsInterval: Int,
     val metaData: Map<String, Any>? = null,
-    val healthMetricProviders: List<HealthMetricProvider>?
+    val healthMetricProviders: List<HealthMetricProvider>?,
+    val publishToDittoCollection: Boolean = true // Toggle to avoid publishing
 )
 
 data class DittoHeartbeatInfo(
@@ -48,7 +49,7 @@ lateinit var info: DittoHeartbeatInfo
 
 private fun updateHealthMetrics(config: DittoHeartbeatConfig) {
     val newHealthMetrics = mutableMapOf<String, HealthMetric>()
-    config.healthMetricProviders.forEach { provider ->
+    config.healthMetricProviders?.forEach { provider ->
         newHealthMetrics[provider.metricName] = provider.getCurrentState()
     }
     info.healthMetrics = newHealthMetrics
@@ -104,6 +105,7 @@ fun observePeers(ditto: Ditto): List<DittoPeer> {
 
 val myCoroutineScope = CoroutineScope(Dispatchers.Main)
 fun addToCollection(info: DittoHeartbeatInfo, config: DittoHeartbeatConfig, ditto: Ditto) {
+    if(!config.publishToDittoCollection) return
     val metaData = config.metaData ?: emptyMap()
     val doc = mapOf(
         "_id" to info.id,

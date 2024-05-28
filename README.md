@@ -229,9 +229,10 @@ The Ditto Heartbeat tool allows you to monitor, locally or remotely, the peers i
 **Configure Heartbeat**
 
 These are the values you need to provide to the Heartbeat:
-1. Id - Unique value that identifies the device
-2. Interval - The frequency at which the Heartbeat will scrape the data
-3. Meta Data -  This field is optional
+1. `id` - Unique value that identifies the device
+2. `secondsInterval` - The frequency at which the Heartbeat will scrape the data
+3. `metaData` -  Optional - any metadata you wish to add to the Heartbeat
+4. `publishToDittoCollection` - Optional - set to false to prevent from publishing the heartbeat to Ditto collection. Default true.
 
 There is a `DittoHeartbeatConfig` data class you can use to construct your configuration.
 
@@ -239,8 +240,9 @@ There is a `DittoHeartbeatConfig` data class you can use to construct your confi
 // Provided with the Heartbeat tool
 data class DittoHeartbeatConfig(
     val id: String,
-    val interval: Long,
-    val metaData: Map<String, Any>?,
+    val secondsInterval: Int,
+    val metaData: Map<String, Any>? = null, 
+    val publishToDittoCollection: Boolean = true // Optional - toggle to avoid publishing to Ditto collection.
 )
 
 // Example:
@@ -248,10 +250,11 @@ data class DittoHeartbeatConfig(
 // Passed into Heartbeat tool
 val config = DittoHeartbeatConfig(
     id = <unique device id>,
-    interval = 30, //seconds
+    secondsInterval = 30, //seconds
     metaData = mapOf(
         "deviceType" to "KDS"
     ),
+    publishToDittoCollection = true
 )
 
 // Provide the config and your Ditto instance to startHearbeat()
