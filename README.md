@@ -56,7 +56,7 @@ DittoPresenceViewer(ditto = ditto)
 Gradle:
 ```kotlin
 dependencies {
-  implementation 'live.ditto:dittopresenceviewer:0.0.2'
+  implementation 'live.ditto:dittopresenceviewer:YOUR_LIBRARY_VERSION'
 }
 ```
 
@@ -65,7 +65,7 @@ Maven:
 <dependency>
     <groupId>live.ditto</groupId>
     <artifactId>dittopresenceviewer</artifactId>
-    <version>0.0.2</version>
+    <version>YOUR_LIBRARY_VERSION</version>
 </dependency>
 ```
 
@@ -93,7 +93,7 @@ If you are using the Data Browser as a standalone app, there is a button, Start 
 Gradle:
 ```kotlin
 dependencies {
-  implementation 'live.ditto:dittodatabrowser:0.0.2'
+  implementation 'live.ditto:dittodatabrowser:YOUR_LIBRARY_VERSION'
 }
 ```
 
@@ -102,7 +102,7 @@ Maven:
 <dependency>
     <groupId>live.ditto.</groupId>
     <artifactId>dittodatabrowser</artifactId>
-    <version>0.0.2</version>
+    <version>YOUR_LIBRARY_VERSION</version>
 </dependency>
 ```
 
@@ -151,7 +151,7 @@ ExportLogs(onDismiss: () -> Unit)
 Gradle:
 ```kotlin
 dependencies {
-  implementation 'live.ditto:dittoexportlogs:0.0.2'
+  implementation 'live.ditto:dittoexportlogs:YOUR_LIBRARY_VERSION'
 }
 ```
 
@@ -160,7 +160,7 @@ Maven:
 <dependency>
     <groupId>live.ditto</groupId>
     <artifactId>dittoexportlogs</artifactId>
-    <version>0.0.2</version>
+    <version>YOUR_LIBRARY_VERSION</version>
 </dependency>
 ```
 
@@ -179,7 +179,7 @@ DittoDiskUsage(ditto = ditto)
 Gradle:
 ```kotlin
 dependencies {
-  implementation 'live.ditto:dittodiskusage:0.0.2'
+  implementation 'live.ditto:dittodiskusage:YOUR_LIBRARY_VERSION'
 }
 ```
 
@@ -188,7 +188,7 @@ Maven:
 <dependency>
     <groupId>live.ditto</groupId>
     <artifactId>dittodiskusage</artifactId>
-    <version>0.0.2</version>
+    <version>YOUR_LIBRARY_VERSION</version>
 </dependency>
 ```
 
@@ -209,7 +209,7 @@ HealthScreen()
 Gradle:
 ```kotlin
 dependencies {
-  implementation 'live.ditto:health:0.0.2'
+  implementation 'live.ditto:health:YOUR_LIBRARY_VERSION'
 }
 ```
 
@@ -218,7 +218,7 @@ Maven:
 <dependency>
     <groupId>live.ditto</groupId>
     <artifactId>health</artifactId>
-    <version>0.0.2</version>
+    <version>YOUR_LIBRARY_VERSION</version>
 </dependency>
 ```
 
@@ -317,7 +317,7 @@ data class DittoHeartbeatInfo(
 Gradle:
 ```kotlin
 dependencies {
-  implementation 'live.ditto:dittoheartbeat:0.0.2'
+  implementation 'live.ditto:dittoheartbeat:YOUR_LIBRARY_VERSION'
 }
 ```
 
@@ -326,7 +326,7 @@ Maven:
 <dependency>
     <groupId>live.ditto.</groupId>
     <artifactId>dittoheartbeat</artifactId>
-    <version>0.0.2</version>
+    <version>YOUR_LIBRARY_VERSION</version>
 </dependency>
 ```
 
@@ -355,7 +355,7 @@ ditto.presenceDegradationReporterFlow().collect { state ->
 Gradle:
 ```kotlin
 dependencies {
-  implementation 'live.ditto:presencedegradationreporter:0.0.2'
+  implementation 'live.ditto:presencedegradationreporter:YOUR_LIBRARY_VERSION'
 }
 ```
 
@@ -364,7 +364,7 @@ Maven:
 <dependency>
     <groupId>live.ditto</groupId>
     <artifactId>presencedegradationreporter</artifactId>
-    <version>0.0.2</version>
+    <version>YOUR_LIBRARY_VERSION</version>
 </dependency>
 ```
 
