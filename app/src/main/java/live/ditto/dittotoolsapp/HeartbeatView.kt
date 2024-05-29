@@ -30,7 +30,8 @@ fun ShowHeartbeatData(ditto: Ditto) {
         //id for testing only. Unique id will not persist
         id = UUID.randomUUID().toString(),
         secondsInterval = 30,
-        healthMetricProviders = emptyList()
+        healthMetricProviders = emptyList(),
+        publishToDittoCollection = true // Set to false to avoid publishing to collection
     )
 
     DisposableEffect(Unit) {

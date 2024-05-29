@@ -18,7 +18,8 @@ data class DittoHeartbeatConfig(
     val id: String,
     val secondsInterval: Int,
     val metaData: Map<String, Any>? = null,
-    val healthMetricProviders: List<HealthMetricProvider>?
+    val healthMetricProviders: List<HealthMetricProvider>?,
+    val publishToDittoCollection: Boolean = true // Toggle to avoid publishing
 )
 
 data class DittoHeartbeatInfo(
@@ -92,6 +93,7 @@ fun observePeers(ditto: Ditto): List<DittoPeer> {
 }
 
 fun addToCollection(info: DittoHeartbeatInfo, config: DittoHeartbeatConfig, ditto: Ditto) {
+    if(!config.publishToDittoCollection) return
     val metaData = config.metaData ?: emptyMap()
     val doc = mapOf(
         "_id" to info.id,
