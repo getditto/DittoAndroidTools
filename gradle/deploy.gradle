@@ -1,30 +1,22 @@
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
-def getValueFromPropertiesFile = { propFile, key ->
-    if (!propFile.isFile() || !propFile.canRead())
-        return null
-    def prop = new Properties()
-    def reader = propFile.newReader()
-    try {
-        prop.load(reader)
-    } finally {
-        reader.close()
+def signingKeyBase64 = findProperty("GPG_SIGNING_IN_MEMORY_KEY")
+def signingPassword = findProperty("GPG_SIGNING_IN_MEMORY_KEY_PWD")
+
+def base64Decode(encodedString){
+    if(encodedString != null) {
+        byte[] decoded = encodedString.decodeBase64()
+        String decode = new String(decoded)
+        return decode
     }
-    return prop.get(key)
+    return null;
 }
 
-def getProperty = { name, defValue ->
-    def prop = project.properties[name] ?:
-            getValueFromPropertiesFile(project.rootProject.file('local.properties'), name)
-    return (null == prop) ? defValue : prop
+signing {
+    useInMemoryPgpKeys(base64Decode(signingKeyBase64), signingPassword)
+    sign publishing.publications
 }
-
-ext['signing.keyId'] = getProperty('signing.keyId', null)
-ext['signing.password'] = getProperty('signing.password', null)
-ext['signing.secretKeyRingFile'] = getProperty('signing.secretKeyRingFile', null)
-ext.ossrhUsername = getProperty('ossrhUsername', null)
-ext.ossrhPassword = getProperty('ossrhPassword', null)
 
 android {
     publishing {
@@ -37,12 +29,13 @@ android {
 
 afterEvaluate {
     publishing {
+
         publications {
             release(MavenPublication) {
                 from components.release
-                groupId libraryGroupId
                 artifactId libraryArtifactId
-                version libraryVersion
+                groupId = 'live.ditto'
+                version = findProperty("LIBRARY_VERSION")
 
                 pom {
                     name = 'Ditto Tools'
@@ -73,23 +66,20 @@ afterEvaluate {
                 }
             }
         }
-
         repositories {
             maven {
-                name = "sonatype"
-                url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-
                 credentials {
-                    username ossrhUsername
-                    password ossrhPassword
+                    username = findProperty("MAVEN_CENTRAL_USERNAME")
+                    password = findProperty("MAVEN_CENTRAL_PASSWORD")
                 }
+
+                def releasesRepoUrl = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+                def snapshotsRepoUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+
+                url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             }
         }
     }
-}
-
-signing {
-    sign publishing.publications
 }
 
 tasks.withType(GenerateModuleMetadata) {
