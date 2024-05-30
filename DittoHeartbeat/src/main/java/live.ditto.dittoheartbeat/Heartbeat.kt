@@ -37,7 +37,6 @@ data class DittoHeartbeatInfo(
     val sdk: String,
     val schema: String,
     val peerKey: String,
-
     /**
      * The current state of any `HealthMetric`s tracked by the Heartbeat Tool.
      */
