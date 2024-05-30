@@ -10,8 +10,11 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import live.ditto.dittohealthmetrics.HealthMetric
+import live.ditto.dittohealthmetrics.HealthMetricProvider
 import live.ditto.health.usecase.GetBluetoothStatusFlow
 import live.ditto.health.usecase.GetDittoMissingPermissionsFlow
+import live.ditto.health.usecase.GetPermissionsMetrics
 import live.ditto.health.usecase.GetWifiStatusFlow
 
 class HealthViewModel(
@@ -21,7 +24,8 @@ class HealthViewModel(
     ),
     getWifiStatusFlow: GetWifiStatusFlow = GetWifiStatusFlow(context = context),
     getBluetoothStatusFlow: GetBluetoothStatusFlow = GetBluetoothStatusFlow(context = context),
-) : ViewModel() {
+    private val getPermissionsMetrics: GetPermissionsMetrics = GetPermissionsMetrics(),
+) : ViewModel(), HealthMetricProvider {
     private var _state = MutableStateFlow(HealthUiState())
     val state = _state.asStateFlow()
 
@@ -58,5 +62,18 @@ class HealthViewModel(
         _state.update {
             it.copy(bluetoothEnabled = status)
         }
+    }
+
+    override val metricName: String
+        get() = getPermissionsMetrics.metricName
+
+    override fun getCurrentState(): HealthMetric {
+        val currentState = _state.value
+
+        return getPermissionsMetrics.execute(
+            currentState.missingPermissions,
+            currentState.wifiEnabled,
+            currentState.bluetoothEnabled
+        )
     }
 }
