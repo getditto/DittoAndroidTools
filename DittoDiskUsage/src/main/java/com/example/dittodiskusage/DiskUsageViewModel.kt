@@ -28,6 +28,13 @@ class DiskUsageViewModel(
     /* Private mutable state */
     private val _uiState = MutableStateFlow(DiskUsageState())
 
+    /// The size over which disk usage is considered unhealthy when used as a `HealthMetric` with the heartbeat tool (this only considers `ditto_store` and `ditto_replication`). Defaults to 2GB
+    var isHealthyMBSizeLimit: Int = TWO_GIGABYTES_IN_MEGABYTES
+        set(value) {
+            field = value
+            getDiskUsageMetrics.isHealthyMBSizeLimit = value
+        }
+
     /* Public immutable state */
     val uiState: StateFlow<DiskUsageState>
         get() = _uiState.asStateFlow()

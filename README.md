@@ -235,6 +235,10 @@ These are the values you need to provide to the Heartbeat:
 4. `healthMetricProviders` List of HealthMetricProviders
 5. `publishToDittoCollection` - Optional - set to false to prevent from publishing the heartbeat to Ditto collection. Default true.
 
+Available `healthMetricProviders`:
+1. HealthViewModel() - health metrics for Permissions Health Tool
+2. DiskUsageViewModel() - health metrics for Ditto disk usage. `isHealthy` is determined by the size of the `ditto_store` and `ditto_replication` folders. The default isHealthy size is 2GB, but this can be configured.
+
 There is a `DittoHeartbeatConfig` data class you can use to construct your configuration.
 
 ```kotlin
@@ -251,7 +255,9 @@ data class DittoHeartbeatConfig(
 // User defines the values here
 // Passed into Heartbeat tool
 var healthMetricProviders: MutableList<HealthMetricProvider> = mutableListOf()
-healthMetricProviders.add(DiskUsageViewModel())
+val diskUsageViewModel = DiskUsageViewModel()
+diskUsageViewModel.isHealthyMBSizeLimit = 2048 //2GB worth of data
+healthMetricProviders.add(diskUsageViewModel)
 val config = DittoHeartbeatConfig(
     id = <unique device id>,
     secondsInterval = 30, //seconds

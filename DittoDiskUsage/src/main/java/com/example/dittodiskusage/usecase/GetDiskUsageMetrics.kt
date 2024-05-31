@@ -9,8 +9,9 @@ import com.example.dittodiskusage.TOTAL_SIZE
 import com.example.dittodiskusage.TWO_GIGABYTES_IN_MEGABYTES
 import live.ditto.dittohealthmetrics.HealthMetric
 
-class GetDiskUsageMetrics {
+class GetDiskUsageMetrics() {
     val metricName: String = METRIC_NAME
+    var isHealthyMBSizeLimit: Int = TWO_GIGABYTES_IN_MEGABYTES
 
     fun execute(currentState: DiskUsageState): HealthMetric {
 
@@ -36,7 +37,7 @@ class GetDiskUsageMetrics {
     private fun healthCheckSize(dittoStoreSize: Int, dittoReplicationSize: Int): Boolean {
         val totalMB = bytesToMegabytes(dittoStoreSize + dittoReplicationSize)
 
-        if(totalMB <= TWO_GIGABYTES_IN_MEGABYTES) {
+        if(totalMB <= isHealthyMBSizeLimit) {
             return true
         }
         return false
