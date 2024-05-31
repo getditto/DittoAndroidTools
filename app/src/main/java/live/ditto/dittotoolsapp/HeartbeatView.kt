@@ -1,6 +1,5 @@
 package live.ditto.dittotoolsapp
 
-
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
@@ -11,10 +10,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.dittodiskusage.DiskUsageViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import live.ditto.Ditto
+import live.ditto.dittohealthmetrics.HealthMetricProvider
 import live.ditto.dittoheartbeat.DittoHeartbeatConfig
 import live.ditto.dittoheartbeat.DittoHeartbeatInfo
 import live.ditto.dittoheartbeat.startHeartbeat
@@ -25,12 +26,16 @@ import java.util.*
 fun ShowHeartbeatData(ditto: Ditto) {
 
     var heartbeatInfo by remember { mutableStateOf<DittoHeartbeatInfo?>(null) }
+    var healthMetricProviders: MutableList<HealthMetricProvider> = mutableListOf()
+    val diskUsageViewModel = DiskUsageViewModel()
+    diskUsageViewModel.isHealthyMBSizeLimit = 2048 //2GB worth of data
+    healthMetricProviders.add(diskUsageViewModel)
 
     val config = DittoHeartbeatConfig(
         //id for testing only. Unique id will not persist
         id = UUID.randomUUID().toString(),
         secondsInterval = 30,
-        healthMetricProviders = emptyList(),
+        healthMetricProviders = healthMetricProviders,
         publishToDittoCollection = true // Set to false to avoid publishing to collection
     )
 

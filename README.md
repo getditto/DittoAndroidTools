@@ -232,7 +232,12 @@ These are the values you need to provide to the Heartbeat:
 1. `id` - Unique value that identifies the device
 2. `secondsInterval` - The frequency at which the Heartbeat will scrape the data
 3. `metaData` -  Optional - any metadata you wish to add to the Heartbeat
-4. `publishToDittoCollection` - Optional - set to false to prevent from publishing the heartbeat to Ditto collection. Default true.
+4. `healthMetricProviders` List of HealthMetricProviders
+5. `publishToDittoCollection` - Optional - set to false to prevent from publishing the heartbeat to Ditto collection. Default true.
+
+Available `healthMetricProviders`:
+1. HealthViewModel() - health metrics for Permissions Health Tool
+2. DiskUsageViewModel() - health metrics for Ditto disk usage. `isHealthy` is determined by the size of the `ditto_store` and `ditto_replication` folders. The default isHealthy size is 2GB, but this can be configured.
 
 There is a `DittoHeartbeatConfig` data class you can use to construct your configuration.
 
@@ -241,19 +246,25 @@ There is a `DittoHeartbeatConfig` data class you can use to construct your confi
 data class DittoHeartbeatConfig(
     val id: String,
     val secondsInterval: Int,
-    val metaData: Map<String, Any>? = null, 
-    val publishToDittoCollection: Boolean = true // Optional - toggle to avoid publishing to Ditto collection.
+    val metaData: Map<String, Any>? = null,
+    val healthMetricProviders: List<HealthMetricProvider>?,
+    val publishToDittoCollection: Boolean = true // Toggle to avoid publishing
 )
 
 // Example:
 // User defines the values here
 // Passed into Heartbeat tool
+var healthMetricProviders: MutableList<HealthMetricProvider> = mutableListOf()
+val diskUsageViewModel = DiskUsageViewModel()
+diskUsageViewModel.isHealthyMBSizeLimit = 2048 //2GB worth of data
+healthMetricProviders.add(diskUsageViewModel)
 val config = DittoHeartbeatConfig(
     id = <unique device id>,
     secondsInterval = 30, //seconds
     metaData = mapOf(
         "deviceType" to "KDS"
     ),
+    healthMetricProviders = healthMetricProviders,
     publishToDittoCollection = true
 )
 
@@ -292,7 +303,8 @@ This is the model of the data and what you can use for reference
         <peerKey>…,
         …
     },
-    metaData: {}
+    metaData: {},
+    healthMetrics: {},
 }
 ```
 
@@ -308,7 +320,9 @@ data class DittoHeartbeatInfo(
     val secondsInterval: Int,
     val presenceSnapshotDirectlyConnectedPeersCount: Int,
     val presenceSnapshotDirectlyConnectedPeers: Map<String, Any>,
-    val sdk: String
+    val sdk: String,
+    var healthMetrics: MutableMap<String, HealthMetric> = mutableMapOf()
+
 )
 ```
 
@@ -330,7 +344,7 @@ Maven:
 </dependency>
 ```
 
-### 6. Presence Degradation Reporter
+### 7. Presence Degradation Reporter
 Tracks the status of your mesh, allowing to define the minimum of required peers that needs to be connected.
 Exposes an API to notify when the condition of minimum required peers is not met.
 
