@@ -1,30 +1,15 @@
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
-def getValueFromPropertiesFile = { propFile, key ->
-    if (!propFile.isFile() || !propFile.canRead())
-        return null
-    def prop = new Properties()
-    def reader = propFile.newReader()
-    try {
-        prop.load(reader)
-    } finally {
-        reader.close()
-    }
-    return prop.get(key)
-}
 
-def getProperty = { name, defValue ->
-    def prop = project.properties[name] ?:
-            getValueFromPropertiesFile(project.rootProject.file('local.properties'), name)
-    return (null == prop) ? defValue : prop
-}
 
-ext['signing.keyId'] = getProperty('signing.keyId', null)
-ext['signing.password'] = getProperty('signing.password', null)
-ext['signing.secretKeyRingFile'] = getProperty('signing.secretKeyRingFile', null)
-ext.ossrhUsername = getProperty('ossrhUsername', null)
-ext.ossrhPassword = getProperty('ossrhPassword', null)
+def signingKey = findProperty('SIGNING_KEY')
+def signingKeyPwd = findProperty('SIGNING_KEY_PWD')
+
+signing {
+    useInMemoryPgpKeys(signingKey, signingKeyPwd)
+    sign publishing.publications
+}
 
 android {
     publishing {
@@ -40,9 +25,7 @@ afterEvaluate {
         publications {
             release(MavenPublication) {
                 from components.release
-                groupId libraryGroupId
                 artifactId libraryArtifactId
-                version libraryVersion
 
                 pom {
                     name = 'Ditto Tools'
@@ -73,23 +56,7 @@ afterEvaluate {
                 }
             }
         }
-
-        repositories {
-            maven {
-                name = "sonatype"
-                url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-
-                credentials {
-                    username ossrhUsername
-                    password ossrhPassword
-                }
-            }
-        }
     }
-}
-
-signing {
-    sign publishing.publications
 }
 
 tasks.withType(GenerateModuleMetadata) {

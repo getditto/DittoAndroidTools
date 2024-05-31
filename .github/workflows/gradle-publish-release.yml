@@ -1,0 +1,52 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a package using Gradle and then publish it to GitHub packages when a release is created
+# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#Publishing-using-gradle
+
+name: Gradle Package
+
+on:
+  release:
+    types: [released]
+
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Echo event payload
+        run: |
+          
+          echo "${{ github.event.release.tag_name }}"
+          
+
+      - uses: actions/checkout@v4
+      - name: Set up JDK 22
+        uses: actions/setup-java@v4
+        with:
+          java-version: '22'
+          distribution: 'temurin'
+
+      - name: Define library version env var at run-time - RELEASE
+        run: |
+          echo 'export ORG_GRADLE_PROJECT_LIBRARY_VERSION=${{ github.event.release.tag_name }}' >> $GITHUB_ENV
+          source $GITHUB_ENV
+
+      # This step is needed because Gradle doesn't like to see GPG keys from env vars (for reasons unbeknownst to me)
+      - name: Inject Gradle signing key from GHA secret
+        run: |
+          echo $GPG_SIGNING_KEY \
+            | awk 'NR == 1 { print "SIGNING_KEY=" } 1' ORS='\\n' \
+            >> gradle.properties
+
+        # add closeAndReleaseSonatypeStagingRepository to below to automate the whole process.
+      - name: Publish to Maven Central
+        run: |
+          ./gradlew assemble publishToSonatype 

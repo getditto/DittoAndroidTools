@@ -2,20 +2,24 @@ plugins {
     alias libs.plugins.com.android.application apply false
     alias libs.plugins.com.android.library apply false
     alias libs.plugins.org.jetbrains.kotlin.android apply false
-    alias libs.plugins.io.github.gradle.nexus.publish.plugin apply false
+
+    //TODO: Cannot get alias for the nexus publish plugin to work.
+//    alias libs.plugins.io.github.gradle.nexus.publish.plugin apply false
+    id("io.github.gradle-nexus.publish-plugin") version "2.0.0"
 }
+
+
+
+/* Publishing the libraries to Maven Central  using Gradle Nexus Publish Plugin - taken from https://circleci.com/blog/publishing-java-android-libraries/  */
 
 group 'live.ditto'
 version = findProperty("LIBRARY_VERSION")
 
 nexusPublishing {
     repositories {
-        sonatype {
-            //only for users registered in Sonatype after 24 Feb 2021
+        sonatype{
             nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
             snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
-            username = findProperty('OSSRH_USERNAME')
-            password = findProperty('OSSRH_PASSWORD')
         }
     }
 }
