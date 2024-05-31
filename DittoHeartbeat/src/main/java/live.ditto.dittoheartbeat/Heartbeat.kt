@@ -58,7 +58,7 @@ private fun updateHealthMetrics(config: DittoHeartbeatConfig) {
 fun startHeartbeat(ditto: Ditto, config: DittoHeartbeatConfig): Flow<DittoHeartbeatInfo> = flow {
     val cancelable = AtomicBoolean(false)
 
-    if (heartbeatSubscription == null) {
+    if (heartbeatSubscription == null && config.publishToDittoCollection) {
         heartbeatSubscription = ditto.sync.registerSubscription("SELECT * FROM $HEARTBEAT_COLLECTION_COLLECTION_NAME")
     }
 
