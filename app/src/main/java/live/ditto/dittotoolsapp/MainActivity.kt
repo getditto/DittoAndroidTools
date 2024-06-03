@@ -38,6 +38,7 @@ import live.ditto.DittoLogger
 import live.ditto.android.DefaultAndroidDittoDependencies
 import live.ditto.dittodatabrowser.DittoDataBrowser
 import live.ditto.dittotoolsapp.ui.theme.DittoToolsAppTheme
+import live.ditto.dittotoolsviewer.presentation.DittoToolsViewer
 import live.ditto.health.HealthScreen
 import live.ditto.presencedegradationreporter.PresenceDegradationReporterScreen
 import live.ditto.transports.DittoSyncPermissions
@@ -76,7 +77,8 @@ class MainActivity : ComponentActivity() {
                     }
 
                     ditto?.let {
-                        Root(ditto = it)
+//                        Root(ditto = it)
+                        DittoToolsViewer()
                     }
                 }
             }

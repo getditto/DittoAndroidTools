@@ -72,5 +72,7 @@ dependencies {
     implementation(project(":DittoPresenceDegradationReporter"))
     implementation project(path: ':DittoHealthMetrics')
 
+    implementation(project(":DittoToolsViewer"))
+
     testImplementation libs.junit.junit
 }
