@@ -8,8 +8,8 @@ plugins {
 }
 
 extra["libraryGroupId"] = "live.ditto"
-extra["libraryArtifactId"]  = "dittotoolsviewer"
-extra["libraryVersion"]  = "1.0.0"
+extra["libraryArtifactId"] = "dittotoolsviewer"
+extra["libraryVersion"] = "1.0.0"
 
 apply {
     from("${rootProject.projectDir}/gradle/deploy.gradle")
@@ -25,6 +25,29 @@ dependencies {
     implementation(libs.core.ktx)
     implementation(libs.androidx.appcompat.appcompat)
     implementation(libs.material)
+
+    implementation(platform(libs.androidx.compose.composeBom))
+    implementation(libs.androidx.compose.ui.ui)
+    implementation(libs.androidx.compose.ui.uiToolingPreview)
+    implementation(libs.androidx.navigation.navigationCompose)
+    implementation(libs.androidx.compose.material3.material3)
+
+    implementation(libs.live.ditto.databrowser)
+    implementation(libs.live.ditto.exportlogs)
+    implementation(libs.live.ditto.presenceviewer)
+    implementation(project(":DittoExporter"))
+
+    // TODO: Use maven version once this ticket is done
+    implementation(project(":DittoHeartbeat"))
+
+    // TODO: Use maven version once this ticket is done
+    //       https://github.com/getditto/DittoAndroidTools/issues/31
+    implementation(project(":DittoDiskUsage"))
+    // implementation libs.live.ditto.diskusage
+
+    implementation(libs.live.ditto.health)
+    implementation(project(":DittoPresenceDegradationReporter"))
+    implementation(project(":DittoHealthMetrics"))
 
     testImplementation(libs.junit.junit)
 

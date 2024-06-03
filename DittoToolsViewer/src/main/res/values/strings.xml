@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tools_menu">Tools Menu</string>
+    <string name="tools_menu_content_description">Tools Menu Icon</string>
+</resources>
