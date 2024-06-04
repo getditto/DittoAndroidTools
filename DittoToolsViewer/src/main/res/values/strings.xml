@@ -2,4 +2,5 @@
 <resources>
     <string name="tools_menu">Tools Menu</string>
     <string name="tools_menu_content_description">Tools Menu Icon</string>
+    <string name="drawer_title">Tools</string>
 </resources>
