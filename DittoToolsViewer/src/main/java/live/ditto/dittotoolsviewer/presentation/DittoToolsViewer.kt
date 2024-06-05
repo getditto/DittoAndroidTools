@@ -23,6 +23,7 @@ import com.example.dittodiskusage.DittoDiskUsage
 import ditto.live.dittopresenceviewer.DittoPresenceViewer
 import live.ditto.Ditto
 import live.ditto.dittodatabrowser.DittoDataBrowser
+import live.ditto.dittoexportlogs.ExportLogs
 import live.ditto.dittotoolsviewer.R
 import live.ditto.dittotoolsviewer.presentation.navigation.Screens
 import live.ditto.health.HealthScreen
@@ -39,6 +40,9 @@ private fun DittoToolsViewerScaffold(ditto: Ditto) {
     var showMenu by remember {
         mutableStateOf(false)
     }
+    var showExportLogs by remember {
+        mutableStateOf(false)
+    }
 
     val navController = rememberNavController()
 
@@ -53,7 +57,10 @@ private fun DittoToolsViewerScaffold(ditto: Ditto) {
         ),
         ToolMenuItem(
             label = "Export Logs",
-            route = Screens.ExportLogsScreen.route
+            route = Screens.ExportLogsScreen.route,
+            onClick = {
+                showExportLogs = true
+            }
         ),
         ToolMenuItem(
             label = "Disk Usage",
@@ -101,7 +108,14 @@ private fun DittoToolsViewerScaffold(ditto: Ditto) {
                 DittoDataBrowser(ditto = ditto)
             }
             composable(Screens.ExportLogsScreen.route) {
-                Text(text = "todo: export logs")
+                if (showExportLogs) {
+                    ExportLogs(
+                        onDismiss = {
+                            showExportLogs = false
+                            navController.popBackStack()
+                        }
+                    )
+                }
             }
             composable(Screens.DiskUsageScreen.route) {
                 DittoDiskUsage(ditto = ditto)
