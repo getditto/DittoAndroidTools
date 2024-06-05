@@ -9,19 +9,21 @@ import com.example.dittodiskusage.TOTAL_SIZE
 import com.example.dittodiskusage.TWO_GIGABYTES_IN_MEGABYTES
 import live.ditto.dittohealthmetrics.HealthMetric
 
-class GetDiskUsageMetrics() {
+class GetDiskUsageMetrics {
     val metricName: String = METRIC_NAME
     var isHealthyMBSizeLimit: Int = TWO_GIGABYTES_IN_MEGABYTES
 
     fun execute(currentState: DiskUsageState): HealthMetric {
 
-        val dittoStoreSize: Int = currentState.children.first { shortRelativePath(it.relativePath) == DITTO_STORE}.sizeInBytes
-        val dittoReplicationSize: Int = currentState.children.first { shortRelativePath(it.relativePath) == DITTO_REPLICATION}.sizeInBytes
+        val dittoStoreSize: Int =
+            currentState.children.first { shortRelativePath(it.relativePath) == DITTO_STORE }.sizeInBytes
+        val dittoReplicationSize: Int = currentState.children.firstOrNull {
+            shortRelativePath(it.relativePath) == DITTO_REPLICATION }?.sizeInBytes ?: 0
 
         val isHealthy = healthCheckSize(dittoStoreSize, dittoReplicationSize)
 
         val details = mutableMapOf<String, String>().apply {
-            for(child in currentState.children) {
+            for (child in currentState.children) {
                 this[shortRelativePath(child.relativePath)] = child.size
             }
             this[ROOT_PATH] = currentState.rootPath
@@ -37,10 +39,7 @@ class GetDiskUsageMetrics() {
     private fun healthCheckSize(dittoStoreSize: Int, dittoReplicationSize: Int): Boolean {
         val totalMB = bytesToMegabytes(dittoStoreSize + dittoReplicationSize)
 
-        if(totalMB <= isHealthyMBSizeLimit) {
-            return true
-        }
-        return false
+        return totalMB <= isHealthyMBSizeLimit
     }
 
     private fun bytesToMegabytes(bytes: Int): Int {

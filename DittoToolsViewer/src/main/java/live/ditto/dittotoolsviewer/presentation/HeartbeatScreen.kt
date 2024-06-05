@@ -1,4 +1,4 @@
-package live.ditto.dittotoolsapp
+package live.ditto.dittotoolsviewer.presentation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -23,7 +23,7 @@ import java.util.*
 
 
 @Composable
-fun ShowHeartbeatData(ditto: Ditto) {
+fun HeartbeatScreen(ditto: Ditto) {
 
     var heartbeatInfo by remember { mutableStateOf<DittoHeartbeatInfo?>(null) }
     var healthMetricProviders: MutableList<HealthMetricProvider> = mutableListOf()

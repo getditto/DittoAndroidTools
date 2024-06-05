@@ -24,11 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.example.dittodiskusage.DittoDiskUsage
-import ditto.live.dittopresenceviewer.DittoPresenceViewer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import live.ditto.Ditto
@@ -36,11 +31,8 @@ import live.ditto.DittoIdentity
 import live.ditto.DittoLogLevel
 import live.ditto.DittoLogger
 import live.ditto.android.DefaultAndroidDittoDependencies
-import live.ditto.dittodatabrowser.DittoDataBrowser
 import live.ditto.dittotoolsapp.ui.theme.DittoToolsAppTheme
 import live.ditto.dittotoolsviewer.presentation.DittoToolsViewer
-import live.ditto.health.HealthScreen
-import live.ditto.presencedegradationreporter.PresenceDegradationReporterScreen
 import live.ditto.transports.DittoSyncPermissions
 
 class MainActivity : ComponentActivity() {
@@ -115,28 +107,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-
-@Composable
-private fun Root(ditto: Ditto) {
-    val navController = rememberNavController()
-
-    // A surface container using the 'background' color from the theme
-    Surface(color = MaterialTheme.colorScheme.background) {
-        NavHost(navController = navController, startDestination = "showViews") {
-            composable("showViews") {
-                ShowViewsScreen(
-                    navController = navController, ditto = ditto
-                )
-            }
-            composable("dataBrowser") { DittoDataBrowser(ditto = ditto) }
-            composable("diskUsage") { DittoDiskUsage(ditto = ditto) }
-            composable("presenceViewer") { DittoPresenceViewer(ditto = ditto) }
-            composable("health") { HealthScreen() }
-            composable("heartbeatInfo") { ShowHeartbeatData(ditto = ditto)}
-            composable("presencedegradationreporter") { PresenceDegradationReporterScreen(ditto = ditto) }
-        }
-    }
-}
 
 @Composable
 private fun DittoError(text: String) {

@@ -60,7 +60,7 @@ private fun DittoToolsViewerScaffold(ditto: Ditto) {
             route = Screens.DiskUsageScreen.route
         ),
         ToolMenuItem(
-            label = "Health",
+            label = "Health Viewer",
             route = Screens.HealthScreen.route
         ),
         ToolMenuItem(
@@ -110,7 +110,7 @@ private fun DittoToolsViewerScaffold(ditto: Ditto) {
                 HealthScreen()
             }
             composable(Screens.HeartbeatScreen.route) {
-                Text(text = "todo")
+                HeartbeatScreen(ditto = ditto)
             }
             composable(Screens.PresenceDegradationReporterScreen.route) {
                 PresenceDegradationReporterScreen(ditto = ditto)
