@@ -9,29 +9,114 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.dittodiskusage.DittoDiskUsage
+import ditto.live.dittopresenceviewer.DittoPresenceViewer
+import live.ditto.Ditto
+import live.ditto.dittodatabrowser.DittoDataBrowser
 import live.ditto.dittotoolsviewer.R
+import live.ditto.dittotoolsviewer.presentation.navigation.Screens
+import live.ditto.health.HealthScreen
+import live.ditto.presencedegradationreporter.PresenceDegradationReporterScreen
 
 @Composable
-fun DittoToolsViewer() {
-    DittoToolsViewerScaffold {
-        //todo: show menu popup
-    }
+fun DittoToolsViewer(ditto: Ditto) {
+    DittoToolsViewerScaffold(ditto = ditto)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DittoToolsViewerScaffold(onFloatingActionButtonClicked: () -> Unit) {
+private fun DittoToolsViewerScaffold(ditto: Ditto) {
+    var showMenu by remember {
+        mutableStateOf(false)
+    }
+
+    val navController = rememberNavController()
+
+    val menuItems = listOf(
+        ToolMenuItem(
+            label = "Presence Viewer",
+            route = Screens.PresenceViewerScreen.route
+        ),
+        ToolMenuItem(
+            label = "Data Browser",
+            route = Screens.DataBrowserScreen.route
+        ),
+        ToolMenuItem(
+            label = "Export Logs",
+            route = Screens.ExportLogsScreen.route
+        ),
+        ToolMenuItem(
+            label = "Disk Usage",
+            route = Screens.DiskUsageScreen.route
+        ),
+        ToolMenuItem(
+            label = "Health",
+            route = Screens.HealthScreen.route
+        ),
+        ToolMenuItem(
+            label = "Heartbeat",
+            route = Screens.HeartbeatScreen.route
+        ),
+        ToolMenuItem(
+            label = "Presence Degradation Reporter",
+            route = Screens.PresenceDegradationReporterScreen.route
+        ),
+    )
+
     Scaffold(
         floatingActionButton = {
             MenuFloatingActionButton {
-                onFloatingActionButtonClicked()
+                showMenu = true
             }
         }
-    ) {
-        MainScreen(modifier = Modifier.padding(it))
+    ) { contentPadding ->
+        if (showMenu) {
+            ToolsMenu(
+                navController = navController,
+                menuItems = menuItems,
+                onDismissRequest = { showMenu = false }
+            )
+        }
+
+        NavHost(navController = navController, startDestination = Screens.MainScreen.route) {
+            composable(Screens.MainScreen.route) {
+                MainScreen(
+                    modifier = Modifier.padding(contentPadding)
+                )
+            }
+            composable(Screens.PresenceViewerScreen.route) {
+                DittoPresenceViewer(ditto = ditto)
+            }
+            composable(Screens.DataBrowserScreen.route) {
+                DittoDataBrowser(ditto = ditto)
+            }
+            composable(Screens.ExportLogsScreen.route) {
+                Text(text = "todo: export logs")
+            }
+            composable(Screens.DiskUsageScreen.route) {
+                DittoDiskUsage(ditto = ditto)
+            }
+            composable(Screens.HealthScreen.route) {
+                HealthScreen()
+            }
+            composable(Screens.HeartbeatScreen.route) {
+                Text(text = "todo")
+            }
+            composable(Screens.PresenceDegradationReporterScreen.route) {
+                PresenceDegradationReporterScreen(ditto = ditto)
+            }
+        }
+
     }
 }
 
@@ -46,22 +131,8 @@ private fun MenuFloatingActionButton(onClick: () -> Unit) {
 
 @Preview
 @Composable
-private fun DittoToolsViewerScaffoldPreview() {
-    DittoToolsViewerScaffold {
-
-    }
-}
-
-@Preview
-@Composable
 private fun MenuFloatingActionButtonPreview() {
-    MenuFloatingActionButton {
-        // no op
-    }
-}
-
-@Preview
-@Composable
-private fun DittoToolsViewerPreview() {
-    DittoToolsViewer()
+    MenuFloatingActionButton(
+        onClick = { }
+    )
 }

@@ -32,6 +32,8 @@ dependencies {
     implementation(libs.androidx.navigation.navigationCompose)
     implementation(libs.androidx.compose.material3.material3)
 
+    implementation(libs.live.ditto.ditto)
+
     implementation(libs.live.ditto.databrowser)
     implementation(libs.live.ditto.exportlogs)
     implementation(libs.live.ditto.presenceviewer)
