@@ -68,7 +68,6 @@ private fun ToolsMenuItems(
                 onClick = {
                     onDismissRequest()
                     navController.navigate(toolMenuItem.route)
-                    toolMenuItem.onClick()
                 }
             )
         }
@@ -144,6 +143,5 @@ private fun ToolsMenuPreview() {
 
 data class ToolMenuItem(
     val label: String,
-    val route: String,
-    val onClick: () -> Unit = { }
+    val route: String
 )
