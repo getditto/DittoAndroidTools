@@ -31,8 +31,7 @@ jobs:
 
       - name: Define library version env var at run-time - RELEASE
         run: |
-          echo 'export ORG_GRADLE_PROJECT_LIBRARY_VERSION=${{ github.event.release.tag_name }}' >> $GITHUB_ENV
-          source $GITHUB_ENV
+          echo 'ORG_GRADLE_PROJECT_LIBRARY_VERSION=${{ github.event.release.tag_name }}' >> $GITHUB_ENV
 
       - name: Publish to Maven Central
         env:
@@ -41,4 +40,4 @@ jobs:
           ORG_GRADLE_PROJECT_GPG_SIGNING_IN_MEMORY_KEY: ${{ secrets.ORG_GRADLE_PROJECT_GPG_SIGNING_IN_MEMORY_KEY }}
           ORG_GRADLE_PROJECT_GPG_SIGNING_IN_MEMORY_KEY_PWD: ${{ secrets.ORG_GRADLE_PROJECT_GPG_SIGNING_IN_MEMORY_KEY_PWD }}
         run: |
-          ./gradlew assemble publish 
+          ./gradlew publish 
