@@ -77,8 +77,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     ditto?.let {
-//                        Root(ditto = it)
-                        DittoToolsViewer()
+                        DittoToolsViewer(ditto = it)
                     }
                 }
             }
