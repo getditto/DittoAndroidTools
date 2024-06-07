@@ -5,11 +5,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,6 +35,7 @@ import live.ditto.dittotoolsviewer.presentation.ui.theme.ToolsMenuHeaderTextColo
 fun ToolsMenu(
     navController: NavHostController,
     menuItems: List<ToolMenuItem>,
+    onExit: () -> Unit,
     onDismissRequest: () -> Unit
 ) {
     Dialog(onDismissRequest = { onDismissRequest() }) {
@@ -42,7 +48,9 @@ fun ToolsMenu(
                 containerColor = MenuCardContainerColor
             )
         ) {
-            ToolsMenuHeader()
+            ToolsMenuHeader(
+                onExit = onExit
+            )
             ToolsMenuItems(
                 menuItems = menuItems,
                 onDismissRequest = onDismissRequest,
@@ -99,20 +107,27 @@ private fun ToolMenuItem(
 }
 
 @Composable
-private fun ToolsMenuHeader() {
+private fun ToolsMenuHeader(
+    onExit: () -> Unit = { }
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .background(color = ToolsMenuHeaderBackground)
             .padding(8.dp)
     ) {
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = "Ditto Tools",
-            style = MaterialTheme.typography.titleLarge,
-            textAlign = TextAlign.Center,
-            color = ToolsMenuHeaderTextColor
-        )
+        Row {
+            IconButton(onClick = { onExit() }) {
+                Icon(Icons.Filled.Close, "Close")
+            }
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = "Ditto Tools",
+                style = MaterialTheme.typography.titleLarge,
+                textAlign = TextAlign.Center,
+                color = ToolsMenuHeaderTextColor
+            )
+        }
     }
 }
 
@@ -137,6 +152,7 @@ private fun ToolsMenuPreview() {
     ToolsMenu(
         navController = rememberNavController(),
         menuItems = emptyList(),
+        onExit = { },
         onDismissRequest = { }
     )
 }

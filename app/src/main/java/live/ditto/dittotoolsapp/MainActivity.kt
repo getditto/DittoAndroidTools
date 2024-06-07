@@ -69,7 +69,10 @@ class MainActivity : ComponentActivity() {
                     }
 
                     ditto?.let {
-                        DittoToolsViewer(ditto = it)
+                        DittoToolsViewer(
+                            ditto = it,
+                            onExitTools = { }
+                        )
                     }
                 }
             }

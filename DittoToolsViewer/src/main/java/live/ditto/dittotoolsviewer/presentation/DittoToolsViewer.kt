@@ -33,14 +33,21 @@ import live.ditto.health.HealthScreen
 import live.ditto.presencedegradationreporter.PresenceDegradationReporterScreen
 
 @Composable
-fun DittoToolsViewer(ditto: Ditto) {
-    DittoToolsViewerScaffold(ditto = ditto)
+fun DittoToolsViewer(
+    ditto: Ditto,
+    onExitTools: () -> Unit
+) {
+    DittoToolsViewerScaffold(
+        ditto = ditto,
+        onExitTools = onExitTools
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DittoToolsViewerScaffold(
     ditto: Ditto,
+    onExitTools: () -> Unit,
     viewModel: ToolsViewerViewModel = ToolsViewerViewModel()
 ) {
     var showMenu by remember {
@@ -62,7 +69,8 @@ private fun DittoToolsViewerScaffold(
             navController = navController,
             viewModel = viewModel,
             contentPadding = contentPadding,
-            ditto = ditto
+            ditto = ditto,
+            onExitTools = onExitTools
         )
     }
 }
@@ -74,12 +82,14 @@ private fun ToolsViewerContent(
     navController: NavHostController,
     viewModel: ToolsViewerViewModel,
     contentPadding: PaddingValues,
-    ditto: Ditto
+    ditto: Ditto,
+    onExitTools: () -> Unit
 ) {
     if (showMenu) {
         ToolsMenu(
             navController = navController,
             menuItems = viewModel.toolsMenuItems(),
+            onExit = onExitTools,
             onDismissRequest = {
                 onToolsMenuDismiss()
             }
