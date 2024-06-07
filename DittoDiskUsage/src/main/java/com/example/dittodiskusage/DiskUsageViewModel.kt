@@ -28,7 +28,7 @@ class DiskUsageViewModel(
     private val _uiState = MutableStateFlow(DiskUsageState())
 
     /// The size over which disk usage is considered unhealthy when used as a `HealthMetric` with the heartbeat tool (this only considers `ditto_store` and `ditto_replication`). Defaults to 500MB
-    var unhealthySizeInBytes: Int = FIVE_HUNDRED_MEGABYTES_IN_BYTES
+    private var unhealthySizeInBytes: Int = FIVE_HUNDRED_MEGABYTES_IN_BYTES
         set(value) {
             field = value
             getDiskUsageMetrics.unhealthySizeInBytes = value
@@ -67,6 +67,7 @@ class DiskUsageViewModel(
                 totalSizeInBytes = totalSizeInBytes,
                 totalSize = getFileSize(totalSizeInBytes),
                 children = children,
+                unhealthySizeInBytes = this.unhealthySizeInBytes
             )
         }
     }
