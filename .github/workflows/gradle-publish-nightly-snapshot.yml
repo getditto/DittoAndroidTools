@@ -1,0 +1,48 @@
+#name: Publish nightly snapshots
+#
+#on:
+#  push
+#
+##on:
+##  #  schedule:
+##  #      - cron: "5 0 * * TUE-SAT"
+##  push:
+##    branches:
+##      - 'zm/cicd-pipeline'
+#
+#jobs:
+#  build-and-publish-snapshot:
+#    runs-on: ubuntu-latest
+#    permissions:
+#      contents: read
+#    steps:
+#      - uses: actions/checkout@v4
+#        with:
+#          fetch-depth: 0
+#      - name: Set up JDK 18
+#        uses: actions/setup-java@v4
+#        with:
+#          java-version: '18'
+#          distribution: 'temurin'
+#          #          server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
+#          #          settings-path: ${{ github.workspace }} # location for the settings.xml file
+#      - name: Define library version env var at run-time - SNAPSHOT
+#        run: |
+#          echo "ORG_GRADLE_PROJECT_LIBRARY_VERSION=`git tag | tail -1`-SNAPSHOT" >> $GITHUB_ENV
+#
+#      # This step is needed because Gradle doesn't like to see GPG keys from env vars (for reasons unbeknownst to me)
+##      - name: Inject Gradle signing key from GHA secret
+##        run: |
+##          echo $GPG_SIGNING_KEY \
+##            | awk 'NR == 1 { print "SIGNING_KEY=" } 1' ORS='\\n' \
+##            >> gradle.properties
+#
+#      - name: Publish snapshots to Maven Central
+#        env:
+#          ORG_GRADLE_PROJECT_MAVEN_CENTRAL_USERNAME: ${{ secrets.ORG_GRADLE_PROJECT_MAVEN_CENTRAL_USERNAME }}
+#          ORG_GRADLE_PROJECT_MAVEN_CENTRAL_PASSWORD: ${{ secrets.ORG_GRADLE_PROJECT_MAVEN_CENTRAL_PASSWORD }}
+#          ORG_GRADLE_PROJECT_GPG_SIGNING_IN_MEMORY_KEY: ${{ secrets.ORG_GRADLE_PROJECT_GPG_SIGNING_IN_MEMORY_KEY }}
+#          ORG_GRADLE_PROJECT_GPG_SIGNING_IN_MEMORY_KEY_PWD: ${{ secrets.ORG_GRADLE_PROJECT_GPG_SIGNING_IN_MEMORY_KEY_PWD }}
+#
+#        run: |
+#          ./gradlew publish
