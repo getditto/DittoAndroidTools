@@ -22,6 +22,7 @@ import live.ditto.dittoheartbeat.startHeartbeat
 import java.util.*
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ShowHeartbeatData(ditto: Ditto) {
 
@@ -29,7 +30,7 @@ fun ShowHeartbeatData(ditto: Ditto) {
     var healthMetricProviders: MutableList<HealthMetricProvider> = mutableListOf()
     val diskUsageViewModel = DiskUsageViewModel()
     diskUsageViewModel.isHealthyMBSizeLimit = 2048 //2GB worth of data
-    healthMetricProviders.add(diskUsageViewModel)
+//    healthMetricProviders.add(diskUsageViewModel)
 
     val config = DittoHeartbeatConfig(
         //id for testing only. Unique id will not persist

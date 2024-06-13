@@ -3,10 +3,10 @@ plugins {
     id "org.jetbrains.kotlin.android"
 }
 
+ext.libraryArtifactId = "dittoheartbeat"
+
 apply from: "$rootProject.projectDir/gradle/android-common.gradle"
 apply from: "$rootProject.projectDir/gradle/deploy.gradle"
-
-ext.libraryArtifactId = "dittoheartbeat"
 
 android {
     namespace 'live.ditto.dittoheartbeat'
