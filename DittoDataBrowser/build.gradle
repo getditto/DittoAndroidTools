@@ -2,13 +2,9 @@ plugins {
     alias libs.plugins.com.android.library
     alias libs.plugins.org.jetbrains.kotlin.android
 }
+ext.libraryArtifactId = "dittodatabrowser"
 
 apply from: "$rootProject.projectDir/gradle/android-common.gradle"
-
-
-ext.libraryGroupId = "live.ditto"
-ext.libraryArtifactId = "dittodatabrowser"
-ext.libraryVersion = "0.0.5"
 apply from: "$rootProject.projectDir/gradle/deploy.gradle"
 
 android {
