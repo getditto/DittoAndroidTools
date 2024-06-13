@@ -14,8 +14,10 @@ def base64Decode(encodedString){
 }
 
 signing {
-    useInMemoryPgpKeys(base64Decode(signingKeyBase64), signingPassword)
-    sign publishing.publications
+    if(project.hasProperty("PUBLISH_TO_MAVEN_CENTRAL")){
+        useInMemoryPgpKeys(base64Decode(signingKeyBase64), signingPassword)
+        sign publishing.publications
+    }
 }
 
 android {
