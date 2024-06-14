@@ -11,13 +11,29 @@ Issues and pull requests welcome!
 * Android 8.0+
 * Jetpack Compose
 
-## Repository
-Ditto tools are deployed in Maven Central. Be sure to include it in your list of repositories. 
+## Installing
+Ditto tools are released via Maven Central. Be sure to include it in your list of repositories. 
+
 ```properties
 repositories {
     mavenCentral()
 }
 ```
+
+### List of tools and versions
+
+| Tool Name                        | Gradle artifact                                            |
+|----------------------------------|------------------------------------------------------------|
+| 1. Presence Viewer               | `'live.ditto:dittopresenceviewer:LIBRARY_VERSION'`         |
+| 2. Data Browser                  | `'live.ditto:dittodatabrowser:LIBRARY_VERSION'`            |
+| 3. Export Logs                   | `'live.ditto:dittoexportlogs:LIBRARY_VERSION'`             |
+| 4. Disk Usage                    | `'live.ditto:dittodiskusage:LIBRARY_VERSION'`              |
+| 5. Health                        | `'live.ditto:health:LIBRARY_VERSION'`                      |
+| 6. Heartbeat                     | `'live.ditto:dittoheartbeat:LIBRARY_VERSION'`              |
+| 7. Presence Degradation Reporter | `'live.ditto:presencedegradationreporter:LIBRARY_VERSION'` |
+
+The latest released version for all libraries is: `1.0.0`.
+You can find the list of versions and release notes in the [Releases tab](https://github.com/getditto/DittoAndroidTools/releases).
 
 ## Usage
 
