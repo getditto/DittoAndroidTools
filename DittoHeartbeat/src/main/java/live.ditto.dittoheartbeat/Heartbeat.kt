@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.flow
 import live.ditto.Ditto
 import live.ditto.DittoConnectionType
 import live.ditto.DittoPeer
-import live.ditto.dittohealthmetrics.HealthMetric
-import live.ditto.dittohealthmetrics.HealthMetricProvider
+import live.ditto.healthmetrics.HealthMetric
+import live.ditto.healthmetrics.HealthMetricProvider
 import org.joda.time.DateTime
 import java.util.Base64
 import java.util.concurrent.atomic.AtomicBoolean

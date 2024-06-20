@@ -7,7 +7,7 @@ import com.example.dittodiskusage.METRIC_NAME
 import com.example.dittodiskusage.ROOT_PATH
 import com.example.dittodiskusage.TOTAL_SIZE
 import com.example.dittodiskusage.TWO_GIGABYTES_IN_MEGABYTES
-import live.ditto.dittohealthmetrics.HealthMetric
+import live.ditto.healthmetrics.HealthMetric
 
 class GetDiskUsageMetrics() {
     val metricName: String = METRIC_NAME

@@ -15,7 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import live.ditto.Ditto
-import live.ditto.dittohealthmetrics.HealthMetricProvider
+import live.ditto.healthmetrics.HealthMetricProvider
 import live.ditto.dittoheartbeat.DittoHeartbeatConfig
 import live.ditto.dittoheartbeat.DittoHeartbeatInfo
 import live.ditto.dittoheartbeat.startHeartbeat
