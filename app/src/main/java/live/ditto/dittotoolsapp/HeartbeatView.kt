@@ -29,7 +29,7 @@ fun ShowHeartbeatData(ditto: Ditto) {
     var heartbeatInfo by remember { mutableStateOf<DittoHeartbeatInfo?>(null) }
     var healthMetricProviders: MutableList<HealthMetricProvider> = mutableListOf()
     val diskUsageViewModel = DiskUsageViewModel()
-    diskUsageViewModel.isHealthyMBSizeLimit = 2048 //2GB worth of data
+    healthMetricProviders.add(diskUsageViewModel)
 //    healthMetricProviders.add(diskUsageViewModel)
 
     val config = DittoHeartbeatConfig(
