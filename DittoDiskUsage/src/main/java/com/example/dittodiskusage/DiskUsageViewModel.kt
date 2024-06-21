@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
 import live.ditto.DiskUsageItem
 import live.ditto.Ditto
-import live.ditto.dittohealthmetrics.HealthMetric
-import live.ditto.dittohealthmetrics.HealthMetricProvider
+import live.ditto.healthmetrics.HealthMetric
+import live.ditto.healthmetrics.HealthMetricProvider
 import live.ditto.exporter.ZipFolderUseCase
 import java.io.File
 import java.text.DecimalFormat

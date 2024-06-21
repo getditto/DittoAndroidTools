@@ -68,9 +68,9 @@ dependencies {
     implementation(project(":DittoDiskUsage"))
     // implementation libs.live.ditto.diskusage
 
-    implementation libs.live.ditto.health
+    implementation(project(":DittoHealth"))
     implementation(project(":DittoPresenceDegradationReporter"))
-    implementation project(path: ':DittoHealthMetrics')
+    implementation(project(":DittoHealthMetrics"))
 
     testImplementation libs.junit.junit
 }

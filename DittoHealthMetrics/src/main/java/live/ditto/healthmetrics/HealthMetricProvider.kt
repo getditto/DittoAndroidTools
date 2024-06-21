@@ -1,4 +1,4 @@
-package live.ditto.dittohealthmetrics
+package live.ditto.healthmetrics
 
 /**
  * A system to provide custom `HealthMetric`s via the HeartbeatTool for remote monitoring.
