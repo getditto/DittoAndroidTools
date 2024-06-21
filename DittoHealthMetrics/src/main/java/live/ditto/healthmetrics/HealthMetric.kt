@@ -1,4 +1,4 @@
-package live.ditto.dittohealthmetrics
+package live.ditto.healthmetrics
 
 data class HealthMetric(
     val isHealthy: Boolean,

@@ -11,13 +11,29 @@ Issues and pull requests welcome!
 * Android 8.0+
 * Jetpack Compose
 
-## Repository
-Ditto tools are deployed in Maven Central. Be sure to include it in your list of repositories. 
+## Installing
+Ditto tools are released via Maven Central. Be sure to include it in your list of repositories. 
+
 ```properties
 repositories {
     mavenCentral()
 }
 ```
+
+### List of tools and versions
+
+| Tool Name                        | Gradle artifact                                            |
+|----------------------------------|------------------------------------------------------------|
+| 1. Presence Viewer               | `'live.ditto:dittopresenceviewer:LIBRARY_VERSION'`         |
+| 2. Data Browser                  | `'live.ditto:dittodatabrowser:LIBRARY_VERSION'`            |
+| 3. Export Logs                   | `'live.ditto:dittoexportlogs:LIBRARY_VERSION'`             |
+| 4. Disk Usage                    | `'live.ditto:dittodiskusage:LIBRARY_VERSION'`              |
+| 5. Health                        | `'live.ditto:health:LIBRARY_VERSION'`                      |
+| 6. Heartbeat                     | `'live.ditto:dittoheartbeat:LIBRARY_VERSION'`              |
+| 7. Presence Degradation Reporter | `'live.ditto:presencedegradationreporter:LIBRARY_VERSION'` |
+
+The latest released version for all libraries is: `1.0.0`.
+You can find the list of versions and release notes in the [Releases tab](https://github.com/getditto/DittoAndroidTools/releases).
 
 ## Usage
 
@@ -56,7 +72,7 @@ DittoPresenceViewer(ditto = ditto)
 Gradle:
 ```kotlin
 dependencies {
-  implementation 'live.ditto:dittopresenceviewer:0.0.2'
+  implementation 'live.ditto:dittopresenceviewer:YOUR_LIBRARY_VERSION'
 }
 ```
 
@@ -65,7 +81,7 @@ Maven:
 <dependency>
     <groupId>live.ditto</groupId>
     <artifactId>dittopresenceviewer</artifactId>
-    <version>0.0.2</version>
+    <version>YOUR_LIBRARY_VERSION</version>
 </dependency>
 ```
 
@@ -93,7 +109,7 @@ If you are using the Data Browser as a standalone app, there is a button, Start 
 Gradle:
 ```kotlin
 dependencies {
-  implementation 'live.ditto:dittodatabrowser:0.0.2'
+  implementation 'live.ditto:dittodatabrowser:YOUR_LIBRARY_VERSION'
 }
 ```
 
@@ -102,7 +118,7 @@ Maven:
 <dependency>
     <groupId>live.ditto.</groupId>
     <artifactId>dittodatabrowser</artifactId>
-    <version>0.0.2</version>
+    <version>YOUR_LIBRARY_VERSION</version>
 </dependency>
 ```
 
@@ -151,7 +167,7 @@ ExportLogs(onDismiss: () -> Unit)
 Gradle:
 ```kotlin
 dependencies {
-  implementation 'live.ditto:dittoexportlogs:0.0.2'
+  implementation 'live.ditto:dittoexportlogs:YOUR_LIBRARY_VERSION'
 }
 ```
 
@@ -160,7 +176,7 @@ Maven:
 <dependency>
     <groupId>live.ditto</groupId>
     <artifactId>dittoexportlogs</artifactId>
-    <version>0.0.2</version>
+    <version>YOUR_LIBRARY_VERSION</version>
 </dependency>
 ```
 
@@ -179,7 +195,7 @@ DittoDiskUsage(ditto = ditto)
 Gradle:
 ```kotlin
 dependencies {
-  implementation 'live.ditto:dittodiskusage:0.0.2'
+  implementation 'live.ditto:dittodiskusage:YOUR_LIBRARY_VERSION'
 }
 ```
 
@@ -188,7 +204,7 @@ Maven:
 <dependency>
     <groupId>live.ditto</groupId>
     <artifactId>dittodiskusage</artifactId>
-    <version>0.0.2</version>
+    <version>YOUR_LIBRARY_VERSION</version>
 </dependency>
 ```
 
@@ -209,7 +225,7 @@ HealthScreen()
 Gradle:
 ```kotlin
 dependencies {
-  implementation 'live.ditto:health:0.0.2'
+  implementation 'live.ditto:health:YOUR_LIBRARY_VERSION'
 }
 ```
 
@@ -218,7 +234,7 @@ Maven:
 <dependency>
     <groupId>live.ditto</groupId>
     <artifactId>health</artifactId>
-    <version>0.0.2</version>
+    <version>YOUR_LIBRARY_VERSION</version>
 </dependency>
 ```
 
@@ -232,7 +248,12 @@ These are the values you need to provide to the Heartbeat:
 1. `id` - Unique value that identifies the device
 2. `secondsInterval` - The frequency at which the Heartbeat will scrape the data
 3. `metaData` -  Optional - any metadata you wish to add to the Heartbeat
-4. `publishToDittoCollection` - Optional - set to false to prevent from publishing the heartbeat to Ditto collection. Default true.
+4. `healthMetricProviders` List of HealthMetricProviders
+5. `publishToDittoCollection` - Optional - set to false to prevent from publishing the heartbeat to Ditto collection. Default true.
+
+Available `healthMetricProviders`:
+1. HealthViewModel() - health metrics for Permissions Health Tool
+2. DiskUsageViewModel() - health metrics for Ditto disk usage. `isHealthy` is determined by the size of the `ditto_store` and `ditto_replication` folders. The default isHealthy size is 2GB, but this can be configured.
 
 There is a `DittoHeartbeatConfig` data class you can use to construct your configuration.
 
@@ -241,19 +262,25 @@ There is a `DittoHeartbeatConfig` data class you can use to construct your confi
 data class DittoHeartbeatConfig(
     val id: String,
     val secondsInterval: Int,
-    val metaData: Map<String, Any>? = null, 
-    val publishToDittoCollection: Boolean = true // Optional - toggle to avoid publishing to Ditto collection.
+    val metaData: Map<String, Any>? = null,
+    val healthMetricProviders: List<HealthMetricProvider>?,
+    val publishToDittoCollection: Boolean = true // Toggle to avoid publishing
 )
 
 // Example:
 // User defines the values here
 // Passed into Heartbeat tool
+var healthMetricProviders: MutableList<HealthMetricProvider> = mutableListOf()
+val diskUsageViewModel = DiskUsageViewModel()
+diskUsageViewModel.isHealthyMBSizeLimit = 2048 //2GB worth of data
+healthMetricProviders.add(diskUsageViewModel)
 val config = DittoHeartbeatConfig(
     id = <unique device id>,
     secondsInterval = 30, //seconds
     metaData = mapOf(
         "deviceType" to "KDS"
     ),
+    healthMetricProviders = healthMetricProviders,
     publishToDittoCollection = true
 )
 
@@ -292,7 +319,8 @@ This is the model of the data and what you can use for reference
         <peerKey>…,
         …
     },
-    metaData: {}
+    metaData: {},
+    healthMetrics: {},
 }
 ```
 
@@ -308,7 +336,9 @@ data class DittoHeartbeatInfo(
     val secondsInterval: Int,
     val presenceSnapshotDirectlyConnectedPeersCount: Int,
     val presenceSnapshotDirectlyConnectedPeers: Map<String, Any>,
-    val sdk: String
+    val sdk: String,
+    var healthMetrics: MutableMap<String, HealthMetric> = mutableMapOf()
+
 )
 ```
 
@@ -317,7 +347,7 @@ data class DittoHeartbeatInfo(
 Gradle:
 ```kotlin
 dependencies {
-  implementation 'live.ditto:dittoheartbeat:0.0.2'
+  implementation 'live.ditto:dittoheartbeat:YOUR_LIBRARY_VERSION'
 }
 ```
 
@@ -326,11 +356,11 @@ Maven:
 <dependency>
     <groupId>live.ditto.</groupId>
     <artifactId>dittoheartbeat</artifactId>
-    <version>0.0.2</version>
+    <version>YOUR_LIBRARY_VERSION</version>
 </dependency>
 ```
 
-### 6. Presence Degradation Reporter
+### 7. Presence Degradation Reporter
 Tracks the status of your mesh, allowing to define the minimum of required peers that needs to be connected.
 Exposes an API to notify when the condition of minimum required peers is not met.
 
@@ -355,7 +385,7 @@ ditto.presenceDegradationReporterFlow().collect { state ->
 Gradle:
 ```kotlin
 dependencies {
-  implementation 'live.ditto:presencedegradationreporter:0.0.2'
+  implementation 'live.ditto:presencedegradationreporter:YOUR_LIBRARY_VERSION'
 }
 ```
 
@@ -364,7 +394,7 @@ Maven:
 <dependency>
     <groupId>live.ditto</groupId>
     <artifactId>presencedegradationreporter</artifactId>
-    <version>0.0.2</version>
+    <version>YOUR_LIBRARY_VERSION</version>
 </dependency>
 ```
 

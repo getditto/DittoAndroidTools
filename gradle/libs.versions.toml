@@ -9,13 +9,8 @@ androidx-navigation = "2.5.3"
 androidx-test-ext = "1.1.5"
 androidx-webkit = "1.7.0"
 datastorePreferences = "1.0.0"
-ditto = "4.7.0"
-live-ditto-databrowser = "0.0.5"
-live-ditto-exportlogs = "0.0.4"
-live-ditto-diskusage = "0.0.6"
-live-ditto-presenceviewer = "0.0.4"
-live-ditto-health = "0.0.4"
-live-ditto-heartbeat = "0.0.5"
+ditto = "4.7.2"
+live-ditto-tools = "1.0.0"
 
 junit = "4.13.2"
 kotlin-gradle-plugin = "1.8.10"
@@ -23,6 +18,8 @@ androidComposeKotlinCompiler = "1.4.4"
 core-ktx = "1.9.0"
 espresso-core = "3.5.1"
 material = "1.11.0"
+
+gradle-nexus-publish-plugin = "2.0.0"
 
 [libraries]
 androidx-activity-activityCompose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-activity" }
@@ -37,12 +34,12 @@ androidx-datastore-preferences = { module = "androidx.datastore:datastore-prefer
 androidx-navigation-navigationCompose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext" }
 androidx-webkit-webkit = { group = "androidx.webkit", name = "webkit", version.ref = "androidx-webkit" }
-live-ditto-databrowser = { module = "live.ditto:dittodatabrowser", version.ref = "live-ditto-databrowser" }
-live-ditto-exportlogs = { module = "live.ditto:dittoexportlogs", version.ref = "live-ditto-exportlogs" }
-live-ditto-diskusage = { module = "live.ditto:dittodiskusage", version.ref = "live-ditto-diskusage" }
-live-ditto-presenceviewer = { module = "live.ditto:dittopresenceviewer", version.ref = "live-ditto-presenceviewer" }
-live-ditto-health = { module = "live.ditto:health", version.ref = "live-ditto-health" }
-live-ditto-heartbeat = { module = "live.ditto:dittoheartbeat", version.ref = "live-ditto-heartbeat" }
+live-ditto-databrowser = { module = "live.ditto:dittodatabrowser", version.ref = "live-ditto-tools" }
+live-ditto-exportlogs = { module = "live.ditto:dittoexportlogs", version.ref = "live-ditto-tools" }
+live-ditto-diskusage = { module = "live.ditto:dittodiskusage", version.ref = "live-ditto-tools" }
+live-ditto-presenceviewer = { module = "live.ditto:dittopresenceviewer", version.ref = "live-ditto-tools" }
+live-ditto-health = { module = "live.ditto:health", version.ref = "live-ditto-tools" }
+live-ditto-heartbeat = { module = "live.ditto:dittoheartbeat", version.ref = "live-ditto-tools" }
 live-ditto-ditto = { group = "live.ditto", name = "ditto", version.ref = "ditto" }
 junit-junit = { group = "junit", name = "junit", version.ref = "junit" }
 joda-time-joda-time = { group = "joda-time", name = "joda-time", version = "2.10.10" }
@@ -54,3 +51,4 @@ material = { group = "com.google.android.material", name = "material", version.r
 com-android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
 com-android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-gradle-plugin" }
+io-github-gradle-nexus-publish-plugin = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "gradle-nexus-publish-plugin"}

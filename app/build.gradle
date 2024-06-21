@@ -58,6 +58,7 @@ dependencies {
     implementation libs.live.ditto.databrowser
     implementation libs.live.ditto.exportlogs
     implementation libs.live.ditto.presenceviewer
+    implementation project(":DittoExporter")
 
     // TODO: Use maven version once this ticket is done
     implementation(project(":DittoHeartbeat"))
@@ -67,8 +68,9 @@ dependencies {
     implementation(project(":DittoDiskUsage"))
     // implementation libs.live.ditto.diskusage
 
-    implementation libs.live.ditto.health
+    implementation(project(":DittoHealth"))
     implementation(project(":DittoPresenceDegradationReporter"))
+    implementation(project(":DittoHealthMetrics"))
 
     testImplementation libs.junit.junit
 }
