@@ -3,9 +3,7 @@ plugins {
     alias libs.plugins.org.jetbrains.kotlin.android
 }
 
-ext.libraryGroupId = "live.ditto"
 ext.libraryArtifactId = "dittodiskusage"
-ext.libraryVersion = "0.0.6"
 
 apply from: "$rootProject.projectDir/gradle/deploy.gradle"
 apply from: "$rootProject.projectDir/gradle/android-common.gradle"
@@ -23,6 +21,7 @@ dependencies {
     implementation libs.androidx.compose.ui.ui
     implementation libs.androidx.compose.ui.uiToolingPreview
     implementation libs.androidx.navigation.navigationCompose
+    implementation project(path: ':DittoHealthMetrics')
     implementation libs.live.ditto.ditto
     // Dependency constraint for ditto
     constraints {
