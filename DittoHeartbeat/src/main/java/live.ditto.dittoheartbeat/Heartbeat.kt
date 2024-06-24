@@ -11,7 +11,6 @@ import live.ditto.DittoPeer
 import live.ditto.healthmetrics.HealthMetric
 import live.ditto.healthmetrics.HealthMetricProvider
 import org.joda.time.DateTime
-import java.util.Base64
 import java.util.concurrent.atomic.AtomicBoolean
 
 data class DittoHeartbeatConfig(
@@ -57,18 +56,18 @@ fun startHeartbeat(ditto: Ditto, config: DittoHeartbeatConfig): Flow<DittoHeartb
         val timestamp = DateTime().toISOString()
         val presenceData = observePeers(ditto)
 
-        info =
-            DittoHeartbeatInfo(
-                id = config.id,
-                lastUpdated = timestamp,
-                presenceSnapshotDirectlyConnectedPeers = getConnections(presenceData, ditto),
-                metaData = config.metaData,
-                presenceSnapshotDirectlyConnectedPeersCount = presenceData.size,
-                secondsInterval = config.secondsInterval,
-                sdk = ditto.sdkVersion,
-                schema = HEARTBEAT_COLLECTION_SCHEMA_VALUE,
-                peerKey = byteArrayToHash(ditto.presence.graph.localPeer.peerKey)
-            )
+            info =
+                DittoHeartbeatInfo(
+                    id = config.id,
+                    lastUpdated = timestamp,
+                    presenceSnapshotDirectlyConnectedPeers = getConnections(presenceData, ditto) ,
+                    metaData = config.metaData,
+                    presenceSnapshotDirectlyConnectedPeersCount = presenceData.size,
+                    secondsInterval = config.secondsInterval,
+                    sdk = ditto.sdkVersion,
+                    schema = HEARTBEAT_COLLECTION_SCHEMA_VALUE,
+                    peerKey = ditto.presence.graph.localPeer.peerKeyString
+                )
 
         updateHealthMetrics(config)
 
@@ -76,12 +75,6 @@ fun startHeartbeat(ditto: Ditto, config: DittoHeartbeatConfig): Flow<DittoHeartb
         emit(info)
     }
 
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-fun byteArrayToHash(byteArray: ByteArray): String {
-    val base64String = Base64.getEncoder().encodeToString(byteArray)
-    return "pk:$base64String"
 }
 
 fun observePeers(ditto: Ditto): List<DittoPeer> {
@@ -116,7 +109,7 @@ fun getConnections(
     val connectionsMap: MutableMap<String, Any> = mutableMapOf()
 
     presenceSnapshotDirectlyConnectedPeers?.forEach { connection ->
-        val connectionsTypeMap = getConnectionTypeCount(connection = connection)
+        val connectionsTypeMap = getConnectionTypeCount(dittoPeer = connection)
 
         val connectionMap: Map<String, Any?> = mapOf(
             "deviceName" to connection.deviceName,
@@ -127,18 +120,18 @@ fun getConnections(
             "lan" to connectionsTypeMap["lan"],
         )
 
-        connectionsMap[byteArrayToHash(connection.peerKey)] = connectionMap
+        connectionsMap[connection.peerKeyString] = connectionMap
     }
 
     return connectionsMap
 }
 
-fun getConnectionTypeCount(connection: DittoPeer): Map<String, Int> {
+fun getConnectionTypeCount(dittoPeer: DittoPeer): Map<String, Int> {
     var bt = 0
     var p2pWifi = 0
     var lan = 0
 
-    connection.connections.forEach { connection ->
+    dittoPeer.connections.forEach { connection ->
         when (connection.connectionType) {
             DittoConnectionType.Bluetooth -> bt += 1
             DittoConnectionType.P2PWiFi -> p2pWifi += 1
