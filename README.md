@@ -32,7 +32,6 @@ repositories {
 | 6. Heartbeat                     | `'live.ditto:dittoheartbeat:LIBRARY_VERSION'`              |
 | 7. Presence Degradation Reporter | `'live.ditto:presencedegradationreporter:LIBRARY_VERSION'` |
 
-The latest released version for all libraries is: `1.1.0`.
 You can find the list of versions and release notes in the [Releases tab](https://github.com/getditto/DittoAndroidTools/releases).
 
 ## Usage
