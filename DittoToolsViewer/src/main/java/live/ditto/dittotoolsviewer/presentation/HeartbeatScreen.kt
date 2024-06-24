@@ -15,21 +15,22 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import live.ditto.Ditto
-import live.ditto.dittohealthmetrics.HealthMetricProvider
+import live.ditto.healthmetrics.HealthMetricProvider
 import live.ditto.dittoheartbeat.DittoHeartbeatConfig
 import live.ditto.dittoheartbeat.DittoHeartbeatInfo
 import live.ditto.dittoheartbeat.startHeartbeat
 import java.util.*
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HeartbeatScreen(ditto: Ditto) {
 
     var heartbeatInfo by remember { mutableStateOf<DittoHeartbeatInfo?>(null) }
     var healthMetricProviders: MutableList<HealthMetricProvider> = mutableListOf()
     val diskUsageViewModel = DiskUsageViewModel()
-    diskUsageViewModel.isHealthyMBSizeLimit = 2048 //2GB worth of data
     healthMetricProviders.add(diskUsageViewModel)
+//    healthMetricProviders.add(diskUsageViewModel)
 
     val config = DittoHeartbeatConfig(
         //id for testing only. Unique id will not persist

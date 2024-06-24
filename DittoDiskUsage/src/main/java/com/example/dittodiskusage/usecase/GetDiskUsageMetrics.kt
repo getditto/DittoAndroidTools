@@ -6,12 +6,12 @@ import com.example.dittodiskusage.DiskUsageState
 import com.example.dittodiskusage.METRIC_NAME
 import com.example.dittodiskusage.ROOT_PATH
 import com.example.dittodiskusage.TOTAL_SIZE
-import com.example.dittodiskusage.TWO_GIGABYTES_IN_MEGABYTES
-import live.ditto.dittohealthmetrics.HealthMetric
+import com.example.dittodiskusage.FIVE_HUNDRED_MEGABYTES_IN_BYTES
+import live.ditto.healthmetrics.HealthMetric
 
 class GetDiskUsageMetrics {
     val metricName: String = METRIC_NAME
-    var isHealthyMBSizeLimit: Int = TWO_GIGABYTES_IN_MEGABYTES
+    var unhealthySizeInBytes: Int = FIVE_HUNDRED_MEGABYTES_IN_BYTES
 
     fun execute(currentState: DiskUsageState): HealthMetric {
 
@@ -37,13 +37,9 @@ class GetDiskUsageMetrics {
     }
 
     private fun healthCheckSize(dittoStoreSize: Int, dittoReplicationSize: Int): Boolean {
-        val totalMB = bytesToMegabytes(dittoStoreSize + dittoReplicationSize)
+        val totalBytes = dittoStoreSize + dittoReplicationSize
 
-        return totalMB <= isHealthyMBSizeLimit
-    }
-
-    private fun bytesToMegabytes(bytes: Int): Int {
-        return bytes / 1048576
+        return totalBytes <= unhealthySizeInBytes
     }
 
     private fun shortRelativePath(path: String): String {

@@ -3,9 +3,7 @@ plugins {
     id "org.jetbrains.kotlin.android"
 }
 
-ext.libraryGroupId = "live.ditto"
 ext.libraryArtifactId = "dittoexportlogs"
-ext.libraryVersion = "0.0.5"
 
 apply from: "$rootProject.projectDir/gradle/deploy.gradle"
 apply from: "$rootProject.projectDir/gradle/android-common.gradle"

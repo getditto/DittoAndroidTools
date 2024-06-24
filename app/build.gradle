@@ -56,6 +56,24 @@ dependencies {
     implementation platform(libs.androidx.compose.composeBom)
 
     implementation(project(":DittoToolsViewer"))
+    implementation libs.live.ditto.databrowser
+    implementation libs.live.ditto.exportlogs
+    implementation libs.live.ditto.presenceviewer
+    implementation project(":DittoExporter")
+
+    // TODO: Use maven version once this ticket is done
+    implementation(project(":DittoHeartbeat"))
+
+    // TODO: Use maven version once this ticket is done
+    //       https://github.com/getditto/DittoAndroidTools/issues/31
+    implementation(project(":DittoDiskUsage"))
+    // implementation libs.live.ditto.diskusage
+
+    implementation(project(":DittoHealth"))
+    implementation(project(":DittoPresenceDegradationReporter"))
+    implementation(project(":DittoHealthMetrics"))
+
+    implementation(project(":DittoToolsViewer"))
 
     testImplementation libs.junit.junit
 }

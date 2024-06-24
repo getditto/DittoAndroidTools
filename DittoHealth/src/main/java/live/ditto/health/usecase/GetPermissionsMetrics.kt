@@ -1,6 +1,6 @@
 package live.ditto.health.usecase;
 
-import live.ditto.dittohealthmetrics.HealthMetric
+import live.ditto.healthmetrics.HealthMetric
 
 public class GetPermissionsMetrics {
     val metricName: String = "DittoPermissionsHealth"
