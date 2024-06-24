@@ -10,7 +10,7 @@ androidx-test-ext = "1.1.5"
 androidx-webkit = "1.7.0"
 datastorePreferences = "1.0.0"
 ditto = "4.5.0"
-live-ditto-tools = "1.0.0"
+live-ditto-tools = "1.1.0"
 
 junit = "4.13.2"
 kotlin-gradle-plugin = "1.8.10"
@@ -38,7 +38,9 @@ live-ditto-databrowser = { module = "live.ditto:dittodatabrowser", version.ref =
 live-ditto-exportlogs = { module = "live.ditto:dittoexportlogs", version.ref = "live-ditto-tools" }
 live-ditto-diskusage = { module = "live.ditto:dittodiskusage", version.ref = "live-ditto-tools" }
 live-ditto-presenceviewer = { module = "live.ditto:dittopresenceviewer", version.ref = "live-ditto-tools" }
+live-ditto-presencedegradationreporter = { module = "live.ditto:presencedegradationreporter", version.ref = "live-ditto-tools" }
 live-ditto-health = { module = "live.ditto:health", version.ref = "live-ditto-tools" }
+live-ditto-healthmetrics = { module = "live.ditto:healthmetrics", version.ref = "live-ditto-tools" }
 live-ditto-heartbeat = { module = "live.ditto:dittoheartbeat", version.ref = "live-ditto-tools" }
 live-ditto-ditto = { group = "live.ditto", name = "ditto", version.ref = "ditto" }
 junit-junit = { group = "junit", name = "junit", version.ref = "junit" }
