@@ -13,6 +13,12 @@ def base64Decode(encodedString){
     return null;
 }
 
+def readLocalProperty(propertyName) {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    return properties.getProperty(propertyName, "")
+}
+
 signing {
     if(project.hasProperty("PUBLISH_TO_MAVEN_CENTRAL")){
         useInMemoryPgpKeys(base64Decode(signingKeyBase64), signingPassword)
@@ -37,7 +43,9 @@ afterEvaluate {
                 from components.release
                 artifactId libraryArtifactId
                 groupId = 'live.ditto'
-                version = findProperty("LIBRARY_VERSION")
+
+                def versionPropertyName = "LIBRARY_VERSION"
+                version = hasProperty(versionPropertyName) ? findProperty(versionPropertyName) : readLocalProperty(versionPropertyName)
 
                 pom {
                     name = 'Ditto Tools'
