@@ -52,6 +52,23 @@ ditto.onlinePlayground.appId="YOUR_APPID"
 ditto.onlinePlayground.token="YOUR_TOKEN"
 ```
 
+## Testing Changes Locally
+
+There are two ways you can test things locally. Either in the demo app, or in an external project.
+
+### Testing in the Demo App Locally
+
+To test your changes to a module in the demo app, simply import the local module, making sure to comment out/delete the version catalog import. For example, if you made changes to DittoDataBrowser you would
+
+add: `implementation(project(":DittoDataBrowser"))`
+remove/comment out: `implementation libs.live.ditto.databrowser`
+
+### Testing in an External Project
+
+1. In your `local.properties` file for `DittoAndroidTools` add a `LIBRARY_VERSION` variable with a version that doesn't exist (e.g. 82.0.0). Do NOT use quotes. The entry should look something like: `LIBRARY_VERSION=82.0.0`
+2. Run `./gradlew publishToMavenLocal`
+3. In your external project add the `mavenLocal()` entry to your list of repository sources
+4. When importing a tool, use the version you specified earlier
 
 There are five components in this package: Presence Viewer, Data Browser, Export Logs, Disk Usage, Health.
 
