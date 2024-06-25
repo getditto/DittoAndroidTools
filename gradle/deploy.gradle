@@ -16,7 +16,7 @@ def base64Decode(encodedString){
 def readLocalProperty(propertyName) {
     Properties properties = new Properties()
     properties.load(project.rootProject.file('local.properties').newDataInputStream())
-    return properties.getProperty(propertyName, "")
+    return properties.getProperty(propertyName)
 }
 
 signing {
