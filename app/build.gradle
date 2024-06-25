@@ -5,25 +5,6 @@ plugins {
 
 apply from: "$rootProject.projectDir/gradle/android-common.gradle"
 
-def getValueFromPropertiesFile = { propFile, key ->
-    if (!propFile.isFile() || !propFile.canRead())
-        return null
-    def prop = new Properties()
-    def reader = propFile.newReader()
-    try {
-        prop.load(reader)
-    } finally {
-        reader.close()
-    }
-    return prop.get(key)
-}
-
-def getProperty = { name, defValue ->
-    def prop = project.properties[name] ?:
-            getValueFromPropertiesFile(project.rootProject.file('local.properties'), name)
-    return (null == prop) ? defValue : prop
-}
-
 ext.dittoOnlinePlaygroundAppId = getProperty('ditto.onlinePlayground.appId', "null")
 ext.dittoOnlinePlaygroundToken = getProperty('ditto.onlinePlayground.token', "null")
 
@@ -63,6 +44,7 @@ dependencies {
     implementation libs.live.ditto.heartbeat
     implementation libs.live.ditto.presencedegradationreporter
     implementation libs.live.ditto.healthmetrics
+    implementation libs.live.ditto.exporter
 
     testImplementation libs.junit.junit
 }

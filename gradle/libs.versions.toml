@@ -36,6 +36,7 @@ androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version
 androidx-webkit-webkit = { group = "androidx.webkit", name = "webkit", version.ref = "androidx-webkit" }
 live-ditto-databrowser = { module = "live.ditto:dittodatabrowser", version.ref = "live-ditto-tools" }
 live-ditto-exportlogs = { module = "live.ditto:dittoexportlogs", version.ref = "live-ditto-tools" }
+live-ditto-exporter = { module = "live.ditto:dittoexporter", version.ref = "live-ditto-tools" }
 live-ditto-diskusage = { module = "live.ditto:dittodiskusage", version.ref = "live-ditto-tools" }
 live-ditto-presenceviewer = { module = "live.ditto:dittopresenceviewer", version.ref = "live-ditto-tools" }
 live-ditto-presencedegradationreporter = { module = "live.ditto:presencedegradationreporter", version.ref = "live-ditto-tools" }
