@@ -5,8 +5,8 @@ plugins {
 
 apply from: "$rootProject.projectDir/gradle/android-common.gradle"
 
-ext.dittoOnlinePlaygroundAppId = getProperty('ditto.onlinePlayground.appId', "null")
-ext.dittoOnlinePlaygroundToken = getProperty('ditto.onlinePlayground.token', "null")
+ext.dittoOnlinePlaygroundAppId = getValueFromLocalProperties('ditto.onlinePlayground.appId', "null")
+ext.dittoOnlinePlaygroundToken = getValueFromLocalProperties('ditto.onlinePlayground.token', "null")
 
 android {
     namespace "live.ditto.dittotoolsapp"

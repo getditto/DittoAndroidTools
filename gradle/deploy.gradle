@@ -39,7 +39,7 @@ afterEvaluate {
                 groupId = 'live.ditto'
 
                 def versionPropertyName = "LIBRARY_VERSION"
-                version = hasProperty(versionPropertyName) ? findProperty(versionPropertyName) : getProperty(versionPropertyName, null)
+                version = hasProperty(versionPropertyName) ? findProperty(versionPropertyName) : getValueFromLocalProperties(versionPropertyName, null)
 
                 pom {
                     name = 'Ditto Tools'

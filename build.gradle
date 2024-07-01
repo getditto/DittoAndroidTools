@@ -19,7 +19,7 @@ def getValueFromPropertiesFile = { propFile, key ->
     return prop.get(key)
 }
 
-ext.getProperty = { name, defValue ->
+ext.getValueFromLocalProperties = { name, defValue ->
     def prop = project.properties[name] ?:
             getValueFromPropertiesFile(project.rootProject.file('local.properties'), name)
     return (null == prop) ? defValue : prop
