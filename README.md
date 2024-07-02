@@ -409,10 +409,9 @@ remove/comment out: `implementation libs.live.ditto.databrowser`
 
 ### Testing in an External Project
 
-1. In your `local.properties` file for `DittoAndroidTools` add a `LIBRARY_VERSION` variable with a version that doesn't exist (e.g. 82.0.0). Do NOT use quotes. The entry should look something like: `LIBRARY_VERSION=82.0.0`
-2. Run `./gradlew publishToMavenLocal`
-3. In your external project add the `mavenLocal()` entry to your list of repository sources
-4. When importing a tool, use the version you specified earlier
+1. Run `./gradlew publishToMavenLocal`
+2. In your external project add the `mavenLocal()` entry to your list of repository sources
+3. When importing a tool, the version will be `SNAPSHOT`
 
 ## License
 
