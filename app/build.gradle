@@ -5,27 +5,8 @@ plugins {
 
 apply from: "$rootProject.projectDir/gradle/android-common.gradle"
 
-def getValueFromPropertiesFile = { propFile, key ->
-    if (!propFile.isFile() || !propFile.canRead())
-        return null
-    def prop = new Properties()
-    def reader = propFile.newReader()
-    try {
-        prop.load(reader)
-    } finally {
-        reader.close()
-    }
-    return prop.get(key)
-}
-
-def getProperty = { name, defValue ->
-    def prop = project.properties[name] ?:
-            getValueFromPropertiesFile(project.rootProject.file('local.properties'), name)
-    return (null == prop) ? defValue : prop
-}
-
-ext.dittoOnlinePlaygroundAppId = getProperty('ditto.onlinePlayground.appId', "null")
-ext.dittoOnlinePlaygroundToken = getProperty('ditto.onlinePlayground.token', "null")
+ext.dittoOnlinePlaygroundAppId = getValueFromLocalProperties('ditto.onlinePlayground.appId', "null")
+ext.dittoOnlinePlaygroundToken = getValueFromLocalProperties('ditto.onlinePlayground.token', "null")
 
 android {
     namespace "live.ditto.dittotoolsapp"
@@ -58,19 +39,12 @@ dependencies {
     implementation libs.live.ditto.databrowser
     implementation libs.live.ditto.exportlogs
     implementation libs.live.ditto.presenceviewer
-    implementation project(":DittoExporter")
-
-    // TODO: Use maven version once this ticket is done
-    implementation(project(":DittoHeartbeat"))
-
-    // TODO: Use maven version once this ticket is done
-    //       https://github.com/getditto/DittoAndroidTools/issues/31
-    implementation(project(":DittoDiskUsage"))
-    // implementation libs.live.ditto.diskusage
-
-    implementation(project(":DittoHealth"))
-    implementation(project(":DittoPresenceDegradationReporter"))
-    implementation(project(":DittoHealthMetrics"))
+    implementation libs.live.ditto.diskusage
+    implementation libs.live.ditto.health
+    implementation libs.live.ditto.heartbeat
+    implementation libs.live.ditto.presencedegradationreporter
+    implementation libs.live.ditto.healthmetrics
+    implementation libs.live.ditto.exporter
 
     testImplementation libs.junit.junit
 }

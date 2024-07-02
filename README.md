@@ -52,7 +52,6 @@ ditto.onlinePlayground.appId="YOUR_APPID"
 ditto.onlinePlayground.token="YOUR_TOKEN"
 ```
 
-
 There are five components in this package: Presence Viewer, Data Browser, Export Logs, Disk Usage, Health.
 
 ### 1. Presence Viewer
@@ -396,6 +395,23 @@ Maven:
     <version>YOUR_LIBRARY_VERSION</version>
 </dependency>
 ```
+
+## Testing Changes Locally
+
+There are two ways you can test things locally. Either in the demo app, or in an external project.
+
+### Testing in the Demo App Locally
+
+To test your changes to a module in the demo app, simply import the local module, making sure to comment out/delete the version catalog import. For example, if you made changes to DittoDataBrowser you would
+
+add: `implementation(project(":DittoDataBrowser"))`
+remove/comment out: `implementation libs.live.ditto.databrowser`
+
+### Testing in an External Project
+
+1. Run `./gradlew publishToMavenLocal`
+2. In your external project add the `mavenLocal()` entry to your list of repository sources
+3. When importing a tool, the version will be `SNAPSHOT`
 
 ## License
 
