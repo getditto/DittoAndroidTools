@@ -37,7 +37,8 @@ afterEvaluate {
                 from components.release
                 artifactId libraryArtifactId
                 groupId = 'live.ditto'
-                version = findProperty("LIBRARY_VERSION")
+
+                version = findProperty("LIBRARY_VERSION") ?: "SNAPSHOT"
 
                 pom {
                     name = 'Ditto Tools'

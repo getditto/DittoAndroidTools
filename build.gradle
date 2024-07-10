@@ -5,3 +5,22 @@ plugins {
 }
 
 version = findProperty("LIBRARY_VERSION")
+
+def getValueFromPropertiesFile = { propFile, key ->
+    if (!propFile.isFile() || !propFile.canRead())
+        return null
+    def prop = new Properties()
+    def reader = propFile.newReader()
+    try {
+        prop.load(reader)
+    } finally {
+        reader.close()
+    }
+    return prop.get(key)
+}
+
+ext.getValueFromLocalProperties = { name, defValue ->
+    def prop = project.properties[name] ?:
+            getValueFromPropertiesFile(project.rootProject.file('local.properties'), name)
+    return (null == prop) ? defValue : prop
+}
