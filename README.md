@@ -52,8 +52,6 @@ ditto.onlinePlayground.appId="YOUR_APPID"
 ditto.onlinePlayground.token="YOUR_TOKEN"
 ```
 
-There are five components in this package: Presence Viewer, Data Browser, Export Logs, Disk Usage/Export Data, Health.
-
 ### 1. Presence Viewer
 The Presence Viewer displays a mesh graph that allows you to see all connected peers within the mesh and the transport that each peer is using to make a connection.  
 
