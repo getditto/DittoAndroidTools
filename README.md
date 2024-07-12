@@ -1,6 +1,6 @@
 # DittoAndroidTools
 
-DittoAndroidTools are diagnostic tools for Ditto. You can view connected peers, export debug logs, browse collections/documents and see Ditto's disk usage.
+DittoAndroidTools are diagnostic tools for Ditto. You can view connected peers, export debug logs, browse collections/documents and see Ditto's disk usage/ export this data.
 
 These tools are available through Maven.
 
@@ -27,7 +27,7 @@ repositories {
 | 1. Presence Viewer               | `'live.ditto:dittopresenceviewer:LIBRARY_VERSION'`         |
 | 2. Data Browser                  | `'live.ditto:dittodatabrowser:LIBRARY_VERSION'`            |
 | 3. Export Logs                   | `'live.ditto:dittoexportlogs:LIBRARY_VERSION'`             |
-| 4. Disk Usage                    | `'live.ditto:dittodiskusage:LIBRARY_VERSION'`              |
+| 4. Disk Usage/Export Data        | `'live.ditto:dittodiskusage:LIBRARY_VERSION'`              |
 | 5. Health                        | `'live.ditto:health:LIBRARY_VERSION'`                      |
 | 6. Heartbeat                     | `'live.ditto:dittoheartbeat:LIBRARY_VERSION'`              |
 | 7. Presence Degradation Reporter | `'live.ditto:presencedegradationreporter:LIBRARY_VERSION'` |
@@ -51,8 +51,6 @@ _NOTICE:_ This project loads ditto's credentials from `local.properties`
 ditto.onlinePlayground.appId="YOUR_APPID"
 ditto.onlinePlayground.token="YOUR_TOKEN"
 ```
-
-There are five components in this package: Presence Viewer, Data Browser, Export Logs, Disk Usage, Health.
 
 ### 1. Presence Viewer
 The Presence Viewer displays a mesh graph that allows you to see all connected peers within the mesh and the transport that each peer is using to make a connection.  
@@ -178,9 +176,10 @@ Maven:
 </dependency>
 ```
 
-### 4. Disk Usage
+### 4. Disk Usage/ Export Data
 
 Disk Usage allows you to see Ditto's file space usage.  
+Export Data allows you to export the Ditto directory.
 
 ```kotlin
 DittoDiskUsage(ditto = ditto)
