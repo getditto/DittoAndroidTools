@@ -27,10 +27,9 @@ import java.util.*
 fun HeartbeatScreen(ditto: Ditto) {
 
     var heartbeatInfo by remember { mutableStateOf<DittoHeartbeatInfo?>(null) }
-    var healthMetricProviders: MutableList<HealthMetricProvider> = mutableListOf()
+    val healthMetricProviders: MutableList<HealthMetricProvider> = mutableListOf()
     val diskUsageViewModel = DiskUsageViewModel()
     healthMetricProviders.add(diskUsageViewModel)
-//    healthMetricProviders.add(diskUsageViewModel)
 
     val config = DittoHeartbeatConfig(
         //id for testing only. Unique id will not persist
