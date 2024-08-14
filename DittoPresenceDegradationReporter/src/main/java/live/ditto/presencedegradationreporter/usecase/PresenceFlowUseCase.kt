@@ -13,8 +13,7 @@ import live.ditto.presencedegradationreporter.model.PeerTransportInfo
 
 
 class PresenceFlowUseCase(
-    private val ditto: Ditto,
-    private val hashPeerKeyUseCase: HashPeerKeyUseCase = HashPeerKeyUseCase()
+    private val ditto: Ditto
 ) {
     operator fun invoke(bufferCapacity: Int = Channel.UNLIMITED) = callbackFlow {
         val observer = ditto.presence.observe { graph ->
@@ -26,7 +25,7 @@ class PresenceFlowUseCase(
                 transportInfo = localPeerTransportInfo,
                 connected = true,
                 lastSeen = seenAt,
-                key = hashPeerKeyUseCase(graph.localPeer.peerKey),
+                key = graph.localPeer.peerKeyString,
             )
 
             val remotePeers = graph.remotePeers.map {
@@ -37,7 +36,7 @@ class PresenceFlowUseCase(
                     transportInfo = peerTransportInfo,
                     connected = true,
                     lastSeen = seenAt,
-                    key = hashPeerKeyUseCase(it.peerKey),
+                    key = it.peerKeyString,
                 )
             }
 

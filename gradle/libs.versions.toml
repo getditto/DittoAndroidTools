@@ -9,7 +9,7 @@ androidx-navigation = "2.5.3"
 androidx-test-ext = "1.1.5"
 androidx-webkit = "1.7.0"
 datastorePreferences = "1.0.0"
-ditto = "4.5.0"
+ditto = "4.7.4"
 live-ditto-tools = "1.1.0"
 
 junit = "4.13.2"
