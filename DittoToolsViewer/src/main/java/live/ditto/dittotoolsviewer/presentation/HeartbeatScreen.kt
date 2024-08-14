@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.dittodiskusage.DiskUsageViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -19,6 +20,7 @@ import live.ditto.healthmetrics.HealthMetricProvider
 import live.ditto.dittoheartbeat.DittoHeartbeatConfig
 import live.ditto.dittoheartbeat.DittoHeartbeatInfo
 import live.ditto.dittoheartbeat.startHeartbeat
+import live.ditto.dittotoolsviewer.R
 import java.util.*
 
 
@@ -85,7 +87,8 @@ fun HeartbeatInfoCard(heartbeatInfo: DittoHeartbeatInfo) {
                 val connection = entry.value
                 if (connection is Map<*, *>) { // Check if connection is a Map
                     @Suppress("UNCHECKED_CAST")
-                    val typedConnection = connection as Map<String, Any> // Type cast connection to Map<String, Any>
+                    val typedConnection =
+                        connection as Map<String, Any> // Type cast connection to Map<String, Any>
                     ConnectionInfo(connection = typedConnection)
                 }
             }
@@ -97,23 +100,34 @@ fun HeartbeatInfoCard(heartbeatInfo: DittoHeartbeatInfo) {
 @Composable
 fun HeartbeatHeader(heartbeatInfo: DittoHeartbeatInfo) {
     Column {
-        Text("ID: ${heartbeatInfo.id}")
-        Text("SDK: ${heartbeatInfo.sdk}")
-        Text("Last Updated: ${heartbeatInfo.lastUpdated}")
-        Text("remotePeersCount: ${heartbeatInfo.presenceSnapshotDirectlyConnectedPeersCount}", color = Color.Black)
-        Text("Peer key: ${heartbeatInfo.peerKey}")
+        Text(stringResource(R.string.heartbeat_id_label, heartbeatInfo.id))
+        Text(stringResource(R.string.heartbeat_sdk_label, heartbeatInfo.sdk))
+        Text(stringResource(R.string.heartbeat_last_updated_label, heartbeatInfo.lastUpdated))
+        Text(
+            text = stringResource(
+                R.string.heartbeat_remotepeerscount_label,
+                heartbeatInfo.presenceSnapshotDirectlyConnectedPeersCount
+            ),
+            color = Color.Black
+        )
+        Text(stringResource(R.string.heartbeat_peer_key_label, heartbeatInfo.peerKey))
     }
 }
 
 @Composable
 fun ConnectionInfo(connection: Map<String, Any>) {
     Column {
-        Text("\nConnection: ${connection["deviceName"]}")
-        Text("SDK: ${connection["sdk"]}")
-        Text(text = if (connection["isConnectedToDittoCloud"] as Boolean) "Online" else "Offline")
-        Text("BT: ${connection["bluetooth"]}")
-        Text("P2PWifi: ${connection["p2pWifi"]}")
-        Text("LAN: ${connection["lan"]}")
+        Text(stringResource(R.string.connection_info_connection, connection["deviceName"] ?: ""))
+        Text(stringResource(R.string.connection_info_sdk, connection["sdk"] ?: ""))
+        val isConnectedToDittoCloudString = if (connection["isConnectedToDittoCloud"] as Boolean) {
+            stringResource(R.string.connection_info_online)
+        } else stringResource(
+            R.string.connection_info_offline
+        )
+        Text(isConnectedToDittoCloudString)
+        Text(stringResource(R.string.connection_info_bt, connection["bluetooth"] ?: ""))
+        Text(stringResource(R.string.connection_info_p2pwifi, connection["p2pWifi"] ?: ""))
+        Text(stringResource(R.string.connection_info_lan, connection["lan"] ?: ""))
     }
 }
 

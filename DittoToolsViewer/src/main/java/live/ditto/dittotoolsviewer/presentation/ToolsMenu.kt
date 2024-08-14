@@ -1,5 +1,6 @@
 package live.ditto.dittotoolsviewer.presentation
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +25,7 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -82,7 +84,7 @@ private fun ToolsMenuItems(
     ) {
         menuItems.forEach { toolMenuItem ->
             ToolMenuItem(
-                name = toolMenuItem.label,
+                name = stringResource(id = toolMenuItem.label),
                 onClick = {
                     onDismissRequest()
                     navController.navigate(toolMenuItem.route) {
@@ -92,7 +94,7 @@ private fun ToolsMenuItems(
             )
         }
         ToolMenuItem(
-            name = "Exit Tools",
+            name = stringResource(R.string.exit_tools_menu_item),
             containerColor = MenuItemExitSelectedBackgroundColor,
             onClick = {
                 onDismissRequest()
@@ -144,12 +146,12 @@ private fun ToolsMenuHeader(
                 Icon(
                     modifier = Modifier.fillMaxSize(),
                     imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = "Close"
+                    contentDescription = stringResource(R.string.close_button_description)
                 )
             }
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "Ditto Tools",
+                text = stringResource(R.string.tools_menu_title),
                 style = MaterialTheme.typography.titleLarge,
                 textAlign = TextAlign.Center,
                 color = ToolsMenuHeaderTextColor
@@ -185,6 +187,6 @@ private fun ToolsMenuPreview() {
 }
 
 data class ToolMenuItem(
-    val label: String,
+    @StringRes val label: Int,
     val route: String
 )

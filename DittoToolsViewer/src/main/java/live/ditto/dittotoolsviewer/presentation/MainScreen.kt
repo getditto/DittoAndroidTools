@@ -10,9 +10,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import live.ditto.dittotoolsviewer.R
 
 @Composable
 fun MainScreen(
@@ -25,13 +27,13 @@ fun MainScreen(
     ) {
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = "Ditto Tools Viewer",
+            text = stringResource(R.string.ditto_tools_viewer_header),
             style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "Use the menu to browse to the different Ditto Tools",
+            text = stringResource(R.string.ditto_tools_instructions),
             style = MaterialTheme.typography.bodyMedium
         )
     }
