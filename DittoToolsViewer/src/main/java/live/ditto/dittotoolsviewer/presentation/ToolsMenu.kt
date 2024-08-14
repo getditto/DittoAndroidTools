@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import live.ditto.dittotoolsviewer.presentation.navigation.Screens
 import live.ditto.dittotoolsviewer.presentation.ui.theme.MenuCardContainerColor
 import live.ditto.dittotoolsviewer.presentation.ui.theme.MenuItemSelectedBackgroundColor
 import live.ditto.dittotoolsviewer.presentation.ui.theme.MenuItemTextColor
@@ -75,7 +76,9 @@ private fun ToolsMenuItems(
                 name = toolMenuItem.label,
                 onClick = {
                     onDismissRequest()
-                    navController.navigate(toolMenuItem.route)
+                    navController.navigate(toolMenuItem.route) {
+                        popUpTo(route = Screens.MainScreen.route)
+                    }
                 }
             )
         }

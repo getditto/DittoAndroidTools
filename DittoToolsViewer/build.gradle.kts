@@ -33,23 +33,15 @@ dependencies {
     implementation(libs.androidx.compose.material3.material3)
 
     implementation(libs.live.ditto.ditto)
-
     implementation(libs.live.ditto.databrowser)
     implementation(libs.live.ditto.exportlogs)
     implementation(libs.live.ditto.presenceviewer)
-    implementation(project(":DittoExporter"))
-
-    // TODO: Use maven version once this ticket is done
-    implementation(project(":DittoHeartbeat"))
-
-    // TODO: Use maven version once this ticket is done
-    //       https://github.com/getditto/DittoAndroidTools/issues/31
-    implementation(project(":DittoDiskUsage"))
-    // implementation libs.live.ditto.diskusage
-
+    implementation(libs.live.ditto.diskusage)
     implementation(libs.live.ditto.health)
-    implementation(project(":DittoPresenceDegradationReporter"))
-    implementation(project(":DittoHealthMetrics"))
+    implementation(libs.live.ditto.heartbeat)
+    implementation(libs.live.ditto.presencedegradationreporter)
+    implementation(libs.live.ditto.healthmetrics)
+    implementation(libs.live.ditto.exporter)
 
     testImplementation(libs.junit.junit)
 

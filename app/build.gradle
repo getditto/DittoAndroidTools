@@ -47,7 +47,5 @@ dependencies {
     implementation libs.live.ditto.healthmetrics
     implementation libs.live.ditto.exporter
 
-    implementation(project(":DittoToolsViewer"))
-
     testImplementation libs.junit.junit
 }
