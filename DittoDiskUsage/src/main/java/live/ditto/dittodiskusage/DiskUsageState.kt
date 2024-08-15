@@ -1,4 +1,4 @@
-package com.example.dittodiskusage
+package live.ditto.dittodiskusage
 
 data class DiskUsageState(
     val rootPath: String = "ditto",

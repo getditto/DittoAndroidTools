@@ -1,10 +1,9 @@
-package com.example.dittodiskusage
+package live.ditto.dittodiskusage
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
 
 /**
  * Wrapper composable function for `DiskUsageView`.

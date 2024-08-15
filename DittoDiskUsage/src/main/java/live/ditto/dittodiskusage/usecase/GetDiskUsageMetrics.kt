@@ -1,12 +1,12 @@
-package com.example.dittodiskusage.usecase
+package live.ditto.dittodiskusage.usecase
 
-import com.example.dittodiskusage.DITTO_REPLICATION
-import com.example.dittodiskusage.DITTO_STORE
-import com.example.dittodiskusage.DiskUsageState
-import com.example.dittodiskusage.METRIC_NAME
-import com.example.dittodiskusage.ROOT_PATH
-import com.example.dittodiskusage.TOTAL_SIZE
-import com.example.dittodiskusage.FIVE_HUNDRED_MEGABYTES_IN_BYTES
+import live.ditto.dittodiskusage.DITTO_REPLICATION
+import live.ditto.dittodiskusage.DITTO_STORE
+import live.ditto.dittodiskusage.DiskUsageState
+import live.ditto.dittodiskusage.METRIC_NAME
+import live.ditto.dittodiskusage.ROOT_PATH
+import live.ditto.dittodiskusage.TOTAL_SIZE
+import live.ditto.dittodiskusage.FIVE_HUNDRED_MEGABYTES_IN_BYTES
 import live.ditto.healthmetrics.HealthMetric
 
 class GetDiskUsageMetrics {

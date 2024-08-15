@@ -1,4 +1,4 @@
-package com.example.dittodiskusage
+package live.ditto.dittodiskusage
 
 const val ROOT_PATH = "rootPath"
 const val TOTAL_SIZE = "totalSize"

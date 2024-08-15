@@ -1,7 +1,7 @@
-package com.example.dittodiskusage
+package live.ditto.dittodiskusage
 
 import androidx.lifecycle.ViewModel
-import com.example.dittodiskusage.usecase.GetDiskUsageMetrics
+import live.ditto.dittodiskusage.usecase.GetDiskUsageMetrics
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,8 +27,8 @@ class DiskUsageViewModel(
     /* Private mutable state */
     private val _uiState = MutableStateFlow(DiskUsageState())
 
-    /// The size over which disk usage is considered unhealthy when used as a `HealthMetric` with the heartbeat tool (this only considers `ditto_store` and `ditto_replication`). Defaults to 500MB
-    var unhealthySizeInBytes: Int = FIVE_HUNDRED_MEGABYTES_IN_BYTES
+    // The size over which disk usage is considered unhealthy when used as a `HealthMetric` with the heartbeat tool (this only considers `ditto_store` and `ditto_replication`). Defaults to 500MB
+    private var unhealthySizeInBytes: Int = FIVE_HUNDRED_MEGABYTES_IN_BYTES
         set(value) {
             field = value
             getDiskUsageMetrics.unhealthySizeInBytes = value
