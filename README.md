@@ -65,11 +65,9 @@ Example code:
 
 ```kotlin
 
-//Within a composable:
+// minimum code required to get started
 DittoToolsViewer(
-    modifier = Modifier(),   // optional
-    ditto = YOUR_DITTO_INSTANCE,
-    onExitTools = { }   // optional
+    ditto = YOUR_DITTO_INSTANCE
 )
 ```
 
