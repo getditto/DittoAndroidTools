@@ -3,7 +3,9 @@ package live.ditto.dittotoolsviewer.presentation
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -57,12 +59,17 @@ private fun DittoToolsViewerScaffold(
     val navController = rememberNavController()
 
     Scaffold(
-        floatingActionButton = {
-            MenuFloatingActionButton {
-                showMenu = true
-            }
+        bottomBar = {
+            BottomAppBar(
+                actions = {},
+                floatingActionButton = {
+                    MenuFloatingActionButton {
+                        showMenu = true
+                    }
+                }
+            )
         }
-    ) { contentPadding ->
+        ) { contentPadding ->
         ToolsViewerContent(
             showMenu = showMenu,
             onToolsMenuDismiss = { showMenu = false },
@@ -149,7 +156,7 @@ private fun ToolsViewerNavHost(
 private fun MenuFloatingActionButton(onClick: () -> Unit) {
     ExtendedFloatingActionButton(
         onClick = { onClick() },
-        icon = { Icon(Icons.Filled.Menu, stringResource(R.string.tools_menu_content_description)) },
+        icon = { Icon(Icons.Filled.Build, stringResource(R.string.tools_menu_content_description)) },
         text = { Text(text = stringResource(R.string.tools_menu)) }
     )
 }

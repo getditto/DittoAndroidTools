@@ -24,13 +24,14 @@ repositories {
 
 | Tool Name                        | Gradle artifact                                            |
 |----------------------------------|------------------------------------------------------------|
-| 1. Presence Viewer               | `'live.ditto:dittopresenceviewer:LIBRARY_VERSION'`         |
-| 2. Data Browser                  | `'live.ditto:dittodatabrowser:LIBRARY_VERSION'`            |
-| 3. Export Logs                   | `'live.ditto:dittoexportlogs:LIBRARY_VERSION'`             |
-| 4. Disk Usage/Export Data        | `'live.ditto:dittodiskusage:LIBRARY_VERSION'`              |
-| 5. Health                        | `'live.ditto:health:LIBRARY_VERSION'`                      |
-| 6. Heartbeat                     | `'live.ditto:dittoheartbeat:LIBRARY_VERSION'`              |
-| 7. Presence Degradation Reporter | `'live.ditto:presencedegradationreporter:LIBRARY_VERSION'` |
+| 1. Tools Viewer                  | `'live.ditto:ditto:dittotoolsviewer:LIBRARY_VERSION'`      |
+| 2. Presence Viewer               | `'live.ditto:dittopresenceviewer:LIBRARY_VERSION'`         |
+| 3. Data Browser                  | `'live.ditto:dittodatabrowser:LIBRARY_VERSION'`            |
+| 4. Export Logs                   | `'live.ditto:dittoexportlogs:LIBRARY_VERSION'`             |
+| 5. Disk Usage/Export Data        | `'live.ditto:dittodiskusage:LIBRARY_VERSION'`              |
+| 6. Health                        | `'live.ditto:health:LIBRARY_VERSION'`                      |
+| 7. Heartbeat                     | `'live.ditto:dittoheartbeat:LIBRARY_VERSION'`              |
+| 8. Presence Degradation Reporter | `'live.ditto:presencedegradationreporter:LIBRARY_VERSION'` |
 
 You can find the list of versions and release notes in the [Releases tab](https://github.com/getditto/DittoAndroidTools/releases).
 
@@ -52,7 +53,35 @@ ditto.onlinePlayground.appId="YOUR_APPID"
 ditto.onlinePlayground.token="YOUR_TOKEN"
 ```
 
-### 1. Presence Viewer
+### 1. Tools Viewer
+Tools viewer is the easiest way to integrate all the tools currently available. It provides a single entry point to interact with all other tools, and includes them as a dependency.
+
+It is available as a Composable element, requiring a Ditto instance and a closure for `onExitTools`:
+
+```kotlin
+
+//Within a composable:
+DittoToolsViewer(
+    ditto = YOUR_DITTO_INSTANCE,
+    onExitTools = { }
+)
+```
+
+ <img src="/Img/toolsViewer.png" alt="Tools Viewer Image" width="300">  
+
+
+To integrate it in a Views-based app - see instructions here: https://developer.android.com/develop/ui/compose/migrate/interoperability-apis/compose-in-views 
+
+**Download**
+
+Gradle:
+```kotlin
+dependencies {
+    implementation 'live.ditto:dittotoolsviewer:YOUR_LIBRARY_VERSION'
+}
+```
+
+### 2. Presence Viewer
 The Presence Viewer displays a mesh graph that allows you to see all connected peers within the mesh and the transport that each peer is using to make a connection.  
 
 Within a Composable, you pass ditto to the constructor:
@@ -82,7 +111,7 @@ Maven:
 ```
 
 
-### 2. Data Browser
+### 3. Data Browser
 
 The Ditto Data Browser allows you to view all your collections, documents within each collection and the propeties/values of a document. With the Data Browser, you can observe any changes that are made to your collections and documents in real time.  
 
@@ -118,7 +147,7 @@ Maven:
 </dependency>
 ```
 
-### 3. Export Logs
+### 4. Export Logs
 Export Logs allows you to export a file of the logs from your applcation.  
 
 **Important**
@@ -176,7 +205,7 @@ Maven:
 </dependency>
 ```
 
-### 4. Disk Usage/ Export Data
+### 5. Disk Usage/ Export Data
 
 Disk Usage allows you to see Ditto's file space usage.  
 Export Data allows you to export the Ditto directory.
@@ -205,7 +234,7 @@ Maven:
 </dependency>
 ```
 
-### 5. Health
+### 6. Health
 
 Health allows you to see the status of ditto's required services.
 
@@ -235,7 +264,7 @@ Maven:
 </dependency>
 ```
 
-### 6. Heartbeat
+### 7. Heartbeat
 
 The Ditto Heartbeat tool allows you to monitor, locally or remotely, the peers in your mesh.
 
@@ -357,7 +386,7 @@ Maven:
 </dependency>
 ```
 
-### 7. Presence Degradation Reporter
+### 8. Presence Degradation Reporter
 Tracks the status of your mesh, allowing to define the minimum of required peers that needs to be connected.
 Exposes an API to notify when the condition of minimum required peers is not met.
 
