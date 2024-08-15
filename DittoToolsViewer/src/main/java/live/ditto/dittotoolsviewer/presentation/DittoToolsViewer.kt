@@ -4,9 +4,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -23,10 +21,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.dittodiskusage.DittoDiskUsage
 import ditto.live.dittopresenceviewer.DittoPresenceViewer
 import live.ditto.Ditto
 import live.ditto.dittodatabrowser.DittoDataBrowser
+import live.ditto.dittodiskusage.DittoDiskUsage
 import live.ditto.dittoexportlogs.ExportLogs
 import live.ditto.dittotoolsviewer.R
 import live.ditto.dittotoolsviewer.presentation.navigation.Screens
@@ -45,7 +43,6 @@ fun DittoToolsViewer(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DittoToolsViewerScaffold(
     ditto: Ditto,

@@ -11,11 +11,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.dittodiskusage.DiskUsageViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import live.ditto.Ditto
+import live.ditto.dittodiskusage.DiskUsageViewModel
 import live.ditto.healthmetrics.HealthMetricProvider
 import live.ditto.dittoheartbeat.DittoHeartbeatConfig
 import live.ditto.dittoheartbeat.DittoHeartbeatInfo
