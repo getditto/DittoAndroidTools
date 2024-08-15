@@ -71,7 +71,7 @@ DittoToolsViewer(
 )
 ```
 
- <img src="/Img/toolsViewer.png" alt="Tools Viewer Image" width="300">  
+ <img src="/Img/toolsViewer.png" alt="Tools Viewer Image" width="1000">  
 
 
 To integrate it in a Views-based app - see instructions here: https://developer.android.com/develop/ui/compose/migrate/interoperability-apis/compose-in-views 
