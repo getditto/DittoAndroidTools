@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.dittodiskusage.DittoDiskUsage
 import ditto.live.dittopresenceviewer.DittoPresenceViewer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -37,6 +36,7 @@ import live.ditto.DittoLogLevel
 import live.ditto.DittoLogger
 import live.ditto.android.DefaultAndroidDittoDependencies
 import live.ditto.dittodatabrowser.DittoDataBrowser
+import live.ditto.dittodiskusage.DittoDiskUsage
 import live.ditto.dittotoolsapp.ui.theme.DittoToolsAppTheme
 import live.ditto.health.HealthScreen
 import live.ditto.presencedegradationreporter.PresenceDegradationReporterScreen

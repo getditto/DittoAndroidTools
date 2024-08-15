@@ -4,7 +4,7 @@
 android-gradle-plugin = "7.3.0"
 androidx-activity = "1.7.1"
 androidx-appcompat = "1.6.1"
-androidx-compose = "2023.03.00"
+androidx-compose = "2024.06.00"
 androidx-navigation = "2.5.3"
 androidx-test-ext = "1.1.5"
 androidx-webkit = "1.7.0"
