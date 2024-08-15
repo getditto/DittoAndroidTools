@@ -23,8 +23,6 @@
     <string name="connection_info_bt">BT: %1$s</string>
     <string name="connection_info_p2pwifi">P2PWifi: %1$s</string>
     <string name="connection_info_lan">LAN: %1$s</string>
-    <string name="ditto_tools_viewer_header">Ditto Tools Viewer</string>
-    <string name="ditto_tools_instructions">Use the menu to browse to the different Ditto Tools</string>
     <string name="close_button_description">Close</string>
     <string name="tools_menu_title">Ditto Tools</string>
     <string name="exit_tools_menu_item">Exit Tools</string>

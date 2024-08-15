@@ -5,15 +5,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,10 +31,12 @@ import live.ditto.presencedegradationreporter.PresenceDegradationReporterScreen
 
 @Composable
 fun DittoToolsViewer(
+    modifier: Modifier = Modifier,
     ditto: Ditto,
     onExitTools: () -> Unit
 ) {
     DittoToolsViewerScaffold(
+        modifier = modifier,
         ditto = ditto,
         onExitTools = onExitTools
     )
@@ -45,65 +44,54 @@ fun DittoToolsViewer(
 
 @Composable
 private fun DittoToolsViewerScaffold(
+    modifier: Modifier,
     ditto: Ditto,
     onExitTools: () -> Unit,
     viewModel: ToolsViewerViewModel = ToolsViewerViewModel()
 ) {
-    var showMenu by remember {
-        mutableStateOf(false)
-    }
 
     val navController = rememberNavController()
 
     Scaffold(
+        modifier = modifier,
         bottomBar = {
             BottomAppBar(
-                actions = {},
+                actions = {
+                    Button(onClick = { onExitTools() }) {
+                        Text(text = "Exit Tools")
+                    }
+                },
                 floatingActionButton = {
                     MenuFloatingActionButton {
-                        showMenu = true
+                        if (navController.currentDestination?.route != Screens.MainScreen.route) {
+                            navController.popBackStack()
+                        }
                     }
                 }
             )
         }
         ) { contentPadding ->
         ToolsViewerContent(
-            showMenu = showMenu,
-            onToolsMenuDismiss = { showMenu = false },
             navController = navController,
             viewModel = viewModel,
             contentPadding = contentPadding,
-            ditto = ditto,
-            onExitTools = onExitTools
+            ditto = ditto
         )
     }
 }
 
 @Composable
 private fun ToolsViewerContent(
-    showMenu: Boolean,
-    onToolsMenuDismiss: () -> Unit,
     navController: NavHostController,
     viewModel: ToolsViewerViewModel,
     contentPadding: PaddingValues,
     ditto: Ditto,
-    onExitTools: () -> Unit
 ) {
-    if (showMenu) {
-        ToolsMenu(
-            navController = navController,
-            menuItems = viewModel.toolsMenuItems(),
-            onExit = onExitTools,
-            onDismissRequest = {
-                onToolsMenuDismiss()
-            }
-        )
-    }
-
     ToolsViewerNavHost(
         navController = navController,
         contentPadding = contentPadding,
-        ditto = ditto
+        ditto = ditto,
+        toolMenuItems = viewModel.toolsMenuItems()
     )
 }
 
@@ -111,7 +99,8 @@ private fun ToolsViewerContent(
 private fun ToolsViewerNavHost(
     navController: NavHostController,
     contentPadding: PaddingValues,
-    ditto: Ditto
+    ditto: Ditto,
+    toolMenuItems: List<ToolMenuItem>
 ) {
     NavHost(
         modifier = Modifier.padding(contentPadding),
@@ -119,7 +108,10 @@ private fun ToolsViewerNavHost(
         startDestination = Screens.MainScreen.route,
     ) {
         composable(Screens.MainScreen.route) {
-            MainScreen()
+            ToolsMenu(
+                navController = navController,
+                menuItems = toolMenuItems,
+            )
         }
         composable(Screens.PresenceViewerScreen.route) {
             DittoPresenceViewer(ditto = ditto)
