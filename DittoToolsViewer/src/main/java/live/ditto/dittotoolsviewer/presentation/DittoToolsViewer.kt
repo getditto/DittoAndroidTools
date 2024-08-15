@@ -29,11 +29,20 @@ import live.ditto.dittotoolsviewer.presentation.viewmodel.ToolsViewerViewModel
 import live.ditto.health.HealthScreen
 import live.ditto.presencedegradationreporter.PresenceDegradationReporterScreen
 
+/**
+ * A Composable that you can include in your app that will give a single entry point for all Ditto
+ * Tools.
+ *
+ * @param modifier an optional modifier if you need to adjust the layout to fit the view
+ * @param ditto your instance of [Ditto] that is required
+ * @param onExitTools an optional lambda function that will be called whenever a user taps the
+ * "Exit Tools" button. Use this to do any back navigation or dismissal/hiding of the Tools Viewer
+ */
 @Composable
 fun DittoToolsViewer(
     modifier: Modifier = Modifier,
     ditto: Ditto,
-    onExitTools: () -> Unit
+    onExitTools: () -> Unit = { }
 ) {
     DittoToolsViewerScaffold(
         modifier = modifier,

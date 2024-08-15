@@ -56,14 +56,20 @@ ditto.onlinePlayground.token="YOUR_TOKEN"
 ### 1. Tools Viewer
 Tools viewer is the easiest way to integrate all the tools currently available. It provides a single entry point to interact with all other tools, and includes them as a dependency.
 
-It is available as a Composable element, requiring a Ditto instance and a closure for `onExitTools`:
+It is available as a Composable element that requires a Ditto instance. Optional parameters include:
+
+- `modifier`: If you need to adjust the layout
+- `onExitTools`: Lambda function that will be called when the "Exit Tools" button is tapped. Use this to do any back navigation or dismissal of the tools composable if you need to.
+
+Example code:
 
 ```kotlin
 
 //Within a composable:
 DittoToolsViewer(
+    modifier = Modifier(),   // optional
     ditto = YOUR_DITTO_INSTANCE,
-    onExitTools = { }
+    onExitTools = { }   // optional
 )
 ```
 
