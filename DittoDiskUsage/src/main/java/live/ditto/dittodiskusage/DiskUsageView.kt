@@ -1,4 +1,4 @@
-package com.example.dittodiskusage
+package live.ditto.dittodiskusage
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -32,7 +32,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import live.ditto.Ditto
-import live.ditto.dittodiskusage.R
 import live.ditto.exporter.ExportDialog
 import java.io.File
 

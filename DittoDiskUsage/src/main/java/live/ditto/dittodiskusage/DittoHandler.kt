@@ -1,4 +1,4 @@
-package com.example.dittodiskusage
+package live.ditto.dittodiskusage
 
 import android.app.Application
 import live.ditto.Ditto
