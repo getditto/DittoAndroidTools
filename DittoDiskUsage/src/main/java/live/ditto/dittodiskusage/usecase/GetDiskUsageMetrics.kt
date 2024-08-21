@@ -9,19 +9,21 @@ import live.ditto.dittodiskusage.TOTAL_SIZE
 import live.ditto.dittodiskusage.FIVE_HUNDRED_MEGABYTES_IN_BYTES
 import live.ditto.healthmetrics.HealthMetric
 
-class GetDiskUsageMetrics() {
+class GetDiskUsageMetrics {
     val metricName: String = METRIC_NAME
     var unhealthySizeInBytes: Int = FIVE_HUNDRED_MEGABYTES_IN_BYTES
 
     fun execute(currentState: DiskUsageState): HealthMetric {
 
-        val dittoStoreSize: Int = currentState.children.first { shortRelativePath(it.relativePath) == DITTO_STORE}.sizeInBytes
-        val dittoReplicationSize: Int = currentState.children.first { shortRelativePath(it.relativePath) == DITTO_REPLICATION}.sizeInBytes
+        val dittoStoreSize: Int =
+            currentState.children.first { shortRelativePath(it.relativePath) == DITTO_STORE }.sizeInBytes
+        val dittoReplicationSize: Int = currentState.children.firstOrNull {
+            shortRelativePath(it.relativePath) == DITTO_REPLICATION }?.sizeInBytes ?: 0
 
         val isHealthy = healthCheckSize(dittoStoreSize, dittoReplicationSize)
 
         val details = mutableMapOf<String, String>().apply {
-            for(child in currentState.children) {
+            for (child in currentState.children) {
                 this[shortRelativePath(child.relativePath)] = child.size
             }
             this[ROOT_PATH] = currentState.rootPath

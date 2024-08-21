@@ -36,6 +36,7 @@ dependencies {
 
     implementation platform(libs.androidx.compose.composeBom)
 
+    implementation(project(":DittoToolsViewer"))
     implementation libs.live.ditto.databrowser
     implementation libs.live.ditto.exportlogs
     implementation libs.live.ditto.presenceviewer
