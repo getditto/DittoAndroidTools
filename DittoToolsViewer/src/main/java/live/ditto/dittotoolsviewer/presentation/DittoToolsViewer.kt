@@ -28,7 +28,7 @@ import live.ditto.dittotoolsviewer.presentation.navigation.Screens
 import live.ditto.dittotoolsviewer.presentation.viewmodel.ToolsViewerViewModel
 import live.ditto.health.HealthScreen
 import live.ditto.presencedegradationreporter.PresenceDegradationReporterScreen
-
+import live.ditto.dittomeshhealthtest.MeshHealthTestScreen
 /**
  * A Composable that you can include in your app that will give a single entry point for all Ditto
  * Tools.
@@ -146,6 +146,9 @@ private fun ToolsViewerNavHost(
         }
         composable(Screens.PresenceDegradationReporterScreen.route) {
             PresenceDegradationReporterScreen(ditto = ditto)
+        }
+        composable(Screens.MeshHealthTestScreen.route){
+            MeshHealthTestScreen(ditto = ditto)
         }
     }
 }

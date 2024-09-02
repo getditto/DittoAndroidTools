@@ -26,4 +26,5 @@
     <string name="close_button_description">Close</string>
     <string name="tools_menu_title">Ditto Tools</string>
     <string name="exit_tools_menu_item">Exit Tools</string>
+    <string name="mesh_health_test">Mesh Health Test</string>
 </resources>

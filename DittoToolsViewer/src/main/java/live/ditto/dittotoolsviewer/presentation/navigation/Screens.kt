@@ -29,4 +29,7 @@ sealed class Screens {
     object PresenceDegradationReporterScreen: Screen {
         override val route = "presenceDegradationReporter"
     }
+    object MeshHealthTestScreen: Screen {
+        override val route = "meshHealthTest"
+    }
 }

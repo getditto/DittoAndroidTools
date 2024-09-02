@@ -37,6 +37,10 @@ class ToolsViewerViewModel: ViewModel() {
                 label = R.string.presence_degradation_reporter_tool_label,
                 route = Screens.PresenceDegradationReporterScreen.route
             ),
+            ToolMenuItem(
+                label = R.string.mesh_health_test,
+                route = Screens.MeshHealthTestScreen.route
+            )
         )
     }
 }
