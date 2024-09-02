@@ -46,6 +46,7 @@ dependencies {
     implementation libs.live.ditto.presencedegradationreporter
     implementation libs.live.ditto.healthmetrics
     implementation libs.live.ditto.exporter
+    implementation(project(":DittoMeshHealthTest"))
 
     testImplementation libs.junit.junit
 }
