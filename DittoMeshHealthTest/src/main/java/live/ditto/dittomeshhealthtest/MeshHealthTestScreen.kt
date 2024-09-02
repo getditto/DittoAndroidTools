@@ -1,6 +1,10 @@
 package live.ditto.dittomeshhealthtest
 
+import android.util.Log
 import android.widget.TextView
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -33,6 +37,48 @@ fun MeshHealthTestScreen(
 private fun MeshHealthTestScreen(
     state: MeshHealthTestUIState
 ) {
-    return Greeting("Hello world")
+//    if (state.testState == MeshHealthTestUIState.TestState.OBSERVING) {
+//        return ObserveList()
+//    }
+//    else if(state.testState == MeshHealthTestUIState.TestState.CONFIGURING){
+//        return ConfigurationView()
+//    }
+//    else if(state.testState == MeshHealthTestUIState.TestState.TEST_RUNNING){
+//        return TestRunningView()
+//    }
+//
+//    else if(state.testState == MeshHealthTestUIState.TestState.TEST_COMPLETE){
+//        return TestCompleteView()
+//    }
+
+    return ObserveList(state)
 }
 
+@Composable
+private fun ObserveList(state: MeshHealthTestUIState){
+
+    Column {
+
+        Row {
+            Text(text = "Number of devices present:")
+            Text(text = "${state.remotePeers.size}")
+        }
+        
+
+
+        //List of peers
+        Column {
+            Column {
+                state.remotePeers.forEach { peer ->
+                    Text(text = peer.deviceName)
+                    Text(text = peer.peerKeyString)
+                }
+            }
+        }
+
+
+        Button(onClick = { Log.d("FOO", ">>>>>>>>>>>>>>>>    ON CLICK") }) {
+            Text(text = "START TEST")
+        }
+    }
+}
