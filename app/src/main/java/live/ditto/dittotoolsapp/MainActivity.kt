@@ -93,7 +93,7 @@ class MainActivity : ComponentActivity() {
             enableDittoCloudSync = true
         )
         val ditto = Ditto(androidDependencies, identity)
-        DittoLogger.minimumLogLevel = DittoLogLevel.DEBUG
+        DittoLogger.minimumLogLevel = DittoLogLevel.WARNING
 
         LogFileConfig.logFile.let { logFile ->
             DittoLogger.setLogFile(logFile.toString())

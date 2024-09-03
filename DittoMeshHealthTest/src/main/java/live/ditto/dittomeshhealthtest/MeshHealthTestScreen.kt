@@ -1,7 +1,6 @@
 package live.ditto.dittomeshhealthtest
 
 import android.util.Log
-import android.widget.TextView
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Button
@@ -9,10 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.tooling.preview.Preview
 import live.ditto.Ditto
-import live.ditto.dittomeshhealthtest.components.Greeting
-import live.ditto.dittomeshhealthtest.components.Loading
 import live.ditto.dittomeshhealthtest.theme.MeshHealthTestTheme
 
 
@@ -27,15 +23,16 @@ fun MeshHealthTestScreen(
 
     MeshHealthTestTheme {
         MeshHealthTestScreen(
-            state = state
+            state = state,
+            viewModel = viewModel
         )
-
     }
 }
 
 @Composable
 private fun MeshHealthTestScreen(
-    state: MeshHealthTestUIState
+    state: MeshHealthTestUIState,
+    viewModel: MeshHealthTestViewModel
 ) {
 //    if (state.testState == MeshHealthTestUIState.TestState.OBSERVING) {
 //        return ObserveList()
@@ -51,11 +48,11 @@ private fun MeshHealthTestScreen(
 //        return TestCompleteView()
 //    }
 
-    return ObserveList(state)
+    return ObserveList(state, viewModel)
 }
 
 @Composable
-private fun ObserveList(state: MeshHealthTestUIState){
+private fun ObserveList(state: MeshHealthTestUIState, viewModel: MeshHealthTestViewModel){
 
     Column {
 
@@ -77,8 +74,16 @@ private fun ObserveList(state: MeshHealthTestUIState){
         }
 
 
-        Button(onClick = { Log.d("FOO", ">>>>>>>>>>>>>>>>    ON CLICK") }) {
-            Text(text = "START TEST")
+
+
+        Button(onClick = {
+            Log.d("FOO", ">>>>>>>>>>>>>>>>    ON CLICK")
+            viewModel.onStartHealthCheck()
+        }
+
+
+        ) {
+            Text(text = "START TEST - make sure all devices under test have this screen open")
         }
     }
 }
