@@ -16,7 +16,7 @@ class GetDiskUsageMetrics {
     fun execute(currentState: DiskUsageState): HealthMetric {
 
         val dittoStoreSize: Int =
-            currentState.children.first { shortRelativePath(it.relativePath) == DITTO_STORE }.sizeInBytes
+            currentState.children.firstOrNull { shortRelativePath(it.relativePath) == DITTO_STORE }?.sizeInBytes ?: 0
         val dittoReplicationSize: Int = currentState.children.firstOrNull {
             shortRelativePath(it.relativePath) == DITTO_REPLICATION }?.sizeInBytes ?: 0
 

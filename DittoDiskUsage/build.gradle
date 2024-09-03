@@ -21,7 +21,7 @@ dependencies {
     implementation libs.androidx.compose.ui.ui
     implementation libs.androidx.compose.ui.uiToolingPreview
     implementation libs.androidx.navigation.navigationCompose
-    implementation project(path: ':DittoHealthMetrics')
+    implementation libs.live.ditto.healthmetrics
     implementation libs.live.ditto.ditto
     // Dependency constraint for ditto
     constraints {
@@ -31,7 +31,7 @@ dependencies {
             }
         }
     }
-    implementation project(":DittoExporter")
+    implementation libs.live.ditto.exporter
 
     implementation platform(libs.androidx.compose.composeBom)
 
