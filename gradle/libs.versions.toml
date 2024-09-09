@@ -10,7 +10,7 @@ androidx-test-ext = "1.1.5"
 androidx-webkit = "1.7.0"
 datastorePreferences = "1.0.0"
 ditto = "4.7.4"
-live-ditto-tools = "2.0.0"
+live-ditto-tools = "2.1.0"
 
 junit = "4.13.2"
 kotlin-gradle-plugin = "1.8.10"
@@ -34,6 +34,7 @@ androidx-datastore-preferences = { module = "androidx.datastore:datastore-prefer
 androidx-navigation-navigationCompose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext" }
 androidx-webkit-webkit = { group = "androidx.webkit", name = "webkit", version.ref = "androidx-webkit" }
+live-ditto-toolsviewer = { module = "live.ditto:dittotoolsviewer", version.ref = "live-ditto-tools" }
 live-ditto-databrowser = { module = "live.ditto:dittodatabrowser", version.ref = "live-ditto-tools" }
 live-ditto-exportlogs = { module = "live.ditto:dittoexportlogs", version.ref = "live-ditto-tools" }
 live-ditto-exporter = { module = "live.ditto:dittoexporter", version.ref = "live-ditto-tools" }
