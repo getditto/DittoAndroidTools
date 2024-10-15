@@ -1,5 +1,5 @@
 android {
-    compileSdk 34
+    compileSdk = libs.versions.android.sdk.get().toInteger()
 
     buildFeatures {
         compose true
@@ -16,7 +16,8 @@ android {
     }
 
     defaultConfig {
-        minSdk 23
+        minSdk = libs.versions.android.minsdk.get().toInteger()
+        targetSdk = libs.versions.android.sdk.get().toInteger()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"

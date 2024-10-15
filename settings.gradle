@@ -13,7 +13,7 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "DittoToolsApp"
+rootProject.name = "DittoTools"
 include ':app'
 include ':DittoDataBrowser'
 include ':DittoDiskUsage'

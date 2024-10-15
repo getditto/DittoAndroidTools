@@ -24,7 +24,7 @@ repositories {
 
 | Tool Name                        | Gradle artifact                                            |
 |----------------------------------|------------------------------------------------------------|
-| 1. Tools Viewer                  | `'live.ditto:ditto:dittotoolsviewer:LIBRARY_VERSION'`      |
+| 1. Tools Viewer                  | `'live.ditto:dittotoolsviewer:LIBRARY_VERSION'`            |
 | 2. Presence Viewer               | `'live.ditto:dittopresenceviewer:LIBRARY_VERSION'`         |
 | 3. Data Browser                  | `'live.ditto:dittodatabrowser:LIBRARY_VERSION'`            |
 | 4. Export Logs                   | `'live.ditto:dittoexportlogs:LIBRARY_VERSION'`             |

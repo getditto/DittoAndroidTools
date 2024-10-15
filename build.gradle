@@ -24,3 +24,10 @@ ext.getValueFromLocalProperties = { name, defValue ->
             getValueFromPropertiesFile(project.rootProject.file('local.properties'), name)
     return (null == prop) ? defValue : prop
 }
+
+// Built-in task
+tasks.named("wrapper") {
+    // Change the `gradle-wrapper` value in the version catalog and run `./gradlew wrapper` to update.
+    gradleVersion = libs.versions.gradle.wrapper.get()
+    distributionType = Wrapper.DistributionType.BIN
+}

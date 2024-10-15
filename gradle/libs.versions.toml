@@ -1,9 +1,14 @@
 # Lines on each section of this file should be sorted alphabetically
 
 [versions]
-android-gradle-plugin = "7.3.0"
+# https://developer.android.com/studio/releases/gradle-plugin
+android-gradle-plugin = "8.7.0"
+android-sdk = "34"
+android-minsdk = "23"
+
 androidx-activity = "1.7.1"
 androidx-appcompat = "1.6.1"
+# Compose 1.6.8 - https://developer.android.com/develop/ui/compose/bom/bom-mapping
 androidx-compose = "2024.06.00"
 androidx-navigation = "2.5.3"
 androidx-test-ext = "1.1.5"
@@ -19,6 +24,7 @@ core-ktx = "1.9.0"
 espresso-core = "3.5.1"
 material = "1.11.0"
 
+gradle-wrapper = "8.10.2"
 gradle-nexus-publish-plugin = "2.0.0"
 
 [libraries]
