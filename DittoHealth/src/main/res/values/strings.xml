@@ -12,4 +12,7 @@
     <string name="bluetooth_enabled">Bluetooth Enabled</string>
     <string name="bluetooth_not_enabled">Bluetooth Not Enabled</string>
     <string name="enable_bluetooth">Enable Bluetooth</string>
+    <string name="wifi_aware_supported">WiFi Aware is supported by this device</string>
+    <string name="wifi_aware_unsupported">Wifi Aware is unavailable for this device</string>
+    <string name="wifi_aware_unsupported_android_version">Wifi Aware is not supported by this device as it not running Android 8.0 (API 26) or later</string>
 </resources>

@@ -15,6 +15,7 @@ import live.ditto.healthmetrics.HealthMetricProvider
 import live.ditto.health.usecase.GetBluetoothStatusFlow
 import live.ditto.health.usecase.GetDittoMissingPermissionsFlow
 import live.ditto.health.usecase.GetPermissionsMetrics
+import live.ditto.health.usecase.GetWifiAwareStatusUseCase
 import live.ditto.health.usecase.GetWifiStatusFlow
 
 class HealthViewModel(
@@ -25,6 +26,7 @@ class HealthViewModel(
     getWifiStatusFlow: GetWifiStatusFlow = GetWifiStatusFlow(context = context),
     getBluetoothStatusFlow: GetBluetoothStatusFlow = GetBluetoothStatusFlow(context = context),
     private val getPermissionsMetrics: GetPermissionsMetrics = GetPermissionsMetrics(),
+    getWifiAwareStatusUseCase: GetWifiAwareStatusUseCase = GetWifiAwareStatusUseCase(context = context)
 ) : ViewModel(), HealthMetricProvider {
     private var _state = MutableStateFlow(HealthUiState())
     val state = _state.asStateFlow()
@@ -44,6 +46,11 @@ class HealthViewModel(
             .onEach(::onBluetoothStatus)
             .flowOn(Dispatchers.Default)
             .launchIn(viewModelScope)
+
+        _state.update {
+            it.copy(wifiAwareState = getWifiAwareStatusUseCase())
+        }
+
     }
 
     private fun onDittoMissingPermissions(missingPermissions: Array<String>) {

@@ -9,3 +9,6 @@ val healthyIconColor = Color(0xFF065506)
 
 val notHealthyBackgroundColor = Color(0xFF815866)
 val notHealthyIconColor = Color(0xFF42051A)
+
+val wifiAwareAvailableColor = Color(0xFF27ae60)
+val wifiAwareUnavailableColor = Color(0xFFc0392b)
