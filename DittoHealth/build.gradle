@@ -30,6 +30,7 @@ dependencies {
         }
     }
     implementation platform(libs.androidx.compose.composeBom)
+    implementation(libs.androidx.lifecycle.runtime.compose)
 
     testImplementation libs.junit.junit
 }
