@@ -23,14 +23,11 @@ dependencies {
     implementation libs.androidx.navigation.navigationCompose
     implementation libs.live.ditto.healthmetrics
     // Dependency constraint for ditto
-    constraints {
-        implementation(libs.live.ditto.ditto) {
-            version {
-                strictly "[4.7.0,)"
-            }
+    implementation(libs.live.ditto.ditto) {
+        version {
+            strictly("[4.5.0,)")
         }
     }
-
     implementation libs.joda.time.joda.time
 
     implementation platform(libs.androidx.compose.composeBom)

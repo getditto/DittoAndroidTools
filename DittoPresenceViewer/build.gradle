@@ -20,11 +20,9 @@ dependencies {
     implementation libs.androidx.compose.ui.ui
     implementation libs.androidx.webkit.webkit
     // Dependency constraint for ditto
-    constraints {
-        implementation(libs.live.ditto.ditto) {
-            version {
-                strictly "[4.5.0,)"
-            }
+    implementation(libs.live.ditto.ditto) {
+        version {
+            strictly("[4.5.0,)")
         }
     }
     implementation platform(libs.androidx.compose.composeBom)
