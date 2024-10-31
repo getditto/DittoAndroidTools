@@ -1,9 +1,12 @@
-package live.ditto.health
+package live.ditto.health.data
 
 import android.content.Context
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import live.ditto.health.HealthUiActionType
+import live.ditto.health.HealthUiStateCause
+import live.ditto.health.R
 import live.ditto.health.usecase.WifiAwareState
 
 data class HealthUiState(
@@ -11,7 +14,8 @@ data class HealthUiState(
     val missingPermissions: List<String> = emptyList(),
     val wifiEnabled: Boolean = true,
     val bluetoothEnabled: Boolean = true,
-    val wifiAwareState: WifiAwareState = WifiAwareState.UNSUPPORTED
+    val wifiAwareState: WifiAwareState = WifiAwareState.UNSUPPORTED,
+    val deviceDetails: DeviceDetails
 ) {
     suspend fun sortedHealthUiStateCauses(context: Context) = withContext(defaultDispatcher) {
         val withActions = mutableListOf<HealthUiStateCause>()

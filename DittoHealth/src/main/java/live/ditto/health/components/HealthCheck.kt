@@ -11,9 +11,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -32,7 +32,7 @@ import live.ditto.health.theme.notHealthyBackgroundColor
 import live.ditto.health.theme.notHealthyIconColor
 
 @Composable
-fun HealthCheckWithNoAction(
+internal fun HealthCheckWithNoAction(
     header: String,
     isHealthy: Boolean,
     description: String,
@@ -51,7 +51,7 @@ fun HealthCheckWithNoAction(
 }
 
 @Composable
-fun HealthCheckWithAction(
+internal fun HealthCheckWithAction(
     header: String,
     isHealthy: Boolean,
     description: String,
@@ -69,7 +69,7 @@ fun HealthCheckWithAction(
             style = HealthTypography.bodyMedium
         )
 
-        Divider(modifier = Modifier.padding(vertical = 4.dp))
+        HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
 
         OutlinedButton(
             onClick = onAction,
@@ -87,10 +87,9 @@ private fun HealthCheck(
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    Card(
+    ElevatedCard(
         modifier = modifier,
         shape = RoundedCornerShape(4),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         colors = CardDefaults.cardColors(containerColor = healthyCardContainerColor)
     ) {
         val headerBackgroundColor = headerBackgroundColor(isHealthy)

@@ -1,6 +1,8 @@
-package live.ditto.health
+package live.ditto.health.ui.viewmodel
 
 import android.content.Context
+import android.os.Build
+import androidx.compose.ui.platform.UriHandler
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -10,13 +12,15 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
-import live.ditto.healthmetrics.HealthMetric
-import live.ditto.healthmetrics.HealthMetricProvider
+import live.ditto.health.data.DeviceDetails
+import live.ditto.health.data.HealthUiState
 import live.ditto.health.usecase.GetBluetoothStatusFlow
 import live.ditto.health.usecase.GetDittoMissingPermissionsFlow
 import live.ditto.health.usecase.GetPermissionsMetrics
 import live.ditto.health.usecase.GetWifiAwareStatusUseCase
 import live.ditto.health.usecase.GetWifiStatusFlow
+import live.ditto.healthmetrics.HealthMetric
+import live.ditto.healthmetrics.HealthMetricProvider
 
 class HealthViewModel(
     context: Context,
@@ -28,7 +32,15 @@ class HealthViewModel(
     private val getPermissionsMetrics: GetPermissionsMetrics = GetPermissionsMetrics(),
     getWifiAwareStatusUseCase: GetWifiAwareStatusUseCase = GetWifiAwareStatusUseCase(context = context)
 ) : ViewModel(), HealthMetricProvider {
-    private var _state = MutableStateFlow(HealthUiState())
+
+    private var _state = MutableStateFlow(
+        HealthUiState(
+            deviceDetails = DeviceDetails(
+                modelAndManufacturer = "",
+                androidVersionDetails = ""
+            )
+        )
+    )
     val state = _state.asStateFlow()
 
     init {
@@ -51,6 +63,38 @@ class HealthViewModel(
             it.copy(wifiAwareState = getWifiAwareStatusUseCase())
         }
 
+        updateDeviceDetails()
+    }
+
+    fun openLearnMoreLink(uriHandler: UriHandler) {
+        uriHandler.openUri(LEARN_MORE_URL)
+    }
+
+    private fun updateDeviceDetails() {
+        _state.update {
+            it.copy(
+                deviceDetails = DeviceDetails(
+                    modelAndManufacturer = createModelAndManufacturer(),
+                    androidVersionDetails = createAndroidVersionDetails()
+                )
+            )
+        }
+    }
+
+    private fun createAndroidVersionDetails(): String {
+        val sdkVersion = Build.VERSION.SDK_INT.toString()
+        val androidReleaseVersion = Build.VERSION.RELEASE
+        return "Android $androidReleaseVersion | SDK $sdkVersion"
+    }
+
+    private fun createModelAndManufacturer(): String {
+        val manufacturer = Build.MANUFACTURER
+        val model = Build.MODEL
+        return if (model.startsWith(manufacturer)) {
+            model.capitalize()
+        } else {
+            manufacturer.capitalize() + " " + model
+        }
     }
 
     private fun onDittoMissingPermissions(missingPermissions: Array<String>) {
@@ -82,5 +126,10 @@ class HealthViewModel(
             currentState.wifiEnabled,
             currentState.bluetoothEnabled
         )
+    }
+
+    companion object {
+        const val LEARN_MORE_URL =
+            "https://developer.android.com/guide/topics/connectivity/wifi-aware"
     }
 }
