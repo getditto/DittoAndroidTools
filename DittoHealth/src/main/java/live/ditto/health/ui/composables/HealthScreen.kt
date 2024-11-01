@@ -36,7 +36,18 @@ private fun ComposableForScreen(
     }
 }
 
+/**
+ * Enum class for each of the various health state screens.
+ */
 enum class HealthScreenSections {
+    /**
+     * Screen that shows the state of the various transports (Wifi/Bluetooth) used by Ditto and
+     * their permissions state.
+     */
     TRANSPORT_HEALTH,
+
+    /**
+     * Screen that displays WiFi Aware information for the device.
+     */
     WIFI_AWARE_STATE
 }
