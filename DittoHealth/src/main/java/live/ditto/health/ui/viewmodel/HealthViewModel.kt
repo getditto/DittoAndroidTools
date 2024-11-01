@@ -16,7 +16,7 @@ import live.ditto.health.data.DeviceDetails
 import live.ditto.health.data.HealthUiState
 import live.ditto.health.usecase.GetBluetoothStatusFlow
 import live.ditto.health.usecase.GetDittoMissingPermissionsFlow
-import live.ditto.health.usecase.GetPermissionsMetrics
+import live.ditto.health.usecase.GetPermissionsMetricsUseCase
 import live.ditto.health.usecase.GetWifiAwareStatusUseCase
 import live.ditto.health.usecase.GetWifiStatusFlow
 import live.ditto.healthmetrics.HealthMetric
@@ -29,7 +29,7 @@ class HealthViewModel(
     ),
     getWifiStatusFlow: GetWifiStatusFlow = GetWifiStatusFlow(context = context),
     getBluetoothStatusFlow: GetBluetoothStatusFlow = GetBluetoothStatusFlow(context = context),
-    private val getPermissionsMetrics: GetPermissionsMetrics = GetPermissionsMetrics(),
+    private val getPermissionsMetricsUseCase: GetPermissionsMetricsUseCase = GetPermissionsMetricsUseCase(),
     getWifiAwareStatusUseCase: GetWifiAwareStatusUseCase = GetWifiAwareStatusUseCase(context = context)
 ) : ViewModel(), HealthMetricProvider {
 
@@ -116,20 +116,17 @@ class HealthViewModel(
     }
 
     override val metricName: String
-        get() = getPermissionsMetrics.metricName
+        get() = METRIC_NAME
 
     override fun getCurrentState(): HealthMetric {
         val currentState = _state.value
 
-        return getPermissionsMetrics.execute(
-            currentState.missingPermissions,
-            currentState.wifiEnabled,
-            currentState.bluetoothEnabled
-        )
+        return getPermissionsMetricsUseCase(currentState)
     }
 
     companion object {
         const val LEARN_MORE_URL =
             "https://developer.android.com/guide/topics/connectivity/wifi-aware"
+        const val METRIC_NAME = "DittoPermissionsHealth"
     }
 }
