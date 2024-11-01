@@ -257,7 +257,7 @@ TRANSPORT_HEALTH -- shows WiFi/Bluetooth status (enabled/disabled, permissions s
 WIFI_AWARE_STATE -- displays whether the device supports WiFi Aware
 ```
 
- <img src="/Img/health.png" alt="Health" width="300">  
+ <img src="/Img/health.png" alt="Health" width="400">  
 
 **Download**
 
