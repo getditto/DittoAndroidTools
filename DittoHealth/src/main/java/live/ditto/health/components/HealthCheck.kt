@@ -11,7 +11,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -26,7 +25,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import live.ditto.health.theme.HealthTypography
 import live.ditto.health.theme.healthyBackgroundColor
-import live.ditto.health.theme.healthyCardContainerColor
 import live.ditto.health.theme.healthyIconColor
 import live.ditto.health.theme.notHealthyBackgroundColor
 import live.ditto.health.theme.notHealthyIconColor
@@ -89,8 +87,7 @@ private fun HealthCheck(
 ) {
     ElevatedCard(
         modifier = modifier,
-        shape = RoundedCornerShape(4),
-        colors = CardDefaults.cardColors(containerColor = healthyCardContainerColor)
+        shape = RoundedCornerShape(4)
     ) {
         val headerBackgroundColor = headerBackgroundColor(isHealthy)
 
