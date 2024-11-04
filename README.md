@@ -240,15 +240,24 @@ Maven:
 
 ### 6. Health
 
-Health allows you to see the status of ditto's required services.
+Health allows you to see the status of Ditto's services. 
 
-Example: Wi-Fi, Bluetooth, Missing Permissions. 
+Example: WiFi/Bluetooth state/permissions, device capabilities
+
+The default implementation is a Composable that displays all facets of information.
 
 ```kotlin
 HealthScreen()
 ```
 
- <img src="/Img/health.png" alt="Health" width="300">  
+This Composable also takes in an optional list of `enum`'s if you need to show/hide certain groups of information. Current valid enums are:
+
+```
+TRANSPORT_HEALTH -- shows WiFi/Bluetooth status (enabled/disabled, permissions state) 
+WIFI_AWARE_STATE -- displays whether the device supports WiFi Aware
+```
+
+ <img src="/Img/health.png" alt="Health" width="400">  
 
 **Download**
 

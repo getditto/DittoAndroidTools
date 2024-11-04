@@ -2,7 +2,7 @@
 
 [versions]
 # https://developer.android.com/studio/releases/gradle-plugin
-android-gradle-plugin = "8.7.0"
+android-gradle-plugin = "8.7.1"
 android-sdk = "34"
 android-minsdk = "23"
 
@@ -37,6 +37,7 @@ androidx-compose-ui-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-compose-ui-uiTooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-compose-ui-uiToolingPreview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose" }
 androidx-navigation-navigationCompose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext" }
 androidx-webkit-webkit = { group = "androidx.webkit", name = "webkit", version.ref = "androidx-webkit" }
