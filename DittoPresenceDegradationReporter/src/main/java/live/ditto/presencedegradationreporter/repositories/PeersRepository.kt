@@ -34,22 +34,24 @@ class PeersRepository(
     val remotePeersFlow = createFlowFor(COLLECTION_REMOTE_PEERS) { it.toPeer() }
 
     suspend fun upsertSettings(settings: Settings) = withContext(dispatcherIO) {
-        ditto.store[COLLECTION_SETTINGS].upsert(settings.toMap())
+        ditto.store[COLLECTION_SETTINGS].upsert(value = settings.toMap())
     }
 
     suspend fun upsertPeers(localPeer: Peer, remotePeers: List<Peer>) = withContext(dispatcherIO) {
         ditto.store.write { transaction ->
             val peerCollection = transaction.scoped(COLLECTION_LOCAL_PEER)
-            peerCollection.upsert(localPeer.toMap())
+            peerCollection.upsert(
+                value = localPeer.toMap()
+            )
 
             val remotePeersCollection = transaction.scoped(COLLECTION_REMOTE_PEERS)
             remotePeersCollection.findAll().exec().forEach {
                 val peerConnectedUpdate = it.toPeerConnectedUpdate()
-                remotePeersCollection.upsert(peerConnectedUpdate.copy(connected = false).toMap())
+                remotePeersCollection.upsert(value = peerConnectedUpdate.copy(connected = false).toMap())
             }
 
             remotePeers.forEach { peer ->
-                remotePeersCollection.upsert(peer.toMap())
+                remotePeersCollection.upsert(value = peer.toMap())
             }
         }
     }
