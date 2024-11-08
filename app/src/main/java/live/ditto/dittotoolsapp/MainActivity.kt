@@ -95,10 +95,6 @@ class MainActivity : ComponentActivity() {
         val ditto = Ditto(androidDependencies, identity)
         DittoLogger.minimumLogLevel = DittoLogLevel.DEBUG
 
-        LogFileConfig.logFile.let { logFile ->
-            DittoLogger.setLogFile(logFile.toString())
-        }
-
         ditto
     }
 
