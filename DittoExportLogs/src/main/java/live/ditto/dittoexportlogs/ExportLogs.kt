@@ -44,7 +44,9 @@ fun ExportLogs(onDismiss: () -> Unit) {
     val context = LocalContext.current
 
     val now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"))
-    val fileName = "dittologs_$now.jsonl.gz"
+    val appName = context.applicationInfo.loadLabel(context.packageManager).toString()
+
+    val fileName = "logs-$appName-$now.jsonl.gz"
     val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
     val filePath = File(downloadsDir, fileName).absolutePath
 
