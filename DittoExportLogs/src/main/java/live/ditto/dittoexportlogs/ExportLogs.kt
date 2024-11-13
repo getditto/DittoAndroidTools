@@ -46,10 +46,9 @@ fun ExportLogs(onDismiss: () -> Unit) {
     val now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"))
     val appName = context.applicationInfo.loadLabel(context.packageManager).toString()
 
-    val fileName = "logs-$appName-$now.jsonl.gz"
+    val fileName = "$appName-dittologs-$now.jsonl.gz"
     val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
     val filePath = File(downloadsDir, fileName).absolutePath
-
 
     AlertDialog(
         modifier = modifier,
@@ -58,8 +57,7 @@ fun ExportLogs(onDismiss: () -> Unit) {
             Text(title)
         },
         text = {
-            Text("$text \n")
-            Text("Logs will be exported to: Downloads/$fileName")
+            Text("Logs will be exported to: \nDownloads/$fileName\"")
         },
 
         confirmButton = {
@@ -71,7 +69,7 @@ fun ExportLogs(onDismiss: () -> Unit) {
                         isLoading = true
                         val sizeWritten = DittoLogger.exportToFile(filePath)
                         val sizeWrittenInKB = sizeWritten / 1024u
-                        val snackbarText = "Exported to Downloads/$fileName. Size: $sizeWrittenInKB kB"
+                        val snackbarText = "Exported file size: $sizeWrittenInKB kB"
                         Toast.makeText(context, snackbarText, Toast.LENGTH_LONG).show()
                         isLoading = false
                         onDismiss()
