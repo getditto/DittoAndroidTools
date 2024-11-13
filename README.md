@@ -152,38 +152,9 @@ Maven:
 ```
 
 ### 4. Export Logs
-Export Logs allows you to export a file of the logs from your applcation.  
+Export Logs allows you to export logs from your application into a file.  
 
-**Important**
-
-Before calling `ditto.startSync()` we need to set the `DittoLogger.setLogFileURL(<logFileURL>)`. This registers a file path where logs will be written to, whenever Ditto wants to issue a log (on top of emitting the log to the console). Use the `LogFileConfig` struct:
-
-```
-object LogFileConfig {
-    private const val logsDirectoryName = "debug-logs"
-    private const val logFileName = "logs.txt"
-
-    val logsDirectory: Path by lazy {
-        val directory = Paths.get(System.getProperty("java.io.tmpdir"), logsDirectoryName)
-        Files.createDirectories(directory)
-        directory
-    }
-
-    val logFile: Path by lazy {
-        logsDirectory.resolve(logFileName)
-    }
-}
-```
-
-and then before calling `ditto.startSync()` set the log file url with:
-
-```
-LogFileConfig.logFile.let { logFile ->
-    DittoLogger.setLogFile(logFile.toString())
-}
-```
-
-Now we can call `ExportLogs()`.
+Include `ExportLogs()` in your Composable function. You can pass in a lambda function to be called when the dialog is dismissed.
 
 ```kotlin
 ExportLogs(onDismiss: () -> Unit)
