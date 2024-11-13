@@ -2,6 +2,7 @@ package live.ditto.dittoexportlogs
 
 import android.os.Build
 import android.os.Environment
+import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Row
@@ -24,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+import live.ditto.DittoError
 import live.ditto.DittoLogger
 import java.io.File
 import java.time.LocalDateTime
@@ -34,7 +36,6 @@ import java.time.format.DateTimeFormatter
 fun ExportLogs(onDismiss: () -> Unit) {
 
     val title = stringResource(R.string.export_logs)
-    val text = stringResource(R.string.do_you_want_to_export_logs)
 
     val confirmText = stringResource(R.string.export)
     val cancelText = stringResource(R.string.cancel)
@@ -67,13 +68,21 @@ fun ExportLogs(onDismiss: () -> Unit) {
 
                     coroutineScope.launch {
                         isLoading = true
-                        val sizeWritten = DittoLogger.exportToFile(filePath)
-                        val sizeWrittenInKB = sizeWritten / 1024u
-                        val snackbarText = "Exported file size: $sizeWrittenInKB kB"
-                        Toast.makeText(context, snackbarText, Toast.LENGTH_LONG).show()
-                        isLoading = false
-                        onDismiss()
+                        try {
+                            val sizeWritten = DittoLogger.exportToFile(filePath)
 
+                            val sizeWrittenInKB = sizeWritten / 1024u
+                            val toastText = "Exported file size: $sizeWrittenInKB kB"
+                            Toast.makeText(context, toastText, Toast.LENGTH_LONG).show()
+                        }
+                        catch (e: DittoError.IoError) {
+                            Log.e("DittoTools LogExporter", e.reason.toString())
+                            Toast.makeText(context, "Error exporting logs: ${e.message}", Toast.LENGTH_LONG).show()
+                        }
+                        finally {
+                            isLoading = false
+                            onDismiss()
+                        }
                     }
                 }
             ) {
