@@ -52,7 +52,6 @@ fun startHeartbeat(ditto: Ditto, config: DittoHeartbeatConfig): Flow<DittoHeartb
     val cancelable = AtomicBoolean(false)
 
     while (!cancelable.get()) {
-        delay((config.secondsInterval * 1000L))
         val timestamp = DateTime().toISOString()
         val presenceData = observePeers(ditto)
 
@@ -73,6 +72,7 @@ fun startHeartbeat(ditto: Ditto, config: DittoHeartbeatConfig): Flow<DittoHeartb
 
         addToCollection(info, config, ditto)
         emit(info)
+        delay((config.secondsInterval * 1000L))
     }
 
 }
@@ -97,7 +97,7 @@ fun addToCollection(info: DittoHeartbeatInfo, config: DittoHeartbeatConfig, ditt
         "peerKey" to info.peerKey
     )
 
-    ditto.store.collection(HEARTBEAT_COLLECTION_COLLECTION_NAME).upsert(doc)
+    ditto.store.collection(HEARTBEAT_COLLECTION_COLLECTION_NAME).upsert(value = doc)
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
