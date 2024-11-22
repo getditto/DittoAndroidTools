@@ -5,4 +5,7 @@
     <string name="export">Export</string>
     <string name="cancel">Cancel</string>
     <string name="application_x_zip">application/x-zip</string>
+    <string name="export_logs_message">Logs will be exported to: \nDownloads/%1$s\"</string>
+    <string name="exported_file_size_kb">Exported file size: %1$d kB</string>
+    <string name="error_exporting_logs">Error exporting logs: %1$s</string>
 </resources>
