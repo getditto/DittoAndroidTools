@@ -34,8 +34,7 @@ dependencies {
 
     implementation(libs.live.ditto.ditto)
     implementation(libs.live.ditto.databrowser)
-//    implementation(libs.live.ditto.exportlogs)
-    implementation(project(":DittoExportLogs"))
+    implementation(libs.live.ditto.exportlogs)
     implementation(libs.live.ditto.presenceviewer)
     implementation(libs.live.ditto.diskusage)
     implementation(libs.live.ditto.health)

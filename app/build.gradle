@@ -36,8 +36,7 @@ dependencies {
 
     implementation platform(libs.androidx.compose.composeBom)
 
-//    implementation libs.live.ditto.toolsviewer
-    implementation(project(":DittoToolsViewer"))
+    implementation libs.live.ditto.toolsviewer
 
     testImplementation libs.junit.junit
 }
