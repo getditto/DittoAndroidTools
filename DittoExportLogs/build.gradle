@@ -18,6 +18,7 @@ dependencies {
     implementation libs.androidx.compose.material3.material3
     implementation libs.androidx.compose.ui.ui
     implementation libs.androidx.navigation.navigationCompose
+    implementation(libs.live.ditto.ditto)
     // Dependency constraint for ditto
     constraints {
         implementation(libs.live.ditto.ditto) {
@@ -26,6 +27,7 @@ dependencies {
             }
         }
     }
+
     implementation libs.live.ditto.exporter
     implementation platform(libs.androidx.compose.composeBom)
 
