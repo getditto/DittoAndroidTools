@@ -36,19 +36,16 @@ fun ExportLogs(onDismiss: () -> Unit, viewModel: ExportLogsViewModel = ExportLog
 
     val confirmText = stringResource(R.string.export)
     val cancelText = stringResource(R.string.cancel)
-    val modifier = Modifier
-    val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
     val now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"))
     val appName = context.applicationInfo.loadLabel(context.packageManager).toString()
 
     val fileName = "$appName-dittologs-$now.jsonl.gz"
-    val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+    val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
     val filePath = File(downloadsDir, fileName).absolutePath
 
     AlertDialog(
-        modifier = modifier,
         onDismissRequest = onDismiss,
         title = {
             Text(title)
@@ -60,11 +57,7 @@ fun ExportLogs(onDismiss: () -> Unit, viewModel: ExportLogsViewModel = ExportLog
         confirmButton = {
             Button(
                 onClick = {
-
-
-                    coroutineScope.launch {
                        viewModel.exportLogs(filePath, context, onDismiss)
-                    }
                 }
             ) {
                 Row {
