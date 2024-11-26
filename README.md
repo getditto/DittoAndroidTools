@@ -4,7 +4,7 @@ DittoAndroidTools are diagnostic tools for Ditto. You can view connected peers, 
 
 These tools are available through Maven.
 
-Issues and pull requests welcome!
+For support, please contact Ditto Support (<support@ditto.live>).
 
 ## Requirements
 
