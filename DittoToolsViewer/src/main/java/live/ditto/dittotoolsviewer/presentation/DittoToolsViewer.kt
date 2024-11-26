@@ -26,7 +26,7 @@ import live.ditto.dittoexportlogs.ExportLogs
 import live.ditto.dittotoolsviewer.R
 import live.ditto.dittotoolsviewer.presentation.navigation.Screens
 import live.ditto.dittotoolsviewer.presentation.viewmodel.ToolsViewerViewModel
-import live.ditto.health.HealthScreen
+import live.ditto.health.ui.composables.HealthScreen
 import live.ditto.presencedegradationreporter.PresenceDegradationReporterScreen
 
 /**
