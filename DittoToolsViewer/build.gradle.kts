@@ -8,7 +8,7 @@ plugins {
 }
 
 extra["libraryGroupId"] = "live.ditto"
-extra["libraryArtifactId"] = "dittotoolsviewer"
+extra["libraryArtifactId"] = "ditto-tools-android"
 extra["libraryVersion"] = "1.0.0"
 
 apply {
