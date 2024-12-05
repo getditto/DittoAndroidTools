@@ -33,15 +33,17 @@ dependencies {
     implementation(libs.androidx.compose.material3.material3)
 
     implementation(libs.live.ditto.ditto)
-    implementation(libs.live.ditto.databrowser)
-    implementation(libs.live.ditto.exportlogs)
-    implementation(libs.live.ditto.presenceviewer)
-    implementation(libs.live.ditto.diskusage)
-    implementation(libs.live.ditto.health)
-    implementation(libs.live.ditto.heartbeat)
-    implementation(libs.live.ditto.presencedegradationreporter)
-    implementation(libs.live.ditto.healthmetrics)
-    implementation(libs.live.ditto.exporter)
+
+    //Local library module deps
+    implementation(project(":DittoDataBrowser"))
+    implementation(project(":DittoExportLogs"))
+    implementation(project(":DittoPresenceViewer"))
+    implementation(project(":DittoDiskUsage"))
+    implementation(project(":DittoHealth"))
+    implementation(project(":DittoHeartbeat"))
+    implementation(project(":DittoPresenceDegradationReporter"))
+    implementation(project(":DittoHealthMetrics"))
+    implementation(project(":DittoExporter"))
 
     testImplementation(libs.junit.junit)
 

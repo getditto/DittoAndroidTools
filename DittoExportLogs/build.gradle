@@ -28,7 +28,6 @@ dependencies {
         }
     }
 
-    implementation libs.live.ditto.exporter
     implementation platform(libs.androidx.compose.composeBom)
 
     testImplementation libs.junit.junit

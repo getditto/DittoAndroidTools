@@ -21,7 +21,8 @@ dependencies {
     implementation libs.androidx.compose.ui.ui
     implementation libs.androidx.compose.ui.uiToolingPreview
     implementation libs.androidx.navigation.navigationCompose
-    implementation libs.live.ditto.healthmetrics
+
+    implementation(project(":DittoHealthMetrics"))
     // Dependency constraint for ditto
     implementation(libs.live.ditto.ditto) {
         version {
