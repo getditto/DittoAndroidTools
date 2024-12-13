@@ -311,14 +311,14 @@ There are two ways you can access the data:
 This is the model of the data and what you can use for reference
 ```kotlin
 {
-    _id: <ditto peerKey>,
+    _id: <ditto peerKeyString>,
     _schema: String,
     secondsInterval: String,
     presenceSnapshotDirectlyConnectedPeersCount: Int,
     lastUpdated: String (ISO-8601),
     sdk: String,
     presenceSnapshotDirectlyConnectedPeers: {
-        <peerKey>: {
+        <peerKeyString>: {
             deviceName: String,
             sdk: String,
             isConnectedToDittoCloud: Bool,
@@ -326,7 +326,7 @@ This is the model of the data and what you can use for reference
             p2pWifi: Int,
             lan: Int,
         },
-        <peerKey>…,
+        <peerKeyString>…,
         …
     },
     metaData: {},
