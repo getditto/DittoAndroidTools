@@ -40,7 +40,7 @@ fun PeerItem(peer: Peer) {
                 fontWeight = FontWeight.Bold,
             )
 
-            Text(text = stringResource(R.string.key, peer.key))
+            Text(text = stringResource(R.string.key, peer.peerKeyString))
 
             Text(text = stringResource(R.string.last_seen, peer.lastSeenFormatted))
 
@@ -90,7 +90,7 @@ private fun PeerItemConnectedPreview() {
                 ),
                 connected = true,
                 lastSeen = 0L,
-                key = "Key123"
+                peerKeyString = "Key123"
             )
         )
     }

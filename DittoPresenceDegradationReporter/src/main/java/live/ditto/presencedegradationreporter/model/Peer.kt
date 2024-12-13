@@ -8,7 +8,7 @@ data class Peer(
     val transportInfo: PeerTransportInfo,
     val connected: Boolean,
     val lastSeen: Long,
-    val key: String,
+    val peerKeyString: String,
 ) {
     val lastSeenFormatted = GetDateFromTimestampUseCase().invoke(lastSeen)
 }

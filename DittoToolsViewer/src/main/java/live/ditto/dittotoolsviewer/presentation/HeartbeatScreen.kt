@@ -110,7 +110,7 @@ fun HeartbeatHeader(heartbeatInfo: DittoHeartbeatInfo) {
             ),
             color = Color.Black
         )
-        Text(stringResource(R.string.heartbeat_peer_key_label, heartbeatInfo.peerKey))
+        Text(stringResource(R.string.heartbeat_peer_key_label, heartbeatInfo.peerKeyString))
     }
 }
 
