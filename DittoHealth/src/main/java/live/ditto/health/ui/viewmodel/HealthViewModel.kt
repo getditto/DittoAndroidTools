@@ -109,9 +109,9 @@ class HealthViewModel(
         }
     }
 
-    private fun onBluetoothStatus(status: Boolean) {
+    private fun onBluetoothStatus(status: Boolean?) {
         _state.update {
-            it.copy(bluetoothEnabled = status)
+            it.copy(bluetoothEnabled = status ?: false)
         }
     }
 

@@ -24,7 +24,7 @@ class GetBluetoothStatusFlow(context: Context) {
 
         context.registerReceiver(receiver, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
 
-        send(bluetoothManager.adapter.isEnabled)
+        send(bluetoothManager.adapter?.isEnabled)
 
         awaitClose {
             context.unregisterReceiver(receiver)
