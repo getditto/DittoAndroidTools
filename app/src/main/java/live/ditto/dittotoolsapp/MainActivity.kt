@@ -34,6 +34,7 @@ import live.ditto.android.DefaultAndroidDittoDependencies
 import live.ditto.dittotoolsapp.ui.theme.DittoToolsAppTheme
 //import live.ditto.dittotoolsviewer.presentation.DittoToolsViewer
 import live.ditto.tools.presenceviewer.DittoPresenceViewer
+import live.ditto.tools.toolsviewer.DittoToolsViewer
 import live.ditto.transports.DittoSyncPermissions
 
 class MainActivity : ComponentActivity() {
@@ -70,9 +71,13 @@ class MainActivity : ComponentActivity() {
                     }
 
                     ditto?.let {
-                        DittoPresenceViewer(
-                            ditto = it
+                        DittoToolsViewer(
+                            ditto = it,
+                            onExitTools = {  }
                         )
+//                        DittoPresenceViewer(
+//                            ditto = it
+//                        )
                     }
                 }
             }
