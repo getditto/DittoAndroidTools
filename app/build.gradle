@@ -19,6 +19,11 @@ android {
         buildConfigField "String", "DITTO_ONLINE_PLAYGROUND_APP_ID", dittoOnlinePlaygroundAppId
         buildConfigField "String", "DITTO_ONLINE_PLAYGROUND_TOKEN", dittoOnlinePlaygroundToken
     }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.debug
+        }
+    }
 
     buildFeatures {
         buildConfig = true
@@ -36,7 +41,10 @@ dependencies {
 
     implementation platform(libs.androidx.compose.composeBom)
 
-    implementation(project(":DittoToolsViewer"))
+//    implementation(project(":DittoToolsViewer"))
+
+    implementation(project(":AndroidDittoTools"))
+
 
     testImplementation libs.junit.junit
 }

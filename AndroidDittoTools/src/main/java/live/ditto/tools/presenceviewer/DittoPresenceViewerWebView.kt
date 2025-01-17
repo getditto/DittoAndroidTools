@@ -1,4 +1,4 @@
-package ditto.live.dittopresenceviewer
+package live.ditto.tools.presenceviewer
 
 import android.annotation.SuppressLint
 import android.content.Context

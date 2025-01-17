@@ -1,4 +1,4 @@
-package ditto.live.dittopresenceviewer
+package live.ditto.tools.presenceviewer
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.stateIn
 import live.ditto.Ditto
 import live.ditto.DittoPresenceGraph
 import live.ditto.Presence
+
 
 class PresenceViewModel(
     ditto: Ditto,

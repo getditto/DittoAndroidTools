@@ -1,4 +1,4 @@
-package ditto.live.dittopresenceviewer
+package live.ditto.tools.presenceviewer
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState

@@ -18,7 +18,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import ditto.live.dittopresenceviewer.DittoPresenceViewer
+import live.ditto.tools.presenceviewer.DittoPresenceViewer
 import live.ditto.Ditto
 import live.ditto.dittodatabrowser.DittoDataBrowser
 import live.ditto.dittodiskusage.DittoDiskUsage
@@ -123,7 +123,7 @@ private fun ToolsViewerNavHost(
             )
         }
         composable(Screens.PresenceViewerScreen.route) {
-            DittoPresenceViewer(ditto = ditto)
+            live.ditto.tools.presenceviewer.DittoPresenceViewer(ditto = ditto)
         }
         composable(Screens.DataBrowserScreen.route) {
             DittoDataBrowser(ditto = ditto)

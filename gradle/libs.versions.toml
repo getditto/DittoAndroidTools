@@ -26,6 +26,8 @@ material = "1.11.0"
 
 gradle-wrapper = "8.10.2"
 gradle-nexus-publish-plugin = "2.0.0"
+runtimeAndroid = "1.7.6"
+webkit = "1.12.1"
 
 [libraries]
 androidx-activity-activityCompose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-activity" }
@@ -57,6 +59,8 @@ joda-time-joda-time = { group = "joda-time", name = "joda-time", version = "2.10
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-runtime-android = { group = "androidx.compose.runtime", name = "runtime-android", version.ref = "runtimeAndroid" }
+androidx-webkit = { group = "androidx.webkit", name = "webkit", version.ref = "webkit" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
