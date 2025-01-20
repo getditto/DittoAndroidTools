@@ -27,7 +27,7 @@ import live.ditto.tools.toolsviewer.viewmodel.ToolsViewerViewModel
 
 //import live.ditto.dittodatabrowser.DittoDataBrowser
 //import live.ditto.dittodiskusage.DittoDiskUsage
-//import live.ditto.dittoexportlogs.ExportLogs
+import live.ditto.tools.exportlogs.ExportLogs
 //import live.ditto.dittotoolsviewer.R
 //import live.ditto.dittotoolsviewer.presentation.navigation.Screens
 //import live.ditto.dittotoolsviewer.presentation.viewmodel.ToolsViewerViewModel
@@ -133,13 +133,13 @@ private fun ToolsViewerNavHost(
 //        composable(Screens.DataBrowserScreen.route) {
 //            DittoDataBrowser(ditto = ditto)
 //        }
-//        composable(Screens.ExportLogsScreen.route) {
-//            ExportLogs(
-//                onDismiss = {
-//                    navController.popBackStack()
-//                }
-//            )
-//        }
+        composable(Screens.ExportLogsScreen.route) {
+            ExportLogs(
+                onDismiss = {
+                    navController.popBackStack()
+                }
+            )
+        }
 //        composable(Screens.DiskUsageScreen.route) {
 //            DittoDiskUsage(ditto = ditto)
 //        }
