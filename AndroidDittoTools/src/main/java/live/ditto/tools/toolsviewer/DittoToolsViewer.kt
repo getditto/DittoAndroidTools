@@ -22,6 +22,7 @@ import live.ditto.tools.presenceviewer.DittoPresenceViewer
 import live.ditto.Ditto
 import live.ditto.androidtools.R
 import live.ditto.tools.databrowser.DittoDataBrowser
+import live.ditto.tools.diskusage.DittoDiskUsage
 import live.ditto.tools.health.ui.composables.HealthScreen
 import live.ditto.tools.toolsviewer.navigation.Screens
 import live.ditto.tools.toolsviewer.viewmodel.ToolsViewerViewModel
@@ -141,9 +142,9 @@ private fun ToolsViewerNavHost(
                 }
             )
         }
-//        composable(Screens.DiskUsageScreen.route) {
-//            DittoDiskUsage(ditto = ditto)
-//        }
+        composable(Screens.DiskUsageScreen.route) {
+            DittoDiskUsage(ditto = ditto)
+        }
         composable(Screens.HealthScreen.route) {
             HealthScreen()
         }

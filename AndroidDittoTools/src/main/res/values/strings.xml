@@ -46,7 +46,7 @@
     <string name="wifi_aware_unsupported_android_version">Wifi Aware is not supported by this device as it not running Android 8.0 (API 26) or later</string>
     <string name="button_learn_more_label">Learn more about Wifi Aware</string>
 
-    <!-- Export logs -->
+    <!-- Export logs and Disk Usage-->
     <string name="export_logs">Export Logs</string>
     <string name="do_you_want_to_export_logs">Do you want to export logs?</string>
     <string name="export">Export</string>
@@ -55,4 +55,11 @@
     <string name="export_logs_message">Logs will be exported to: \nDownloads/%1$s\"</string>
     <string name="exported_file_size_kb">Exported file size: %1$d kB</string>
     <string name="error_exporting_logs">Error exporting logs: %1$s</string>
+
+    <!-- Disk Usage -->
+    <string name="disk_usage">Disk Usage</string>
+    <string name="total">Total</string>
+    <string name="export_ditto_directory">Export ditto directory</string>
+    <string name="do_you_want_to_export_ditto_directory">Do you want to export ditto directory</string>
+
 </resources>
