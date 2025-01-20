@@ -38,7 +38,10 @@ fun Documents(collectionName: String, isStandAlone: Boolean) {
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            Text(text = "Collection: $collectionName", style = MaterialTheme.typography.headlineMedium)
+            Text(
+                text = "Collection: $collectionName",
+                style = MaterialTheme.typography.headlineMedium
+            )
             Spacer(modifier = Modifier.height(16.dp))
             SearchBar(onSearch = { searchText ->
                 // Call the search function in the view model
@@ -49,72 +52,71 @@ fun Documents(collectionName: String, isStandAlone: Boolean) {
             Text(text = "Docs count: ${docsList?.size}")
             Spacer(modifier = Modifier.height(16.dp))
 
-        Row {
-            Text(
-                text = "Doc ID:  ",
-                textAlign = TextAlign.Start,
-                modifier = Modifier
-                    .clickable {
+            Row {
+                Text(
+                    text = "Doc ID:  ",
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier
+                        .clickable {
 
-                    }
-            )
+                        }
+                )
 
-            if(!docsList.isNullOrEmpty()) {
-                Box {
-                    // Show selected item or "select" if no item is selected
-                    (if ((startUp)) "select" else docsList?.get(selectedIndex)?.id)?.let {
-                        Text(
-                            text = it,
-                            textAlign = TextAlign.Start,
-                            color = Color.Blue,
-                            modifier = Modifier
-                                .clickable {
-                                    showMenu = true
+                if (!docsList.isNullOrEmpty()) {
+                    Box {
+                        // Show selected item or "select" if no item is selected
+                        (if ((startUp)) "select" else docsList?.get(selectedIndex)?.id)?.let {
+                            Text(
+                                text = it,
+                                textAlign = TextAlign.Start,
+                                color = Color.Blue,
+                                modifier = Modifier
+                                    .clickable {
+                                        showMenu = true
 
-                                    startUp = false
-                                }
-                        )
-                    }
+                                        startUp = false
+                                    }
+                            )
+                        }
 
-                    // Dropdown menu
-                    DropdownMenu(
-                        expanded = showMenu,
-                        onDismissRequest = { showMenu = false }
-                    ) {
-                        docsList?.forEachIndexed { index, item ->
-                            DropdownMenuItem(onClick = {
-                                selectedIndex = index
-                                viewModel.selectedDoc.value = item
-                            }, text = {
-                                Text(text = item.id)
-                            })
+                        // Dropdown menu
+                        DropdownMenu(
+                            expanded = showMenu,
+                            onDismissRequest = { showMenu = false }
+                        ) {
+                            docsList?.forEachIndexed { index, item ->
+                                DropdownMenuItem(onClick = {
+                                    selectedIndex = index
+                                    viewModel.selectedDoc.value = item
+                                }, text = {
+                                    Text(text = item.id)
+                                })
+                            }
                         }
                     }
-                }
-            }
-            else {
-                Text(
-                    text = "No Docs",
-                    textAlign = TextAlign.Start,
-                    color = Color.Blue,
-                )
-            }
-        }
-
-        Divider()
-
-        LazyColumn {
-            items(viewModel.docProperties.value?.map { it } ?: emptyList()) { property ->
-                selectedDoc?.let {
-                    DocItem(
-                        property = property,
-                        viewModel = viewModel,
-                        selectedDoc = it
+                } else {
+                    Text(
+                        text = "No Docs",
+                        textAlign = TextAlign.Start,
+                        color = Color.Blue,
                     )
                 }
             }
+
+            HorizontalDivider()
+
+            LazyColumn {
+                items(viewModel.docProperties.value?.map { it } ?: emptyList()) { property ->
+                    selectedDoc?.let {
+                        DocItem(
+                            property = property,
+                            viewModel = viewModel,
+                            selectedDoc = it
+                        )
+                    }
+                }
+            }
         }
-    }
 }
 
 @Composable

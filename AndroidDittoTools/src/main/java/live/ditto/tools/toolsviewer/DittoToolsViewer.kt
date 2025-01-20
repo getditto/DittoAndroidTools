@@ -26,15 +26,8 @@ import live.ditto.tools.diskusage.DittoDiskUsage
 import live.ditto.tools.health.ui.composables.HealthScreen
 import live.ditto.tools.toolsviewer.navigation.Screens
 import live.ditto.tools.toolsviewer.viewmodel.ToolsViewerViewModel
-
-//import live.ditto.dittodatabrowser.DittoDataBrowser
-//import live.ditto.dittodiskusage.DittoDiskUsage
 import live.ditto.tools.exportlogs.ExportLogs
-//import live.ditto.dittotoolsviewer.R
-//import live.ditto.dittotoolsviewer.presentation.navigation.Screens
-//import live.ditto.dittotoolsviewer.presentation.viewmodel.ToolsViewerViewModel
-//import live.ditto.health.ui.composables.HealthScreen
-//import live.ditto.presencedegradationreporter.PresenceDegradationReporterScreen
+import live.ditto.tools.presencedegradationreporter.PresenceDegradationReporterScreen
 
 /**
  * A Composable that you can include in your app that will give a single entry point for all Ditto
@@ -151,9 +144,9 @@ private fun ToolsViewerNavHost(
         composable(Screens.HeartbeatScreen.route) {
             HeartbeatScreen(ditto = ditto)
         }
-//        composable(Screens.PresenceDegradationReporterScreen.route) {
-//            PresenceDegradationReporterScreen(ditto = ditto)
-//        }
+        composable(Screens.PresenceDegradationReporterScreen.route) {
+            PresenceDegradationReporterScreen(ditto = ditto)
+        }
     }
 }
 

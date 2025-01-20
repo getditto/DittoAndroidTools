@@ -1,4 +1,4 @@
-package live.ditto.presencedegradationreporter.components
+package live.ditto.tools.presencedegradationreporter.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,12 +16,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import live.ditto.presencedegradationreporter.R
-import live.ditto.presencedegradationreporter.model.Peer
-import live.ditto.presencedegradationreporter.model.PeerTransportInfo
-import live.ditto.presencedegradationreporter.theme.PresenceDegradationReporterTheme
-import live.ditto.presencedegradationreporter.theme.dashboardCardConnected
-import live.ditto.presencedegradationreporter.theme.dashboardCardNotConnected
+import live.ditto.androidtools.R
+import live.ditto.tools.presencedegradationreporter.model.Peer
+import live.ditto.tools.presencedegradationreporter.model.PeerTransportInfo
+import live.ditto.tools.presencedegradationreporter.theme.PresenceDegradationReporterTheme
+import live.ditto.tools.presencedegradationreporter.theme.dashboardCardConnected
+import live.ditto.tools.presencedegradationreporter.theme.dashboardCardNotConnected
 
 
 @Composable
@@ -40,7 +40,7 @@ fun PeerItem(peer: Peer) {
                 fontWeight = FontWeight.Bold,
             )
 
-            Text(text = stringResource(R.string.key, peer.peerKeyString))
+            Text(text = stringResource(R.string.key, peer.key))
 
             Text(text = stringResource(R.string.last_seen, peer.lastSeenFormatted))
 
@@ -90,7 +90,7 @@ private fun PeerItemConnectedPreview() {
                 ),
                 connected = true,
                 lastSeen = 0L,
-                peerKeyString = "Key123"
+                key = "Key123"
             )
         )
     }

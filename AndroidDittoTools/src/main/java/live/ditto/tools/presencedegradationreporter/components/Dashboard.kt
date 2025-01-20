@@ -1,4 +1,4 @@
-package live.ditto.presencedegradationreporter.components
+package live.ditto.tools.presencedegradationreporter.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -25,14 +25,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import live.ditto.presencedegradationreporter.R
-import live.ditto.presencedegradationreporter.model.Peer
-import live.ditto.presencedegradationreporter.model.PeerTransportInfo
-import live.ditto.presencedegradationreporter.theme.PresenceDegradationReporterTheme
-import live.ditto.presencedegradationreporter.theme.PresenceDegradationReporterTypography
-import live.ditto.presencedegradationreporter.theme.screenBackground
-import live.ditto.presencedegradationreporter.theme.dashboardError
-import live.ditto.presencedegradationreporter.theme.dashboardSuccess
+import live.ditto.androidtools.R
+import live.ditto.tools.presencedegradationreporter.model.Peer
+import live.ditto.tools.presencedegradationreporter.model.PeerTransportInfo
+import live.ditto.tools.presencedegradationreporter.theme.PresenceDegradationReporterTheme
+import live.ditto.tools.presencedegradationreporter.theme.PresenceDegradationReporterTypography
+import live.ditto.tools.presencedegradationreporter.theme.screenBackground
+import live.ditto.tools.presencedegradationreporter.theme.dashboardError
+import live.ditto.tools.presencedegradationreporter.theme.dashboardSuccess
 
 @Composable
 fun Dashboard(
