@@ -24,6 +24,7 @@ dependencies {
     implementation(libs.androidx.navigation.navigationCompose)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(platform(libs.androidx.compose.composeBom))
+    implementation(libs.androidx.compose.runtime.runtimeLivedata)
     implementation(libs.joda.time.joda.time)
 
     implementation(libs.material)
