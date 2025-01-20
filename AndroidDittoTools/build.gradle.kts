@@ -22,6 +22,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.uiTooling)
     implementation(libs.androidx.compose.ui.uiToolingPreview)
     implementation(libs.androidx.navigation.navigationCompose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(platform(libs.androidx.compose.composeBom))
     implementation(libs.joda.time.joda.time)
 
