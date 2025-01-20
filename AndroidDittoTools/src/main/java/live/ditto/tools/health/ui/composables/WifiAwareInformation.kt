@@ -25,9 +25,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import live.ditto.androidtools.R
-import live.ditto.health.theme.wifiAwareAvailableColor
-import live.ditto.health.theme.wifiAwareUnavailableColor
-import live.ditto.health.usecase.WifiAwareState
+import live.ditto.tools.health.theme.wifiAwareAvailableColor
+import live.ditto.tools.health.theme.wifiAwareUnavailableColor
+import live.ditto.tools.health.usecase.WifiAwareState
 import live.ditto.tools.health.data.DeviceDetails
 import live.ditto.tools.health.ui.viewmodel.HealthViewModel
 

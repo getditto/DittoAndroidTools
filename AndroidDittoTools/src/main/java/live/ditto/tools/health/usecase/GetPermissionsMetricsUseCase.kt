@@ -1,6 +1,5 @@
 package live.ditto.tools.health.usecase
 
-import live.ditto.health.usecase.WifiAwareState
 import live.ditto.tools.health.data.HealthUiState
 import live.ditto.tools.healthmetrics.HealthMetric
 

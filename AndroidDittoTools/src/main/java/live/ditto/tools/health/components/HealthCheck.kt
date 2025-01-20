@@ -23,11 +23,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import live.ditto.health.theme.HealthTypography
-import live.ditto.health.theme.healthyBackgroundColor
-import live.ditto.health.theme.healthyIconColor
-import live.ditto.health.theme.notHealthyBackgroundColor
-import live.ditto.health.theme.notHealthyIconColor
+import live.ditto.tools.health.theme.HealthTypography
+import live.ditto.tools.health.theme.healthyBackgroundColor
+import live.ditto.tools.health.theme.healthyIconColor
+import live.ditto.tools.health.theme.notHealthyBackgroundColor
+import live.ditto.tools.health.theme.notHealthyIconColor
 
 @Composable
 internal fun HealthCheckWithNoAction(
