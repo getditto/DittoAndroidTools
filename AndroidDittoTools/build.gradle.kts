@@ -9,7 +9,7 @@ apply(from = "${rootProject.projectDir}/gradle/deploy.gradle")
 apply(from = "${rootProject.projectDir}/gradle/android-common.gradle")
 
 android {
-    namespace = "live.ditto.androidtools"
+    namespace = "live.ditto.tools"
 }
 
 dependencies {

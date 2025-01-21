@@ -24,7 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import live.ditto.androidtools.R
+import live.ditto.tools.R
 import live.ditto.tools.health.theme.wifiAwareAvailableColor
 import live.ditto.tools.health.theme.wifiAwareUnavailableColor
 import live.ditto.tools.health.usecase.WifiAwareState

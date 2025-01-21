@@ -12,7 +12,7 @@ android {
     namespace "live.ditto.dittotoolsapp"
 
     defaultConfig {
-        applicationId "live.ditto.dittotoolsapp"
+        applicationId "live.ditto.DittoToolsApp"
         versionCode 1
         versionName "1.0"
 

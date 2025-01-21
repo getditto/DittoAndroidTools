@@ -26,13 +26,15 @@
 -dontwarn org.joda.convert.FromString
 -dontwarn org.joda.convert.ToString
 
-
-# Ditto rules
-#-keep class live.ditto.internal.swig.ffi.** { *; }
-#-keep class live.ditto.** { *; }
+# --- Ditto SDK rules ---
+# Selective package definition will allow shrinking of all code in live.ditto.tools and its subpackages.
 -keepnames class com.fasterxml.jackson.** { *; }
 -keep class live.ditto.* { *; }
 -keep class live.ditto.transports.** { *; }
 -keep class live.ditto.internal.** { *; }
+# --- End Ditto SDK rules ---
 
+# --- Ditto Tools names ---
+# The following can be removed to obfuscate tools code further.
 -keepnames class live.ditto.tools.** { *; }
+# --- End Ditto Tools names ---

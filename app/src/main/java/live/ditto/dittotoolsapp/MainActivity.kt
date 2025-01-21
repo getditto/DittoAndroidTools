@@ -32,8 +32,7 @@ import live.ditto.DittoLogLevel
 import live.ditto.DittoLogger
 import live.ditto.android.DefaultAndroidDittoDependencies
 import live.ditto.dittotoolsapp.ui.theme.DittoToolsAppTheme
-import live.ditto.tools.presenceviewer.DittoPresenceViewer
-//import live.ditto.tools.toolsviewer.DittoToolsViewer
+import live.ditto.tools.toolsviewer.DittoToolsViewer
 import live.ditto.transports.DittoSyncPermissions
 
 class MainActivity : ComponentActivity() {
@@ -70,13 +69,9 @@ class MainActivity : ComponentActivity() {
                     }
 
                     ditto?.let {
-//                        DittoToolsViewer(
-//                            ditto = it,
-//                            onExitTools = {  }
-//                        )
-                        //TODO: see how tree shaking shakes up
-                        DittoPresenceViewer(
-                            ditto = it
+                        DittoToolsViewer(
+                            ditto = it,
+                            onExitTools = {  }
                         )
                     }
                 }

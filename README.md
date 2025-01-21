@@ -2,7 +2,7 @@
 
 DittoAndroidTools are diagnostic tools for Ditto. You can view connected peers, export debug logs, browse collections/documents and see Ditto's disk usage/ export this data.
 
-These tools are available through Maven.
+These tools are available via Maven Central.
 
 For support, please contact Ditto Support (<support@ditto.live>).
 
@@ -14,30 +14,27 @@ For support, please contact Ditto Support (<support@ditto.live>).
 ## Installing
 Ditto tools are released via Maven Central. Be sure to include it in your list of repositories. 
 
-```properties
+
+
+```groovy
 repositories {
     mavenCentral()
 }
 ```
+Include the tools repository:
 
-### List of tools and versions
-
-| Tool Name                        | Gradle artifact                                            |
-|----------------------------------|------------------------------------------------------------|
-| 1. Tools Viewer                  | `'live.ditto:dittotoolsviewer:LIBRARY_VERSION'`            |
-| 2. Presence Viewer               | `'live.ditto:dittopresenceviewer:LIBRARY_VERSION'`         |
-| 3. Data Browser                  | `'live.ditto:dittodatabrowser:LIBRARY_VERSION'`            |
-| 4. Export Logs                   | `'live.ditto:dittoexportlogs:LIBRARY_VERSION'`             |
-| 5. Disk Usage/Export Data        | `'live.ditto:dittodiskusage:LIBRARY_VERSION'`              |
-| 6. Health                        | `'live.ditto:health:LIBRARY_VERSION'`                      |
-| 7. Heartbeat                     | `'live.ditto:dittoheartbeat:LIBRARY_VERSION'`              |
-| 8. Presence Degradation Reporter | `'live.ditto:presencedegradationreporter:LIBRARY_VERSION'` |
-
+```groovy
+dependencies {
+    implementation 'live.ditto:ditto-tools-android:LIBRARY_VERSION'
+}
+```
 You can find the list of versions and release notes in the [Releases tab](https://github.com/getditto/DittoAndroidTools/releases).
+
+*Note: The tools used to be released as individual Maven artefacts but have now been moved into a single module, and are released as such.* 
 
 ## Usage
 
-First, you must initialize Ditto:
+First, you must initialize Ditto. For example, with the Online Playground identity:
 
 ```kotlin
 val androidDependencies = DefaultAndroidDittoDependencies(applicationContext)
@@ -64,7 +61,7 @@ It is available as a Composable element that requires a Ditto instance. Optional
 Example code:
 
 ```kotlin
-
+import live.ditto.tools.DittoToolsViewer
 // minimum code required to get started
 DittoToolsViewer(
     ditto = YOUR_DITTO_INSTANCE
@@ -73,17 +70,7 @@ DittoToolsViewer(
 
  <img src="/Img/toolsViewer.png" alt="Tools Viewer Image" width="1000">  
 
-
-To integrate it in a Views-based app - see instructions here: https://developer.android.com/develop/ui/compose/migrate/interoperability-apis/compose-in-views 
-
-**Download**
-
-Gradle:
-```kotlin
-dependencies {
-    implementation 'live.ditto:dittotoolsviewer:YOUR_LIBRARY_VERSION'
-}
-```
+To integrate it in a Views-based app - see instructions here: https://developer.android.com/develop/ui/compose/migrate/interoperability-apis/compose-in-views
 
 ### 2. Presence Viewer
 The Presence Viewer displays a mesh graph that allows you to see all connected peers within the mesh and the transport that each peer is using to make a connection.  
@@ -95,25 +82,6 @@ DittoPresenceViewer(ditto = ditto)
 ```
 
  <img src="/Img/presenceViewer.png" alt="Presence Viewer Image" width="300">  
-
-**Download**
-
-Gradle:
-```kotlin
-dependencies {
-  implementation 'live.ditto:dittopresenceviewer:YOUR_LIBRARY_VERSION'
-}
-```
-
-Maven:
-```
-<dependency>
-    <groupId>live.ditto</groupId>
-    <artifactId>dittopresenceviewer</artifactId>
-    <version>YOUR_LIBRARY_VERSION</version>
-</dependency>
-```
-
 
 ### 3. Data Browser
 
@@ -133,24 +101,6 @@ DittoDataBrowser(ditto = ditto)
 
 If you are using the Data Browser as a standalone app, there is a button, Start Subscriptions, you must press in order to start syncing data. If you are embedding the Data Browser into another application then you do not need to press Start Subscriptions as you should already have your subscriptions running.
 
-**Download**
-
-Gradle:
-```kotlin
-dependencies {
-  implementation 'live.ditto:dittodatabrowser:YOUR_LIBRARY_VERSION'
-}
-```
-
-Maven:
-```
-<dependency>
-    <groupId>live.ditto.</groupId>
-    <artifactId>dittodatabrowser</artifactId>
-    <version>YOUR_LIBRARY_VERSION</version>
-</dependency>
-```
-
 ### 4. Export Logs
 Export Logs allows you to export logs from your application into a file.  
 
@@ -160,25 +110,7 @@ Include `ExportLogs()` in your Composable function. You can pass in a lambda fun
 ExportLogs(onDismiss: () -> Unit)
 ```
 
- <img src="/Img/exportLogs.png" alt="Export Logs Image" width="300">  
-
-**Download**
-
-Gradle:
-```kotlin
-dependencies {
-  implementation 'live.ditto:dittoexportlogs:YOUR_LIBRARY_VERSION'
-}
-```
-
-Maven:
-```
-<dependency>
-    <groupId>live.ditto</groupId>
-    <artifactId>dittoexportlogs</artifactId>
-    <version>YOUR_LIBRARY_VERSION</version>
-</dependency>
-```
+ <img src="/Img/exportLogs.png" alt="Export Logs Image" width="300">
 
 ### 5. Disk Usage/ Export Data
 
@@ -189,25 +121,7 @@ Export Data allows you to export the Ditto directory.
 DittoDiskUsage(ditto = ditto)
 ```
 
- <img src="/Img/diskUsage.png" alt="Disk Usage Image" width="300">  
-
-**Download**
-
-Gradle:
-```kotlin
-dependencies {
-  implementation 'live.ditto:dittodiskusage:YOUR_LIBRARY_VERSION'
-}
-```
-
-Maven:
-```
-<dependency>
-    <groupId>live.ditto</groupId>
-    <artifactId>dittodiskusage</artifactId>
-    <version>YOUR_LIBRARY_VERSION</version>
-</dependency>
-```
+ <img src="/Img/diskUsage.png" alt="Disk Usage Image" width="300">
 
 ### 6. Health
 
@@ -228,25 +142,7 @@ TRANSPORT_HEALTH -- shows WiFi/Bluetooth status (enabled/disabled, permissions s
 WIFI_AWARE_STATE -- displays whether the device supports WiFi Aware
 ```
 
- <img src="/Img/health.png" alt="Health" width="400">  
-
-**Download**
-
-Gradle:
-```kotlin
-dependencies {
-  implementation 'live.ditto:health:YOUR_LIBRARY_VERSION'
-}
-```
-
-Maven:
-```
-<dependency>
-    <groupId>live.ditto</groupId>
-    <artifactId>health</artifactId>
-    <version>YOUR_LIBRARY_VERSION</version>
-</dependency>
-```
+ <img src="/Img/health.png" alt="Health" width="400">
 
 ### 7. Heartbeat
 
@@ -352,36 +248,21 @@ data class DittoHeartbeatInfo(
 )
 ```
 
-**Download**
-
-Gradle:
-```kotlin
-dependencies {
-  implementation 'live.ditto:dittoheartbeat:YOUR_LIBRARY_VERSION'
-}
-```
-
-Maven:
-```
-<dependency>
-    <groupId>live.ditto.</groupId>
-    <artifactId>dittoheartbeat</artifactId>
-    <version>YOUR_LIBRARY_VERSION</version>
-</dependency>
-```
-
 ### 8. Presence Degradation Reporter
 Tracks the status of your mesh, allowing to define the minimum of required peers that needs to be connected.
 Exposes an API to notify when the condition of minimum required peers is not met.
 
+####  UI Composable
+
 ```kotlin
-## UI Composable
+
 PresenceDegradationReporterScreen(ditto = ditto)
 ```
 
+#### API
+
 ```kotlin
-## API
-ditto.presenceDegradationReporterFlow().collect { state ->
+ditto.presenceDegradationReporterFlow().collect { state: PresenceDegradationReporterApiState ->
     // state.settings
     // state.localPeer
     // state.remotePeers
@@ -390,22 +271,28 @@ ditto.presenceDegradationReporterFlow().collect { state ->
 
 <img src="/Img/presencedegradationreporter.png" alt="Health" width="300">  
 
-**Download**
 
-Gradle:
-```kotlin
-dependencies {
-  implementation 'live.ditto:presencedegradationreporter:YOUR_LIBRARY_VERSION'
-}
-```
+## Shrinking the app size then not using all tools
 
-Maven:
-```
-<dependency>
-    <groupId>live.ditto</groupId>
-    <artifactId>presencedegradationreporter</artifactId>
-    <version>YOUR_LIBRARY_VERSION</version>
-</dependency>
+If you are not using all the tools, you can use the built-in R8 shrinker to remove unused code. This will reduce the size of the app.
+You will need to configure Proguard to ensure the underlying Ditto SDK is not removed.
+
+```proguard
+# proguard-rules.pro
+
+# --- Ditto SDK rules --- 
+# Selective package definition will allow shrinking of all code in live.ditto.tools and its subpackages.
+-keepnames class com.fasterxml.jackson.** { *; }
+-keep class live.ditto.* { *; }
+-keep class live.ditto.transports.** { *; }
+-keep class live.ditto.internal.** { *; }
+# --- End Ditto SDK rules --- 
+
+# --- Ditto Tools names ---
+# The following can be removed to obfuscate tools code further.
+-keepnames class live.ditto.tools.** { *; }
+# --- End Ditto Tools names ---
+
 ```
 
 ## Testing Changes Locally
@@ -416,8 +303,8 @@ There are two ways you can test things locally. Either in the demo app, or in an
 
 To test your changes to a module in the demo app, simply import the local module, making sure to comment out/delete the version catalog import. For example, if you made changes to DittoDataBrowser you would
 
-add: `implementation(project(":DittoDataBrowser"))`
-remove/comment out: `implementation libs.live.ditto.databrowser`
+add: `implementation(project(":AndroidDittoTools"))`
+remove/comment out: `implementation libs.live.ditto.ditto-tools-android`
 
 ### Testing in an External Project
 

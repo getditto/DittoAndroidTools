@@ -11,7 +11,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import live.ditto.DittoError
 import live.ditto.DittoLogger
-import live.ditto.androidtools.R
+import live.ditto.tools.R
 
 class ExportLogsViewModel : ViewModel() {
 

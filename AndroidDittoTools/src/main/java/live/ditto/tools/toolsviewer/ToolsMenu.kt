@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import live.ditto.androidtools.R
+import live.ditto.tools.R
 import live.ditto.tools.toolsviewer.navigation.Screens
 import live.ditto.tools.toolsviewer.theme.MenuCardContainerColor
 import live.ditto.tools.toolsviewer.theme.MenuItemSelectedBackgroundColor

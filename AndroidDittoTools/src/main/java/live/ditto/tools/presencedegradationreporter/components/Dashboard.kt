@@ -25,7 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import live.ditto.androidtools.R
+import live.ditto.tools.R
 import live.ditto.tools.presencedegradationreporter.model.Peer
 import live.ditto.tools.presencedegradationreporter.model.PeerTransportInfo
 import live.ditto.tools.presencedegradationreporter.theme.PresenceDegradationReporterTheme

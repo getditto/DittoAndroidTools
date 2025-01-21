@@ -20,7 +20,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import live.ditto.tools.presenceviewer.DittoPresenceViewer
 import live.ditto.Ditto
-import live.ditto.androidtools.R
+import live.ditto.tools.R
 import live.ditto.tools.databrowser.DittoDataBrowser
 import live.ditto.tools.diskusage.DittoDiskUsage
 import live.ditto.tools.health.ui.composables.HealthScreen

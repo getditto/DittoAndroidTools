@@ -4,7 +4,7 @@ import android.content.Context
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import live.ditto.androidtools.R.*
+import live.ditto.tools.R.*
 import live.ditto.tools.health.usecase.WifiAwareState
 import live.ditto.tools.health.HealthUiActionType
 import live.ditto.tools.health.HealthUiStateCause

@@ -1,7 +1,7 @@
 package live.ditto.tools.toolsviewer.viewmodel
 
 import androidx.lifecycle.ViewModel
-import live.ditto.androidtools.R
+import live.ditto.tools.R
 import live.ditto.tools.toolsviewer.ToolMenuItem
 import live.ditto.tools.toolsviewer.navigation.Screens
 

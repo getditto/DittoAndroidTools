@@ -1,7 +1,7 @@
 package live.ditto.tools.health
 
 import android.content.Context
-import live.ditto.androidtools.R
+import live.ditto.tools.R
 
 data class HealthUiStateCause(
     val reason: String,

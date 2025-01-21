@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import live.ditto.androidtools.R
+import live.ditto.tools.R
 import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
