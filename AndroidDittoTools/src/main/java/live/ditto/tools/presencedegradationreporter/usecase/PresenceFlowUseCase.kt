@@ -24,7 +24,7 @@ class PresenceFlowUseCase(
                 transportInfo = localPeerTransportInfo,
                 connected = true,
                 lastSeen = seenAt,
-                key = graph.localPeer.peerKeyString,
+                peerKeyString = graph.localPeer.peerKeyString,
             )
 
             val remotePeers = graph.remotePeers.map {
@@ -35,7 +35,7 @@ class PresenceFlowUseCase(
                     transportInfo = peerTransportInfo,
                     connected = true,
                     lastSeen = seenAt,
-                    key = it.peerKeyString,
+                    peerKeyString = it.peerKeyString,
                 )
             }
 

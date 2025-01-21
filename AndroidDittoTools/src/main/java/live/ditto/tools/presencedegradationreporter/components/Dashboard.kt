@@ -178,7 +178,7 @@ private fun DashboardPreview() {
                 ),
                 connected = true,
                 lastSeen = 0L,
-                key = "Key123",
+                peerKeyString = "Key123",
             ),
             remotePeers = listOf(
                 Peer(
@@ -191,7 +191,7 @@ private fun DashboardPreview() {
                     ),
                     connected = false,
                     lastSeen = 0L,
-                    key = "Key123",
+                    peerKeyString = "Key123",
                 ),
                 Peer(
                     name = "B",
@@ -203,7 +203,7 @@ private fun DashboardPreview() {
                     ),
                     connected = true,
                     lastSeen = 0L,
-                    key = "Key123",
+                    peerKeyString = "Key123",
                 )
             )
         )
