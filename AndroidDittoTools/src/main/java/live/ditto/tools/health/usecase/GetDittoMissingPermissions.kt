@@ -1,4 +1,4 @@
-package live.ditto.health.usecase
+package live.ditto.tools.health.usecase
 
 import android.content.Context
 import kotlinx.coroutines.delay

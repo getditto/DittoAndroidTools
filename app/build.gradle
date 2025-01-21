@@ -41,8 +41,6 @@ dependencies {
 
     implementation platform(libs.androidx.compose.composeBom)
 
-//    implementation(project(":DittoToolsViewer"))
-
     implementation(project(":AndroidDittoTools"))
 
 

@@ -1,4 +1,4 @@
-package live.ditto.health.ui.viewmodel
+package live.ditto.tools.health.ui.viewmodel
 
 import java.util.Locale
 

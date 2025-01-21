@@ -15,13 +15,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import live.ditto.Ditto
-import live.ditto.androidtools.R
-//import live.ditto.dittodiskusage.DiskUsageViewModel
-//import live.ditto.healthmetrics.HealthMetricProvider
-//import live.ditto.dittoheartbeat.DittoHeartbeatConfig
-//import live.ditto.dittoheartbeat.DittoHeartbeatInfo
-//import live.ditto.dittoheartbeat.startHeartbeat
-//import live.ditto.dittotoolsviewer.R
+import live.ditto.tools.R
+import live.ditto.tools.diskusage.DiskUsageViewModel
 import live.ditto.tools.healthmetrics.HealthMetricProvider
 import live.ditto.tools.heartbeat.DittoHeartbeatConfig
 import live.ditto.tools.heartbeat.DittoHeartbeatInfo
@@ -35,8 +30,8 @@ fun HeartbeatScreen(ditto: Ditto) {
 
     var heartbeatInfo by remember { mutableStateOf<DittoHeartbeatInfo?>(null) }
     val healthMetricProviders: MutableList<HealthMetricProvider> = mutableListOf()
-//    val diskUsageViewModel = DiskUsageViewModel()DiskUsageViewModel
-//    healthMetricProviders.add(diskUsageViewModel)
+    val diskUsageViewModel = DiskUsageViewModel()
+    healthMetricProviders.add(diskUsageViewModel)
 
     val config = DittoHeartbeatConfig(
         //id for testing only. Unique id will not persist
@@ -115,7 +110,7 @@ fun HeartbeatHeader(heartbeatInfo: DittoHeartbeatInfo) {
             ),
             color = Color.Black
         )
-        Text(stringResource(R.string.heartbeat_peer_key_label, heartbeatInfo.peerKey))
+        Text(stringResource(R.string.heartbeat_peer_key_label, heartbeatInfo.peerKeyString))
     }
 }
 
@@ -135,5 +130,4 @@ fun ConnectionInfo(connection: Map<String, Any>) {
         Text(stringResource(R.string.connection_info_lan, connection["lan"] ?: ""))
     }
 }
-
 

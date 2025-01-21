@@ -30,7 +30,6 @@ runtimeAndroid = "1.7.6"
 webkit = "1.12.1"
 
 [libraries]
-androidx-activity-activityCompose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-activity" }
 androidx-appcompat-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
 androidx-compose-composeBom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidx-compose" }
 androidx-compose-material3-material3 = { group = "androidx.compose.material3", name = "material3" }
@@ -42,17 +41,6 @@ androidx-datastore-preferences = { module = "androidx.datastore:datastore-prefer
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose" }
 androidx-navigation-navigationCompose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext" }
-androidx-webkit-webkit = { group = "androidx.webkit", name = "webkit", version.ref = "androidx-webkit" }
-live-ditto-toolsviewer = { module = "live.ditto:dittotoolsviewer", version.ref = "live-ditto-tools" }
-live-ditto-databrowser = { module = "live.ditto:dittodatabrowser", version.ref = "live-ditto-tools" }
-live-ditto-exportlogs = { module = "live.ditto:dittoexportlogs", version.ref = "live-ditto-tools" }
-live-ditto-exporter = { module = "live.ditto:dittoexporter", version.ref = "live-ditto-tools" }
-live-ditto-diskusage = { module = "live.ditto:dittodiskusage", version.ref = "live-ditto-tools" }
-live-ditto-presenceviewer = { module = "live.ditto:dittopresenceviewer", version.ref = "live-ditto-tools" }
-live-ditto-presencedegradationreporter = { module = "live.ditto:presencedegradationreporter", version.ref = "live-ditto-tools" }
-live-ditto-health = { module = "live.ditto:health", version.ref = "live-ditto-tools" }
-live-ditto-healthmetrics = { module = "live.ditto:healthmetrics", version.ref = "live-ditto-tools" }
-live-ditto-heartbeat = { module = "live.ditto:dittoheartbeat", version.ref = "live-ditto-tools" }
 live-ditto-ditto = { group = "live.ditto", name = "ditto", version.ref = "ditto" }
 junit-junit = { group = "junit", name = "junit", version.ref = "junit" }
 joda-time-joda-time = { group = "joda-time", name = "joda-time", version = "2.10.10" }

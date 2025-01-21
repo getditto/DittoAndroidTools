@@ -30,7 +30,7 @@ data class DittoHeartbeatInfo(
     val presenceSnapshotDirectlyConnectedPeers: Map<String, Any>,
     val sdk: String,
     val schema: String,
-    val peerKey: String,
+    val peerKeyString: String,
     /**
      * The current state of any `HealthMetric`s tracked by the Heartbeat Tool.
      */
@@ -55,18 +55,18 @@ fun startHeartbeat(ditto: Ditto, config: DittoHeartbeatConfig): Flow<DittoHeartb
         val timestamp = DateTime().toISOString()
         val presenceData = observePeers(ditto)
 
-            info =
-                DittoHeartbeatInfo(
-                    id = config.id,
-                    lastUpdated = timestamp,
-                    presenceSnapshotDirectlyConnectedPeers = getConnections(presenceData, ditto) ,
-                    metaData = config.metaData,
-                    presenceSnapshotDirectlyConnectedPeersCount = presenceData.size,
-                    secondsInterval = config.secondsInterval,
-                    sdk = ditto.sdkVersion,
-                    schema = HEARTBEAT_COLLECTION_SCHEMA_VALUE,
-                    peerKey = ditto.presence.graph.localPeer.peerKeyString
-                )
+        info =
+            DittoHeartbeatInfo(
+                id = config.id,
+                lastUpdated = timestamp,
+                presenceSnapshotDirectlyConnectedPeers = getConnections(presenceData, ditto) ,
+                metaData = config.metaData,
+                presenceSnapshotDirectlyConnectedPeersCount = presenceData.size,
+                secondsInterval = config.secondsInterval,
+                sdk = ditto.sdkVersion,
+                schema = HEARTBEAT_COLLECTION_SCHEMA_VALUE,
+                peerKeyString = ditto.presence.graph.localPeer.peerKeyString
+            )
 
         updateHealthMetrics(config)
 
@@ -94,7 +94,7 @@ fun addToCollection(info: DittoHeartbeatInfo, config: DittoHeartbeatConfig, ditt
         "metaData" to metaData,
         "sdk" to info.sdk,
         "_schema" to info.schema,
-        "peerKey" to info.peerKey
+        "peerKey" to info.peerKeyString
     )
 
     ditto.store.collection(HEARTBEAT_COLLECTION_COLLECTION_NAME).upsert(value = doc)

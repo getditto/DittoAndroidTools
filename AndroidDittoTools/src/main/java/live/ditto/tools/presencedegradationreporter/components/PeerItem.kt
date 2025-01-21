@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import live.ditto.androidtools.R
+import live.ditto.tools.R
 import live.ditto.tools.presencedegradationreporter.model.Peer
 import live.ditto.tools.presencedegradationreporter.model.PeerTransportInfo
 import live.ditto.tools.presencedegradationreporter.theme.PresenceDegradationReporterTheme
@@ -40,7 +40,7 @@ fun PeerItem(peer: Peer) {
                 fontWeight = FontWeight.Bold,
             )
 
-            Text(text = stringResource(R.string.key, peer.key))
+            Text(text = stringResource(R.string.key, peer.peerKeyString))
 
             Text(text = stringResource(R.string.last_seen, peer.lastSeenFormatted))
 
@@ -90,7 +90,7 @@ private fun PeerItemConnectedPreview() {
                 ),
                 connected = true,
                 lastSeen = 0L,
-                key = "Key123"
+                peerKeyString = "Key123"
             )
         )
     }
@@ -111,7 +111,7 @@ private fun PeerItemNotConnectedPreview() {
                 ),
                 connected = false,
                 lastSeen = 0L,
-                key = "Key123"
+                peerKeyString = "Key123"
             )
         )
     }

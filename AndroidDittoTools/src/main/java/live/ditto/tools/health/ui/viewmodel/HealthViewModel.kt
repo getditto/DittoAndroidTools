@@ -12,10 +12,10 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
-import live.ditto.health.usecase.GetBluetoothStatusFlow
-import live.ditto.health.usecase.GetDittoMissingPermissionsFlow
-import live.ditto.health.usecase.GetWifiAwareStatusUseCase
-import live.ditto.health.usecase.GetWifiStatusFlow
+import live.ditto.tools.health.usecase.GetBluetoothStatusFlow
+import live.ditto.tools.health.usecase.GetDittoMissingPermissionsFlow
+import live.ditto.tools.health.usecase.GetWifiAwareStatusUseCase
+import live.ditto.tools.health.usecase.GetWifiStatusFlow
 import live.ditto.tools.health.data.DeviceDetails
 import live.ditto.tools.health.data.HealthUiState
 import live.ditto.tools.health.usecase.GetPermissionsMetricsUseCase

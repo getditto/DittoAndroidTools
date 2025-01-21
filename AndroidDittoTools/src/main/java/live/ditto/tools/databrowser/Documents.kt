@@ -30,7 +30,7 @@ fun Documents(collectionName: String, isStandAlone: Boolean) {
 
     val selectedDoc by viewModel.selectedDoc.observeAsState()
     val docsList by viewModel.docsList.observeAsState()
-    var selectedIndex by remember { mutableStateOf(0) }
+    var selectedIndex by remember { mutableIntStateOf(0) }
     var startUp by remember { mutableStateOf(true) }
 
         Column(
