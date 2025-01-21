@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import live.ditto.health.data.DeviceDetails
 import live.ditto.health.data.HealthUiState
+import live.ditto.health.usecase.BluetoothState
 import live.ditto.health.usecase.GetBluetoothStatusFlow
 import live.ditto.health.usecase.GetDittoMissingPermissionsFlow
 import live.ditto.health.usecase.GetPermissionsMetricsUseCase
@@ -109,9 +110,9 @@ class HealthViewModel(
         }
     }
 
-    private fun onBluetoothStatus(status: Boolean?) {
+    private fun onBluetoothStatus(bluetoothState: BluetoothState) {
         _state.update {
-            it.copy(bluetoothEnabled = status ?: false)
+            it.copy(bluetoothState = bluetoothState)
         }
     }
 

@@ -5,4 +5,5 @@ sealed class HealthUiActionType {
     object RequestPermissions : HealthUiActionType()
     object EnableWifi : HealthUiActionType()
     object EnableBluetooth : HealthUiActionType()
+    object BluetoothUnsupported : HealthUiActionType()
 }
