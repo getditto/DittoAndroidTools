@@ -4,7 +4,7 @@ import android.content.Context
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import live.ditto.tools.R.*
+import live.ditto.tools.R
 import live.ditto.tools.health.usecase.WifiAwareState
 import live.ditto.tools.health.HealthUiActionType
 import live.ditto.tools.health.HealthUiStateCause
@@ -36,15 +36,15 @@ data class HealthUiState(
         if (missingPermissions.isEmpty()) {
             noActions.add(
                 HealthUiStateCause(
-                    reason = context.getString(string.required_permissions),
-                    details = listOf(context.getString(string.required_permissions_granted)),
+                    reason = context.getString(R.string.required_permissions),
+                    details = listOf(context.getString(R.string.required_permissions_granted)),
                     actionType = HealthUiActionType.NoAction
                 )
             )
         } else {
             withActions.add(
                 HealthUiStateCause(
-                    reason = context.getString(string.missing_permissions),
+                    reason = context.getString(R.string.missing_permissions),
                     details = missingPermissions,
                     actionType = HealthUiActionType.RequestPermissions
                 )
@@ -60,16 +60,16 @@ data class HealthUiState(
         if (wifiEnabled) {
             noActions.add(
                 HealthUiStateCause(
-                    reason = context.getString(string.wifi_status),
-                    details = listOf(context.getString(string.wifi_enabled)),
+                    reason = context.getString(R.string.wifi_status),
+                    details = listOf(context.getString(R.string.wifi_enabled)),
                     actionType = HealthUiActionType.NoAction
                 )
             )
         } else {
             withActions.add(
                 HealthUiStateCause(
-                    reason = context.getString(string.wifi_status),
-                    details = listOf(context.getString(string.wifi_not_enabled)),
+                    reason = context.getString(R.string.wifi_status),
+                    details = listOf(context.getString(R.string.wifi_not_enabled)),
                     actionType = HealthUiActionType.EnableWifi
                 )
             )
@@ -84,16 +84,16 @@ data class HealthUiState(
         if (bluetoothEnabled) {
             noActions.add(
                 HealthUiStateCause(
-                    reason = context.getString(string.bluetooth_status),
-                    details = listOf(context.getString(string.bluetooth_enabled)),
+                    reason = context.getString(R.string.bluetooth_status),
+                    details = listOf(context.getString(R.string.bluetooth_enabled)),
                     actionType = HealthUiActionType.NoAction
                 )
             )
         } else {
             withActions.add(
                 HealthUiStateCause(
-                    reason = context.getString(string.bluetooth_status),
-                    details = listOf(context.getString(string.bluetooth_not_enabled)),
+                    reason = context.getString(R.string.bluetooth_status),
+                    details = listOf(context.getString(R.string.bluetooth_not_enabled)),
                     actionType = HealthUiActionType.EnableBluetooth
                 )
             )
