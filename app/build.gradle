@@ -12,12 +12,21 @@ android {
     namespace "live.ditto.dittotoolsapp"
 
     defaultConfig {
-        applicationId "live.ditto.dittotoolsapp"
+        applicationId "live.ditto.DittoToolsApp"
         versionCode 1
         versionName "1.0"
 
         buildConfigField "String", "DITTO_ONLINE_PLAYGROUND_APP_ID", dittoOnlinePlaygroundAppId
         buildConfigField "String", "DITTO_ONLINE_PLAYGROUND_TOKEN", dittoOnlinePlaygroundToken
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.debug
+            release {
+                minifyEnabled true
+                proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            }
+        }
     }
 
     buildFeatures {
@@ -35,8 +44,8 @@ dependencies {
     implementation libs.live.ditto.ditto
 
     implementation platform(libs.androidx.compose.composeBom)
+    implementation implementation(project(':DittoToolsAndroid',))
 
-    implementation libs.live.ditto.toolsviewer
 
     testImplementation libs.junit.junit
 }

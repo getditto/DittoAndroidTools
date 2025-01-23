@@ -15,13 +15,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "DittoTools"
 include ':app'
-include ':DittoDataBrowser'
-include ':DittoDiskUsage'
-include ':DittoExporter'
-include ':DittoExportLogs'
-include ':DittoPresenceViewer'
-include ':DittoHeartbeat'
-include ':DittoHealth'
-include ':DittoPresenceDegradationReporter'
-include ':DittoHealthMetrics'
-include ':DittoToolsViewer'
+include ':DittoToolsAndroid'

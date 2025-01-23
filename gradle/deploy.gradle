@@ -4,13 +4,13 @@ apply plugin: 'signing'
 def signingKeyBase64 = findProperty("GPG_SIGNING_IN_MEMORY_KEY")
 def signingPassword = findProperty("GPG_SIGNING_IN_MEMORY_KEY_PWD")
 
-def base64Decode(encodedString){
+static def base64Decode(encodedString){
     if(encodedString != null) {
         byte[] decoded = encodedString.decodeBase64()
         String decode = new String(decoded)
         return decode
     }
-    return null;
+    return null
 }
 
 signing {
@@ -85,6 +85,6 @@ afterEvaluate {
     }
 }
 
-tasks.withType(GenerateModuleMetadata) {
+tasks.withType(GenerateModuleMetadata).configureEach {
     enabled = false
 }
