@@ -14,8 +14,6 @@ For support, please contact Ditto Support (<support@ditto.live>).
 ## Installing
 Ditto tools are released via Maven Central. Be sure to include it in your list of repositories. 
 
-
-
 ```groovy
 repositories {
     mavenCentral()
@@ -34,7 +32,7 @@ You can find the list of versions and release notes in the [Releases tab](https:
 
 ## Usage
 
-First, you must initialize Ditto. For example, with the Online Playground identity:
+All tools require an initialized instance of Ditto to work. For example, with the Online Playground identity:
 
 ```kotlin
 val androidDependencies = DefaultAndroidDittoDependencies(applicationContext)
@@ -42,12 +40,6 @@ val identity = DittoIdentity.OnlinePlayground(androidDependencies, appId = "YOUR
 ditto = Ditto(androidDependencies, identity)
 DittoLogger.minimumLogLevel = DittoLogLevel.DEBUG
 ditto.startSync()
-```
-
-_NOTICE:_ This project loads ditto's credentials from `local.properties`
-```properties
-ditto.onlinePlayground.appId="YOUR_APPID"
-ditto.onlinePlayground.token="YOUR_TOKEN"
 ```
 
 ### 1. Tools Viewer
@@ -148,7 +140,7 @@ WIFI_AWARE_STATE -- displays whether the device supports WiFi Aware
 
 The Ditto Heartbeat tool allows you to monitor, locally or remotely, the peers in your mesh.
 
-**Configure Heartbeat**
+**Configure Heartbeat** 
 
 These are the values you need to provide to the Heartbeat:
 1. `id` - Unique value that identifies the device
@@ -301,7 +293,14 @@ There are two ways you can test things locally. Either in the demo app, or in an
 
 ### Testing in the Demo App Locally
 
-To test your changes to a module in the demo app, simply import the local module, making sure to comment out/delete the version catalog import. For example, if you made changes to DittoDataBrowser you would
+To run the demo app locally, get valid playground Ditto instance credentials and store them in `local.properties` file. You can find both the app ID and token in the [Ditto Portal](https://portal.ditto.live) 
+
+```properties
+ditto.onlinePlayground.appId="YOUR_APPID"
+ditto.onlinePlayground.token="YOUR_TOKEN"
+```
+
+To test your changes to a module in the demo app, make sure to import the local module in `app/build.gradle` dependencies section: 
 
 add: `implementation(project(":AndroidDittoTools"))`
 remove/comment out: `implementation libs.live.ditto.ditto-tools-android`
