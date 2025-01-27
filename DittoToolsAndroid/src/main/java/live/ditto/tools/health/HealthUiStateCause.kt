@@ -16,6 +16,7 @@ data class HealthUiStateCause(
             HealthUiActionType.EnableWifi -> false
             HealthUiActionType.RequestPermissions -> false
             HealthUiActionType.EnableBluetooth -> false
+            HealthUiActionType.BluetoothUnsupported -> false
         }
     }
 
@@ -24,5 +25,6 @@ data class HealthUiStateCause(
         HealthUiActionType.EnableWifi -> context.getString(R.string.enable_wifi)
         HealthUiActionType.RequestPermissions -> context.getString(R.string.request_permissions)
         HealthUiActionType.EnableBluetooth -> context.getString(R.string.enable_bluetooth)
+        HealthUiActionType.BluetoothUnsupported -> ""
     }
 }

@@ -18,6 +18,7 @@ import live.ditto.tools.health.usecase.GetWifiAwareStatusUseCase
 import live.ditto.tools.health.usecase.GetWifiStatusFlow
 import live.ditto.tools.health.data.DeviceDetails
 import live.ditto.tools.health.data.HealthUiState
+import live.ditto.tools.health.usecase.BluetoothState
 import live.ditto.tools.health.usecase.GetPermissionsMetricsUseCase
 import live.ditto.tools.healthmetrics.HealthMetric
 import live.ditto.tools.healthmetrics.HealthMetricProvider
@@ -110,9 +111,9 @@ class HealthViewModel(
         }
     }
 
-    private fun onBluetoothStatus(status: Boolean) {
+    private fun onBluetoothStatus(bluetoothState: BluetoothState) {
         _state.update {
-            it.copy(bluetoothEnabled = status)
+            it.copy(bluetoothState = bluetoothState)
         }
     }
 

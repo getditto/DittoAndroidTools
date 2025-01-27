@@ -7,7 +7,10 @@ import android.provider.Settings
 
 class HealthScreenActionHandler {
     fun handle(actionType: HealthUiActionType, context: Context) = when (actionType) {
-        HealthUiActionType.NoAction -> {}
+        HealthUiActionType.NoAction,
+        HealthUiActionType.BluetoothUnsupported -> {
+        }
+
         HealthUiActionType.EnableWifi -> {
             context.startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
         }
@@ -23,5 +26,6 @@ class HealthScreenActionHandler {
         HealthUiActionType.EnableBluetooth -> {
             context.startActivity(Intent(Settings.ACTION_BLUETOOTH_SETTINGS))
         }
+
     }
 }

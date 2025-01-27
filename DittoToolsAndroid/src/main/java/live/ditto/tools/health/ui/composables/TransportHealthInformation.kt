@@ -68,7 +68,7 @@ private fun TransportHealthInformation(
             healthUiStateCauses.forEach { healthUiStateCause ->
                 val actionType = healthUiStateCause.actionType
 
-                if (actionType == HealthUiActionType.NoAction) {
+                if (actionType == HealthUiActionType.NoAction || actionType == HealthUiActionType.BluetoothUnsupported) {
                     HealthCheckWithNoAction(
                         header = healthUiStateCause.reason,
                         isHealthy = healthUiStateCause.isHealthy,

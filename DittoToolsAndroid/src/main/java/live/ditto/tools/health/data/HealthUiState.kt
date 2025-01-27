@@ -8,12 +8,13 @@ import live.ditto.tools.R
 import live.ditto.tools.health.usecase.WifiAwareState
 import live.ditto.tools.health.HealthUiActionType
 import live.ditto.tools.health.HealthUiStateCause
+import live.ditto.tools.health.usecase.BluetoothState
 
 data class HealthUiState(
     val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default,
     val missingPermissions: List<String> = emptyList(),
     val wifiEnabled: Boolean = true,
-    val bluetoothEnabled: Boolean = true,
+    val bluetoothState: BluetoothState = BluetoothState.UNSUPPORTED,
     val wifiAwareState: WifiAwareState = WifiAwareState.UNSUPPORTED,
     val deviceDetails: DeviceDetails
 ) {
@@ -81,22 +82,36 @@ data class HealthUiState(
         withActions: MutableList<HealthUiStateCause>,
         context: Context
     ) {
-        if (bluetoothEnabled) {
-            noActions.add(
-                HealthUiStateCause(
-                    reason = context.getString(R.string.bluetooth_status),
-                    details = listOf(context.getString(R.string.bluetooth_enabled)),
-                    actionType = HealthUiActionType.NoAction
+        when (bluetoothState) {
+            BluetoothState.ENABLED -> {
+                noActions.add(
+                    HealthUiStateCause(
+                        reason = context.getString(R.string.bluetooth_status),
+                        details = listOf(context.getString(R.string.bluetooth_enabled)),
+                        actionType = HealthUiActionType.NoAction
+                    )
                 )
-            )
-        } else {
-            withActions.add(
-                HealthUiStateCause(
-                    reason = context.getString(R.string.bluetooth_status),
-                    details = listOf(context.getString(R.string.bluetooth_not_enabled)),
-                    actionType = HealthUiActionType.EnableBluetooth
+            }
+
+            BluetoothState.DISABLED -> {
+                withActions.add(
+                    HealthUiStateCause(
+                        reason = context.getString(R.string.bluetooth_status),
+                        details = listOf(context.getString(R.string.bluetooth_not_enabled)),
+                        actionType = HealthUiActionType.EnableBluetooth
+                    )
                 )
-            )
+            }
+
+            BluetoothState.UNSUPPORTED -> {
+                noActions.add(
+                    HealthUiStateCause(
+                        reason = context.getString(R.string.bluetooth_status),
+                        details = listOf(context.getString(R.string.bluetooth_unsupported)),
+                        actionType = HealthUiActionType.BluetoothUnsupported
+                    )
+                )
+            }
         }
     }
 }

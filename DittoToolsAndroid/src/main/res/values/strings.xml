@@ -38,6 +38,7 @@
     <string name="enable_wifi">Enable Wi-fi</string>
     <string name="request_permissions">Request Permissions</string>
     <string name="bluetooth_status">Bluetooth Status</string>
+    <string name="bluetooth_unsupported">Bluetooth Unsupported</string>
     <string name="bluetooth_enabled">Bluetooth Enabled</string>
     <string name="bluetooth_not_enabled">Bluetooth Not Enabled</string>
     <string name="enable_bluetooth">Enable Bluetooth</string>

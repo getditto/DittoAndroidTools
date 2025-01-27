@@ -18,13 +18,21 @@ class GetBluetoothStatusFlow(context: Context) {
     private val state = callbackFlow {
         val receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                launch { send(bluetoothManager.adapter.isEnabled) }
+                launch { send(determineBluetoothState(bluetoothManager = bluetoothManager)) }
             }
         }
 
         context.registerReceiver(receiver, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
 
-        send(bluetoothManager.adapter.isEnabled)
+        if (bluetoothManager.adapter == null) {
+            send(BluetoothState.UNSUPPORTED)
+        } else {
+            if (bluetoothManager.adapter.isEnabled) {
+                send(BluetoothState.ENABLED)
+            } else {
+                send(BluetoothState.DISABLED)
+            }
+        }
 
         awaitClose {
             context.unregisterReceiver(receiver)
@@ -32,4 +40,22 @@ class GetBluetoothStatusFlow(context: Context) {
     }
 
     operator fun invoke() = state
+
+    private fun determineBluetoothState(bluetoothManager: BluetoothManager): BluetoothState {
+        return if (bluetoothManager.adapter == null) {
+            BluetoothState.UNSUPPORTED
+        } else {
+            if (bluetoothManager.adapter.isEnabled) {
+                BluetoothState.ENABLED
+            } else {
+                BluetoothState.DISABLED
+            }
+        }
+    }
+}
+
+enum class BluetoothState {
+    ENABLED,
+    DISABLED,
+    UNSUPPORTED
 }
