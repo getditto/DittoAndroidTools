@@ -14,8 +14,8 @@ androidx-navigation = "2.5.3"
 androidx-test-ext = "1.1.5"
 androidx-webkit = "1.7.0"
 datastorePreferences = "1.0.0"
-ditto = "4.8.2"
-live-ditto-tools = "3.0.1"
+ditto = "4.9.3"
+ditto-tools-android = "4.0.0"
 
 junit = "4.13.2"
 kotlin-gradle-plugin = "1.8.10"
@@ -41,6 +41,7 @@ androidx-datastore-preferences = { module = "androidx.datastore:datastore-prefer
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose" }
 androidx-navigation-navigationCompose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext" }
+ditto-tools-android = { module = "live.ditto:ditto-tools-android", version.ref = "ditto-tools-android" }
 live-ditto-ditto = { group = "live.ditto", name = "ditto", version.ref = "ditto" }
 junit-junit = { group = "junit", name = "junit", version.ref = "junit" }
 joda-time-joda-time = { group = "joda-time", name = "joda-time", version = "2.10.10" }
