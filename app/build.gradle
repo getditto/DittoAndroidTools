@@ -44,7 +44,7 @@ dependencies {
     implementation libs.live.ditto.ditto
 
     implementation platform(libs.androidx.compose.composeBom)
-    implementation implementation(project(':DittoToolsAndroid',))
+    implementation(libs.ditto.tools.android)
 
 
     testImplementation libs.junit.junit
