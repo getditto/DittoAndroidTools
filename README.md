@@ -305,20 +305,6 @@ To test your changes to a module in the demo app, make sure to import the local 
 add: `implementation(project(":DittoToolsAndroid"))`
 remove/comment out: `implementation libs.live.ditto.ditto-tools-android`
 
-Update `build.gradle.kts` dependency:
-
-```dependencies
-dependencies {
-    // Other dependencies
-    implementation(libs.live.ditto.ditto) {
-        // version {
-        //    strictly("[4.5.0,)")
-        // }
-    }
-}
-```
-
-
 ### Testing in an External Project
 
 1. Run `./gradlew publishToMavenLocal`
