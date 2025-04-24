@@ -302,8 +302,67 @@ ditto.onlinePlayground.token="YOUR_TOKEN"
 
 To test your changes to a module in the demo app, make sure to import the local module in `app/build.gradle` dependencies section: 
 
-add: `implementation(project(":AndroidDittoTools"))`
+add: `implementation(project(":DittoToolsAndroid"))`
 remove/comment out: `implementation libs.live.ditto.ditto-tools-android`
+
+The latest DittoToolsAndroid build uses Kotlin 2.1.0 if your version is below that you'll have to update this as well. 
+#### Note Kotlin 2.0.0 and above does not come packaged with compose compiler (decoupled) so we will need to manually add that.
+
+In `libs.versions.toml` update the below
+ 
+```versions
+[versions]
+// Update this line
+kotlin-gradle-plugin = "2.1.0"
+androidComposeKotlinCompiler = "2.1.0"
+
+// Add this line
+kotlin = "2.1.0"
+
+[plugins]
+// Add this line
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" } 
+```
+
+In `build.gradle(Module: app)`:
+
+```plugins
+plugins {
+    // Other plugins
+    alias(libs.plugins.compose.compiler)
+}
+```
+
+In `build.gradle(Project: DittoTools)`:
+
+```plugins
+plugins {
+    // Other plugins
+    alias libs.plugins.compose.compiler apply false
+}
+```
+
+In `build.gradle.kts(Module: DittoToolsAndroid)`:
+
+```plugins
+plugins {
+    // Other plugins
+    alias(libs.plugins.compose.compiler)
+}
+
+// Comment out strict versions in dependencies
+dependencies {
+    implementation(libs.live.ditto.ditto) {
+        // version {
+        //     strictly("[4.5.0,)")
+        // }
+    }
+}
+```
+
+For reference to Google documentation:
+[Compose Compiler Gradle plugin](https://developer.android.com/develop/ui/compose/compiler)
+
 
 ### Testing in an External Project
 
