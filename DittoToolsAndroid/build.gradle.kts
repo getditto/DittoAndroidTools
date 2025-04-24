@@ -32,11 +32,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.webkit)
 
-    implementation(libs.live.ditto.ditto) {
-        version {
-            strictly("[4.5.0,)")
-        }
-    }
+    implementation(libs.live.ditto.ditto)
 
     testImplementation(libs.junit.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
