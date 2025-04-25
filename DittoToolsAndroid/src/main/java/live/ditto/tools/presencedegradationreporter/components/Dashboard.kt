@@ -86,7 +86,7 @@ fun Dashboard(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 contentPadding = PaddingValues(vertical = 8.dp)
             ) {
-                items(items = remotePeers) { peer ->
+                items(items = remotePeers, key = { it.peerKeyString }) { peer ->
                     PeerItem(peer = peer)
                 }
             }
@@ -191,7 +191,7 @@ private fun DashboardPreview() {
                     ),
                     connected = false,
                     lastSeen = 0L,
-                    peerKeyString = "Key123",
+                    peerKeyString = "KeyA123",
                 ),
                 Peer(
                     name = "B",
@@ -203,7 +203,19 @@ private fun DashboardPreview() {
                     ),
                     connected = true,
                     lastSeen = 0L,
-                    peerKeyString = "Key123",
+                    peerKeyString = "KeyB123",
+                ),
+                Peer(
+                    name = "B",
+                    transportInfo = PeerTransportInfo(
+                        bluetoothConnections = 1,
+                        lanConnections = 2,
+                        p2pConnections = 2,
+                        cloudConnections = 1
+                    ),
+                    connected = true,
+                    lastSeen = 0L,
+                    peerKeyString = "KeyC123",
                 )
             )
         )
