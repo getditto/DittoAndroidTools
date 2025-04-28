@@ -15,11 +15,11 @@ androidx-test-ext = "1.1.5"
 androidx-webkit = "1.7.0"
 datastorePreferences = "1.0.0"
 ditto = "4.9.3"
-ditto-tools-android = "4.0.0"
+ditto-tools-android = "4.0.1"
 
 junit = "4.13.2"
-kotlin-gradle-plugin = "1.8.10"
-androidComposeKotlinCompiler = "1.4.4"
+kotlin-gradle-plugin = "2.1.0"
+androidComposeKotlinCompiler = "2.1.0"
 core-ktx = "1.9.0"
 espresso-core = "3.5.1"
 material = "1.11.0"
@@ -28,6 +28,7 @@ gradle-wrapper = "8.10.2"
 gradle-nexus-publish-plugin = "2.0.0"
 runtimeAndroid = "1.7.6"
 webkit = "1.12.1"
+kotlin = "2.1.0"
 
 [libraries]
 androidx-appcompat-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
@@ -56,3 +57,4 @@ com-android-application = { id = "com.android.application", version.ref = "andro
 com-android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-gradle-plugin" }
 io-github-gradle-nexus-publish-plugin = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "gradle-nexus-publish-plugin"}
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

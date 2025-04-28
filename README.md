@@ -302,7 +302,7 @@ ditto.onlinePlayground.token="YOUR_TOKEN"
 
 To test your changes to a module in the demo app, make sure to import the local module in `app/build.gradle` dependencies section: 
 
-add: `implementation(project(":AndroidDittoTools"))`
+add: `implementation(project(":DittoToolsAndroid"))`
 remove/comment out: `implementation libs.live.ditto.ditto-tools-android`
 
 ### Testing in an External Project
