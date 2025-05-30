@@ -11,6 +11,9 @@ sealed class Screens {
     object PresenceViewerScreen: Screen {
         override val route = "presenceViewer"
     }
+    object PeersListViewerScreen: Screen {
+        override val route = "peersList"
+    }
     object DataBrowserScreen: Screen {
         override val route = "dataBrowser"
     }
