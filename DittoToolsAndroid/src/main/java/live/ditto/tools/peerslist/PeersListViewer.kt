@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,10 +11,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -28,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import live.ditto.Ditto
@@ -39,7 +37,9 @@ fun PeersListViewer(
     modifier: Modifier = Modifier,
     ditto: Ditto
 ) {
-    val stateHolder = remember { PeerListViewStateHolder(ditto) }
+    val peerListViewScope = rememberCoroutineScope()
+    val stateHolder = remember { PeerListViewStateHolder(ditto, peerListViewScope) }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -99,12 +99,6 @@ private fun PeerListView(
 
             item {
                 Text(
-                    "BLE approximate distance is inaccurate",
-                    style = MaterialTheme.typography.labelSmall
-                )
-            }
-            item {
-                Text(
                     "REMOTE PEERS",
                     style = MaterialTheme.typography.labelLarge
                 )
@@ -113,13 +107,6 @@ private fun PeerListView(
             items(remotePeers) { peer ->
                 // Remote peer
                 PeerView(peer)
-            }
-
-            item {
-                Text(
-                    "BLE approximate distance is inaccurate",
-                    style = MaterialTheme.typography.labelSmall
-                )
             }
         }
     }
