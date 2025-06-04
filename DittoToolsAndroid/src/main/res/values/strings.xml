@@ -85,5 +85,9 @@
     <string name="session_started_at">Session started at:</string>
     <string name="key">Key: %1$s</string>
     <string name="last_seen">Last Seen: %1$s</string>
+    <string name="peers_list_title">Peers List</string>
+    <string name="local_self_peer">LOCAL (SELF) PEER</string>
+    <string name="remote_peers">REMOTE PEERS</string>
+    <string name="sdk_version">SDK v%1$s</string>
 
 </resources>

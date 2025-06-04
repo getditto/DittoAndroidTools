@@ -27,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import live.ditto.Ditto
@@ -49,7 +50,7 @@ fun PeersListViewer(
             Surface(tonalElevation = 4.dp) {
                 TopAppBar(
                     title = {
-                        Text("Peers List")
+                        Text(stringResource(R.string.peers_list_title))
                     },
                     actions = {
                         IconButton(onClick = {
@@ -94,7 +95,7 @@ private fun PeerListView(
         ) {
             item {
                 Text(
-                    "LOCAL (SELF) PEER",
+                    stringResource(R.string.local_self_peer),
                     style = MaterialTheme.typography.labelLarge
                 )
             }
@@ -104,7 +105,7 @@ private fun PeerListView(
 
             item {
                 Text(
-                    "REMOTE PEERS",
+                    stringResource(R.string.remote_peers),
                     style = MaterialTheme.typography.labelLarge
                 )
             }
@@ -132,7 +133,7 @@ private fun PeerView(peer: DittoPeer) {
             Column {
                 Text("${peer.deviceName}:", style = MaterialTheme.typography.titleLarge)
                 Text(peer.peerKeyString)
-                peer.dittoSdkVersion?.let { Text("SDK v${it}") }
+                peer.dittoSdkVersion?.let { Text(stringResource(R.string.sdk_version, it)) }
             }
         }
     }
