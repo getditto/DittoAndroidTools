@@ -24,11 +24,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import live.ditto.Ditto
 import live.ditto.DittoPeer
 import live.ditto.tools.R
@@ -37,13 +37,14 @@ import live.ditto.tools.R
 @Composable
 fun PeersListViewer(
     modifier: Modifier = Modifier,
-    ditto: Ditto
+    ditto: Ditto,
+    viewModel: PeerListViewModel = PeerListViewModel(ditto)
 ) {
-    val peerListViewScope = rememberCoroutineScope()
-    val stateHolder = remember { PeerListViewStateHolder(ditto, peerListViewScope) }
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         topBar = {
             Surface(tonalElevation = 4.dp) {
                 TopAppBar(
@@ -52,9 +53,9 @@ fun PeersListViewer(
                     },
                     actions = {
                         IconButton(onClick = {
-                            stateHolder.togglePause()
+                            viewModel.togglePause()
                         }) {
-                            if (stateHolder.isPaused) {
+                            if (uiState.isPaused) {
                                 Icon(
                                     imageVector = Icons.Default.PlayArrow,
                                     contentDescription = null,
@@ -73,7 +74,7 @@ fun PeersListViewer(
             }
         }
     ) { innerPadding ->
-        PeerListView(stateHolder.localPeer, stateHolder.remotePeers, padding = innerPadding)
+        PeerListView(uiState.localPeer, uiState.remotePeers, padding = innerPadding)
     }
 }
 
