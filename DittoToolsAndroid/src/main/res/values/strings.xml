@@ -4,6 +4,7 @@
     <string name="tools_menu_content_description">Tools Menu Icon</string>
     <string name="drawer_title">Tools</string>
     <string name="presence_viewer_tool_label">Presence Viewer</string>
+    <string name="peers_list_tool_label">Peers List</string>
     <string name="data_browser_tool_label">Data Browser</string>
     <string name="export_logs_tool_label">Export Logs</string>
     <string name="disk_usage_tool_label">Disk Usage</string>
@@ -84,5 +85,9 @@
     <string name="session_started_at">Session started at:</string>
     <string name="key">Key: %1$s</string>
     <string name="last_seen">Last Seen: %1$s</string>
+    <string name="peers_list_title">Peers List</string>
+    <string name="local_self_peer">LOCAL (SELF) PEER</string>
+    <string name="remote_peers">REMOTE PEERS</string>
+    <string name="sdk_version">SDK v%1$s</string>
 
 </resources>

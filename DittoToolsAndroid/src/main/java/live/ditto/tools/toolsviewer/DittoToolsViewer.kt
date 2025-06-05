@@ -27,6 +27,7 @@ import live.ditto.tools.health.ui.composables.HealthScreen
 import live.ditto.tools.toolsviewer.navigation.Screens
 import live.ditto.tools.toolsviewer.viewmodel.ToolsViewerViewModel
 import live.ditto.tools.exportlogs.ExportLogs
+import live.ditto.tools.peerslist.PeersListViewer
 import live.ditto.tools.presencedegradationreporter.PresenceDegradationReporterScreen
 
 /**
@@ -124,6 +125,9 @@ private fun ToolsViewerNavHost(
         }
         composable(Screens.PresenceViewerScreen.route) {
             DittoPresenceViewer(ditto = ditto)
+        }
+        composable(Screens.PeersListViewerScreen.route) {
+            PeersListViewer(ditto = ditto)
         }
         composable(Screens.DataBrowserScreen.route) {
             DittoDataBrowser(ditto = ditto)

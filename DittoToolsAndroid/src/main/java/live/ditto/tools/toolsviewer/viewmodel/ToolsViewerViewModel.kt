@@ -14,6 +14,10 @@ class ToolsViewerViewModel: ViewModel() {
                 route = Screens.PresenceViewerScreen.route
             ),
             ToolMenuItem(
+                label = R.string.peers_list_tool_label,
+                route = Screens.PeersListViewerScreen.route
+            ),
+            ToolMenuItem(
                 label = R.string.data_browser_tool_label,
                 route = Screens.DataBrowserScreen.route
             ),
