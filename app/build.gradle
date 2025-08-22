@@ -2,6 +2,8 @@ plugins {
     alias libs.plugins.com.android.application
     alias libs.plugins.org.jetbrains.kotlin.android
     alias(libs.plugins.compose.compiler)
+    id 'com.google.devtools.ksp'
+    id 'dagger.hilt.android.plugin'
 }
 
 apply from: "$rootProject.projectDir/gradle/android-common.gradle"
@@ -23,10 +25,8 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.debug
-            release {
-                minifyEnabled true
-                proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            }
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
@@ -46,6 +46,21 @@ dependencies {
 
     implementation platform(libs.androidx.compose.composeBom)
     implementation(libs.ditto.tools.android)
+    
+    // Security and Lifecycle
+    implementation 'androidx.security:security-crypto:1.1.0-alpha06'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0'
+    
+    // Hilt
+    implementation 'com.google.dagger:hilt-android:2.51.1'
+    ksp 'com.google.dagger:hilt-compiler:2.51.1'
+    implementation 'androidx.hilt:hilt-navigation-compose:1.1.0'
+    
+    // Hilt testing
+    testImplementation 'com.google.dagger:hilt-android-testing:2.51.1'
+    kspTest 'com.google.dagger:hilt-compiler:2.51.1'
+    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.51.1'
+    kspAndroidTest 'com.google.dagger:hilt-compiler:2.51.1'
 
     testImplementation libs.junit.junit
 }

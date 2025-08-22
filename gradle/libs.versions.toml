@@ -18,8 +18,8 @@ ditto = "4.9.3"
 ditto-tools-android = "4.0.1"
 
 junit = "4.13.2"
-kotlin-gradle-plugin = "2.1.0"
-androidComposeKotlinCompiler = "2.1.0"
+kotlin-gradle-plugin = "2.0.21"
+androidComposeKotlinCompiler = "2.0.21"
 core-ktx = "1.9.0"
 espresso-core = "3.5.1"
 material = "1.11.0"
@@ -28,7 +28,7 @@ gradle-wrapper = "8.10.2"
 gradle-nexus-publish-plugin = "2.0.0"
 runtimeAndroid = "1.7.6"
 webkit = "1.12.1"
-kotlin = "2.1.0"
+kotlin = "2.0.21"
 
 [libraries]
 androidx-appcompat-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
