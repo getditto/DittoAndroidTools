@@ -171,7 +171,6 @@ private fun MenuFloatingActionButton(onClick: () -> Unit) {
                     when (keyEvent.type) {
                         KeyEventType.KeyUp -> {
                             onClick()
-                            println("Spacebar pressed selection")
                             true
                         }
                         else -> false

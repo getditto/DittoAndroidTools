@@ -98,7 +98,6 @@ private fun ToolMenuItem(
                         when (keyEvent.type) {
                             KeyEventType.KeyUp -> {
                                 onClick()
-                                println("Spacebar pressed selection")
                                 true
                             }
                             else -> false

@@ -102,7 +102,6 @@ fun Documents(collectionName: String, isStandAlone: Boolean) {
                                                 KeyEventType.KeyUp -> {
                                                     selectedIndex = index
                                                     viewModel.selectedDoc.value = item
-                                                    println("Spacebar pressed selection")
                                                     true
                                                 }
                                                 else -> false
