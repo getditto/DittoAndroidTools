@@ -15,6 +15,11 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -90,6 +95,21 @@ fun Documents(collectionName: String, isStandAlone: Boolean) {
                                     viewModel.selectedDoc.value = item
                                 }, text = {
                                     Text(text = item.id)
+                                }, modifier = Modifier.onKeyEvent { keyEvent ->
+                                    when (keyEvent.key) {
+                                        Key.Spacebar -> {
+                                            when (keyEvent.type) {
+                                                KeyEventType.KeyUp -> {
+                                                    selectedIndex = index
+                                                    viewModel.selectedDoc.value = item
+                                                    println("Spacebar pressed selection")
+                                                    true
+                                                }
+                                                else -> false
+                                            }
+                                        }
+                                        else -> false
+                                    }
                                 })
                             }
                         }
