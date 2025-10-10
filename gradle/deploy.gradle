@@ -97,7 +97,7 @@ afterEvaluate {
 
         release {
             github {
-                skipRelease = true  // Skip GitHub releases, only publishing to Maven Central
+                skipRelease = false  // Automatically create GitHub releases when publishing
                 token = System.getenv('JRELEASER_GITHUB_TOKEN') ?: 'PLACEHOLDER_FOR_LOCAL_TESTING'
             }
         }
