@@ -31,7 +31,6 @@ android {
 
 afterEvaluate {
     publishing {
-
         publications {
             release(MavenPublication) {
                 from components.release
@@ -80,6 +79,51 @@ afterEvaluate {
                 def snapshotsRepoUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
 
                 url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            }
+        }
+    }
+
+    jreleaser {
+        gitRootSearch = true
+
+        project {
+            name = 'Ditto Tools'
+            description = 'Ditto Tools for Android'
+            website = 'https://ditto.com'
+            authors = ['Ditto']
+            license = 'MIT'
+            version = findProperty("LIBRARY_VERSION") ?: "1.0.0-SNAPSHOT"
+        }
+
+        release {
+            github {
+                skipRelease = true  // Skip GitHub releases, only publishing to Maven Central
+                token = System.getenv('JRELEASER_GITHUB_TOKEN') ?: 'PLACEHOLDER_FOR_LOCAL_TESTING'
+            }
+        }
+
+        signing {
+            // Enable signing only when GPG keys are available (e.g., in CI)
+            active = System.getenv('JRELEASER_GPG_SECRET_KEY') ? 'ALWAYS' : 'NEVER'
+            armored = true
+            // Environment variables:
+            // - JRELEASER_GPG_PUBLIC_KEY (optional)
+            // - JRELEASER_GPG_SECRET_KEY
+            // - JRELEASER_GPG_PASSPHRASE
+        }
+
+        deploy {
+            maven {
+                mavenCentral {
+                    sonatype {
+                        active = 'ALWAYS'
+                        url = 'https://central.sonatype.com/api/v1/publisher'
+                        stagingRepository('build/staging-deploy')
+                        // Credentials via environment variables:
+                        // - JRELEASER_MAVENCENTRAL_USERNAME
+                        // - JRELEASER_MAVENCENTRAL_PASSWORD
+                    }
+                }
             }
         }
     }
