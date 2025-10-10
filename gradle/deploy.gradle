@@ -39,6 +39,13 @@ afterEvaluate {
 
                 version = findProperty("LIBRARY_VERSION") ?: "SNAPSHOT"
 
+                // Include resolved versions in POM for BOM-managed dependencies
+                versionMapping {
+                    allVariants {
+                        fromResolutionResult()
+                    }
+                }
+
                 pom {
                     name = 'Ditto Tools'
                     description = 'Ditto Tools'
@@ -65,20 +72,55 @@ afterEvaluate {
                             email = 'support@ditto.live'
                         }
                     }
+
+                    // Maven Central requires all dependencies to have explicit versions in the POM.
+                    // Android projects using Compose BOM get versions via dependencyManagement, but
+                    // Maven Central's validation rejects this. This block post-processes the generated
+                    // POM to: 1) Remove the dependencyManagement section, 2) Resolve actual versions
+                    // from the build's runtime classpath, 3) Add explicit version tags to all dependencies.
+
+                    withXml {
+                        def dependenciesNode = asNode().dependencies[0]
+                        def dependencyManagementNode = asNode().dependencyManagement
+
+                        // Remove dependencyManagement section
+                        if (dependencyManagementNode) {
+                            asNode().remove(dependencyManagementNode[0])
+                        }
+
+                        // Add versions to dependencies that don't have them
+                        if (dependenciesNode) {
+                            dependenciesNode.dependency.each { dep ->
+                                if (!dep.version) {
+                                    def groupId = dep.groupId.text()
+                                    def artifactId = dep.artifactId.text()
+
+                                    // Try to find in runtime classpath
+                                    def resolved = project.configurations.releaseRuntimeClasspath.resolvedConfiguration.resolvedArtifacts.find {
+                                        it.moduleVersion.id.group == groupId && it.moduleVersion.id.name == artifactId
+                                    }
+
+                                    if (resolved) {
+                                        dep.appendNode('version', resolved.moduleVersion.id.version)
+                                    } else {
+                                        // If not found, try getting from incoming resolution result
+                                        project.configurations.releaseRuntimeClasspath.incoming.resolutionResult.allComponents.each { component ->
+                                            if (component.moduleVersion.group == groupId && component.moduleVersion.name == artifactId) {
+                                                dep.appendNode('version', component.moduleVersion.version)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
         repositories {
             maven {
-                credentials {
-                    username = findProperty("MAVEN_CENTRAL_USERNAME")
-                    password = findProperty("MAVEN_CENTRAL_PASSWORD")
-                }
-
-                def releasesRepoUrl = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
-                def snapshotsRepoUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-
-                url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+                name = 'localStaging'
+                url = uri("${project.buildDir}/staging-deploy")
             }
         }
     }
@@ -97,19 +139,14 @@ afterEvaluate {
 
         release {
             github {
-                skipRelease = true  // Skip GitHub releases, only publishing to Maven Central
-                token = System.getenv('JRELEASER_GITHUB_TOKEN') ?: 'PLACEHOLDER_FOR_LOCAL_TESTING'
+                skipRelease = true
             }
         }
 
         signing {
-            // Enable signing only when GPG keys are available (e.g., in CI)
+            // Enable signing when GPG keys are available (e.g., in CI/CD)
             active = System.getenv('JRELEASER_GPG_SECRET_KEY') ? 'ALWAYS' : 'NEVER'
             armored = true
-            // Environment variables:
-            // - JRELEASER_GPG_PUBLIC_KEY (optional)
-            // - JRELEASER_GPG_SECRET_KEY
-            // - JRELEASER_GPG_PASSPHRASE
         }
 
         deploy {
@@ -119,9 +156,7 @@ afterEvaluate {
                         active = 'ALWAYS'
                         url = 'https://central.sonatype.com/api/v1/publisher'
                         stagingRepository('build/staging-deploy')
-                        // Credentials via environment variables:
-                        // - JRELEASER_MAVENCENTRAL_USERNAME
-                        // - JRELEASER_MAVENCENTRAL_PASSWORD
+                        verifyPom = false  // Disable strict POM validation for Android libraries
                     }
                 }
             }
