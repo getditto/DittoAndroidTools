@@ -18,6 +18,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -86,7 +91,21 @@ private fun ToolMenuItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() },
+            .clickable { onClick() }
+            .onKeyEvent { keyEvent ->
+                when (keyEvent.key) {
+                    Key.Spacebar -> {
+                        when (keyEvent.type) {
+                            KeyEventType.KeyUp -> {
+                                onClick()
+                                true
+                            }
+                            else -> false
+                        }
+                    }
+                    else -> false
+                }
+            },
         colors = CardDefaults.cardColors(
             containerColor = containerColor
         ),
