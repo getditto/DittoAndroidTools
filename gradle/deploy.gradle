@@ -103,9 +103,7 @@ afterEvaluate {
         }
 
         signing {
-            // Enable signing only when GPG keys are available (e.g., in CI)
-            active = System.getenv('JRELEASER_GPG_SECRET_KEY') ? 'ALWAYS' : 'NEVER'
-            armored = true
+            active = 'NEVER'
         }
 
         deploy {
@@ -115,6 +113,7 @@ afterEvaluate {
                         active = 'ALWAYS'
                         url = 'https://central.sonatype.com/api/v1/publisher'
                         stagingRepository('build/staging-deploy')
+                        sign = false
                     }
                 }
             }
