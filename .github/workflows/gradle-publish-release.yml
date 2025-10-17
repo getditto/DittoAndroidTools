@@ -1,40 +1,42 @@
-# This workflow publishes to Maven Central using JReleaser when a GitHub release is created
-# For more information see: https://jreleaser.org/guide/latest/examples/maven/maven-central.html
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a package using Gradle and then publish it to GitHub packages when a release is created
+# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#Publishing-using-gradle
 
-name: Publish Release with JReleaser
+name: Publish Release
 
 on:
   release:
     types: [ released ]
 
+
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Needed for JReleaser to update the release
+      contents: read
 
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Required for JReleaser git operations
 
-      - name: Set up JDK 17
+      - uses: actions/checkout@v4
+      - name: Set up JDK 18
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '18'
           distribution: 'temurin'
 
-      - name: Publish to Maven Central via JReleaser
-        env:
-          # Library version from release tag
-          LIBRARY_VERSION: ${{ github.event.release.tag_name }}
-          # GitHub token for JReleaser (provided by GitHub Actions)
-          JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Map existing Maven Central secrets to JReleaser variables
-          JRELEASER_MAVENCENTRAL_USERNAME: ${{ secrets.ORG_GRADLE_PROJECT_MAVEN_CENTRAL_USERNAME }}
-          JRELEASER_MAVENCENTRAL_PASSWORD: ${{ secrets.ORG_GRADLE_PROJECT_MAVEN_CENTRAL_PASSWORD }}
-          # Map existing GPG secrets to JReleaser variables
-          JRELEASER_GPG_SECRET_KEY: ${{ secrets.ORG_GRADLE_PROJECT_GPG_SIGNING_IN_MEMORY_KEY }}
-          JRELEASER_GPG_PASSPHRASE: ${{ secrets.ORG_GRADLE_PROJECT_GPG_SIGNING_IN_MEMORY_KEY_PWD }}
+      - name: Define library version env var at run-time - RELEASE
         run: |
-          ./gradlew :DittoToolsAndroid:jreleaserFullRelease 
+          echo 'ORG_GRADLE_PROJECT_LIBRARY_VERSION=${{ github.event.release.tag_name }}' >> $GITHUB_ENV
+
+      - name: Publish to Maven Central
+        env:
+          ORG_GRADLE_PROJECT_MAVEN_CENTRAL_USERNAME: ${{ secrets.ORG_GRADLE_PROJECT_MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_MAVEN_CENTRAL_PASSWORD: ${{ secrets.ORG_GRADLE_PROJECT_MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_GPG_SIGNING_IN_MEMORY_KEY: ${{ secrets.ORG_GRADLE_PROJECT_GPG_SIGNING_IN_MEMORY_KEY }}
+          ORG_GRADLE_PROJECT_GPG_SIGNING_IN_MEMORY_KEY_PWD: ${{ secrets.ORG_GRADLE_PROJECT_GPG_SIGNING_IN_MEMORY_KEY_PWD }}
+          ORG_GRADLE_PROJECT_PUBLISH_TO_MAVEN_CENTRAL: "TRUE"
+        run: |
+          ./gradlew publish
