@@ -70,15 +70,8 @@ afterEvaluate {
         }
         repositories {
             maven {
-                credentials {
-                    username = findProperty("MAVEN_CENTRAL_USERNAME")
-                    password = findProperty("MAVEN_CENTRAL_PASSWORD")
-                }
-
-                def releasesRepoUrl = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
-                def snapshotsRepoUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-
-                url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+                name = 'localStaging'
+                url = uri("${project.buildDir}/staging-deploy")
             }
         }
     }
@@ -114,6 +107,7 @@ afterEvaluate {
                         url = 'https://central.sonatype.com/api/v1/publisher'
                         stagingRepository('build/staging-deploy')
                         sign = false
+                        verifyPom = false  // Disable strict POM validation for Android libraries
                     }
                 }
             }
