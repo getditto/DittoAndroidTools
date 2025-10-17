@@ -97,7 +97,7 @@ afterEvaluate {
 
         release {
             github {
-                skipRelease = false  // Automatically create GitHub releases when publishing
+                skipRelease = true
                 token = System.getenv('JRELEASER_GITHUB_TOKEN') ?: 'PLACEHOLDER_FOR_LOCAL_TESTING'
             }
         }
@@ -106,10 +106,6 @@ afterEvaluate {
             // Enable signing only when GPG keys are available (e.g., in CI)
             active = System.getenv('JRELEASER_GPG_SECRET_KEY') ? 'ALWAYS' : 'NEVER'
             armored = true
-            // Environment variables:
-            // - JRELEASER_GPG_PUBLIC_KEY (optional)
-            // - JRELEASER_GPG_SECRET_KEY
-            // - JRELEASER_GPG_PASSPHRASE
         }
 
         deploy {
@@ -119,9 +115,6 @@ afterEvaluate {
                         active = 'ALWAYS'
                         url = 'https://central.sonatype.com/api/v1/publisher'
                         stagingRepository('build/staging-deploy')
-                        // Credentials via environment variables:
-                        // - JRELEASER_MAVENCENTRAL_USERNAME
-                        // - JRELEASER_MAVENCENTRAL_PASSWORD
                     }
                 }
             }
