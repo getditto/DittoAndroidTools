@@ -31,7 +31,6 @@ android {
 
 afterEvaluate {
     publishing {
-
         publications {
             release(MavenPublication) {
                 from components.release
@@ -39,6 +38,13 @@ afterEvaluate {
                 groupId = 'live.ditto'
 
                 version = findProperty("LIBRARY_VERSION") ?: "SNAPSHOT"
+
+                // Include resolved versions in POM for BOM-managed dependencies
+                versionMapping {
+                    allVariants {
+                        fromResolutionResult()
+                    }
+                }
 
                 pom {
                     name = 'Ditto Tools'
@@ -66,20 +72,93 @@ afterEvaluate {
                             email = 'support@ditto.live'
                         }
                     }
+
+                    // Maven Central requires all dependencies to have explicit versions in the POM.
+                    // Android projects using Compose BOM get versions via dependencyManagement, but
+                    // Maven Central's validation rejects this. This block post-processes the generated
+                    // POM to: 1) Remove the dependencyManagement section, 2) Resolve actual versions
+                    // from the build's runtime classpath, 3) Add explicit version tags to all dependencies.
+
+                    withXml {
+                        def dependenciesNode = asNode().dependencies[0]
+                        def dependencyManagementNode = asNode().dependencyManagement
+
+                        // Remove dependencyManagement section
+                        if (dependencyManagementNode) {
+                            asNode().remove(dependencyManagementNode[0])
+                        }
+
+                        // Add versions to dependencies that don't have them
+                        if (dependenciesNode) {
+                            dependenciesNode.dependency.each { dep ->
+                                if (!dep.version) {
+                                    def groupId = dep.groupId.text()
+                                    def artifactId = dep.artifactId.text()
+
+                                    // Try to find in runtime classpath
+                                    def resolved = project.configurations.releaseRuntimeClasspath.resolvedConfiguration.resolvedArtifacts.find {
+                                        it.moduleVersion.id.group == groupId && it.moduleVersion.id.name == artifactId
+                                    }
+
+                                    if (resolved) {
+                                        dep.appendNode('version', resolved.moduleVersion.id.version)
+                                    } else {
+                                        // If not found, try getting from incoming resolution result
+                                        project.configurations.releaseRuntimeClasspath.incoming.resolutionResult.allComponents.each { component ->
+                                            if (component.moduleVersion.group == groupId && component.moduleVersion.name == artifactId) {
+                                                dep.appendNode('version', component.moduleVersion.version)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
         repositories {
             maven {
-                credentials {
-                    username = findProperty("MAVEN_CENTRAL_USERNAME")
-                    password = findProperty("MAVEN_CENTRAL_PASSWORD")
+                name = 'localStaging'
+                url = uri("${project.buildDir}/staging-deploy")
+            }
+        }
+    }
+
+    jreleaser {
+        gitRootSearch = true
+
+        project {
+            name = 'Ditto Tools'
+            description = 'Ditto Tools for Android'
+            website = 'https://ditto.com'
+            authors = ['Ditto']
+            license = 'MIT'
+            version = findProperty("LIBRARY_VERSION") ?: "1.0.0-SNAPSHOT"
+        }
+
+        release {
+            github {
+                skipRelease = true
+            }
+        }
+
+        signing {
+            // Enable signing when GPG keys are available (e.g., in CI/CD)
+            active = System.getenv('JRELEASER_GPG_SECRET_KEY') ? 'ALWAYS' : 'NEVER'
+            armored = true
+        }
+
+        deploy {
+            maven {
+                mavenCentral {
+                    sonatype {
+                        active = 'ALWAYS'
+                        url = 'https://central.sonatype.com/api/v1/publisher'
+                        stagingRepository('build/staging-deploy')
+                        verifyPom = false  // Disable strict POM validation for Android libraries
+                    }
                 }
-
-                def releasesRepoUrl = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
-                def snapshotsRepoUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-
-                url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             }
         }
     }
