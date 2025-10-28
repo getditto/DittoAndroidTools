@@ -22,7 +22,7 @@ object DittoTools {
      * @param ditto The active Ditto instance.
      * @throws DittoError if the database write operation fails.
      */
-    suspend fun requestLogExport(ditto: Ditto) {
+    suspend fun uploadLogsToPortal(ditto: Ditto) {
         withContext(Dispatchers.IO) {
             val peerKey = ditto.presence.graph.localPeer.peerKeyString
 

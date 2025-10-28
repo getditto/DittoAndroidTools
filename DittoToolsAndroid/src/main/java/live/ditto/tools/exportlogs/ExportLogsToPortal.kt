@@ -1,96 +1,126 @@
 package live.ditto.tools.exportlogs
 
 import android.util.Log
+import android.widget.Toast
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import androidx.lifecycle.viewmodel.compose.viewModel
 import live.ditto.Ditto
-import live.ditto.DittoError
 import live.ditto.tools.R
-import org.joda.time.DateTime
-import org.joda.time.DateTimeZone
-import org.joda.time.format.DateTimeFormatterBuilder
-import org.joda.time.format.ISODateTimeFormat
 
 @Composable
 fun ExportLogsToPortal(
     ditto: Ditto,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    viewModel: ExportLogsViewModel = viewModel()
 ) {
     val title = stringResource(R.string.export_logs_to_portal_tool_label)
 
-    val confirmText = stringResource(R.string.export)
-    val cancelText = stringResource(R.string.cancel)
+    val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
 
-    val scope = rememberCoroutineScope()
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.resetState()
+        }
+    }
 
-    var isExporting by remember { mutableStateOf(false) }
+    LaunchedEffect(uiState) {
+        when (val state = uiState) {
+            is ExportLogsUiState.Success -> {
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.export_requested_successfully),
+                    Toast.LENGTH_SHORT
+                ).show()
+                onDismiss()
+            }
+
+            is ExportLogsUiState.Error -> {
+                Log.d("ExportLogsToPortal", state.message)
+                Toast.makeText(
+                    context, context.getString(R.string.export_failed),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
+            else -> {}
+        }
+    }
 
     AlertDialog(
-        onDismissRequest = onDismiss,
+        onDismissRequest = {
+            if (uiState !is ExportLogsUiState.Exporting) {
+                onDismiss()
+            }
+        },
         title = {
             Text(title)
         },
         text = {
-            Text(
-                text = stringResource(
-                    R.string.logs_will_be_exported_to_portal_for_appid,
-                    ditto.appId ?: "unknown"
+            Column {
+                Text(
+                    text = stringResource(
+                        R.string.logs_will_be_exported_to_portal_for_appid,
+                        ditto.appId ?: "unknown"
+                    )
                 )
-            )
+                if (uiState is ExportLogsUiState.Error) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = (uiState as ExportLogsUiState.Error).message,
+                        color = androidx.compose.material3.MaterialTheme.colorScheme.error
+                    )
+                }
+            }
         },
         confirmButton = {
             Button(
-                enabled = !isExporting,
+                enabled = uiState !is ExportLogsUiState.Exporting,
                 onClick = {
-                    isExporting = true
-                    scope.launch {
-                        try {
-                            DittoTools.requestLogExport(ditto)
-                            onDismiss()
-                        } catch (e: DittoError) {
-                            Log.d("ExportLogsToPortal", "ToolsViewerNavHost: $e")
-                            isExporting = false
-                        }
-                    }
+                    viewModel.onConfirmClicked(ditto, context)
                 }
             ) {
-                Row {
-                    if (isExporting) {
-                        CircularProgressIndicator()
+                if (uiState is ExportLogsUiState.Exporting) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        CircularProgressIndicator(modifier = Modifier.size(20.dp))
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            modifier = Modifier.align(Alignment.CenterVertically),
-                            text = stringResource(R.string.exporting)
-                        )
-                    } else {
-                        Text(confirmText)
+                        Text(stringResource(R.string.exporting))
                     }
+                } else {
+                    val buttonText = if (uiState is ExportLogsUiState.Error) {
+                        stringResource(R.string.retry)
+                    } else {
+                        stringResource(R.string.export)
+                    }
+                    Text(buttonText)
                 }
             }
         },
         dismissButton = {
             Button(
-                enabled = !isExporting,
-                onClick = onDismiss,
+                enabled = uiState !is ExportLogsUiState.Exporting,
+                onClick = onDismiss
             ) {
-                Text(cancelText)
+                Text(stringResource(R.string.cancel))
             }
         }
     )
