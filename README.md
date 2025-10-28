@@ -12,7 +12,7 @@ For support, please contact Ditto Support (<support@ditto.live>).
 * Jetpack Compose
 
 ## Installing
-Ditto tools are released via Maven Central. Be sure to include it in your list of repositories. 
+Ditto tools are released via Maven Central. Be sure to include it in your list of repositories.
 
 ```groovy
 repositories {
@@ -28,7 +28,7 @@ dependencies {
 ```
 You can find the list of versions and release notes in the [Releases tab](https://github.com/getditto/DittoAndroidTools/releases).
 
-*Note: The tools used to be released as individual Maven artefacts but have now been moved into a single module, and are released as such.* 
+*Note: The tools used to be released as individual Maven artefacts but have now been moved into a single module, and are released as such.*
 
 ## Usage
 
@@ -65,7 +65,7 @@ DittoToolsViewer(
 To integrate it in a Views-based app - see instructions here: https://developer.android.com/develop/ui/compose/migrate/interoperability-apis/compose-in-views
 
 ### 2. Presence Viewer
-The Presence Viewer displays a mesh graph that allows you to see all connected peers within the mesh and the transport that each peer is using to make a connection.  
+The Presence Viewer displays a mesh graph that allows you to see all connected peers within the mesh and the transport that each peer is using to make a connection.
 
 Within a Composable, you pass ditto to the constructor:
 
@@ -77,7 +77,7 @@ DittoPresenceViewer(ditto = ditto)
 
 ### 3. Data Browser
 
-The Ditto Data Browser allows you to view all your collections, documents within each collection and the propeties/values of a document. With the Data Browser, you can observe any changes that are made to your collections and documents in real time.  
+The Ditto Data Browser allows you to view all your collections, documents within each collection and the propeties/values of a document. With the Data Browser, you can observe any changes that are made to your collections and documents in real time.
 
 Within a Composable function, you pass ditto to the constructor:
 
@@ -94,17 +94,29 @@ DittoDataBrowser(ditto = ditto)
 If you are using the Data Browser as a standalone app, there is a button, Start Subscriptions, you must press in order to start syncing data. If you are embedding the Data Browser into another application then you do not need to press Start Subscriptions as you should already have your subscriptions running.
 
 ### 4. Export Logs
-Export Logs allows you to export logs from your application into a file.  
+Export Logs allows you to export logs from your application into a file.
 
 Include `ExportLogs()` in your Composable function. You can pass in a lambda function to be called when the dialog is dismissed.
 
 ```kotlin
 ExportLogs(onDismiss: () -> Unit)
 ```
+<img src="/Img/exportLogs.png" alt="Export Logs Image" width="300">
 
- <img src="/Img/exportLogs.png" alt="Export Logs Image" width="300">
+### 5. Export Logs to Portal
+Export Logs to Portal allows you to export logs from your application into the Ditto Portal associated with your AppID
 
-### 5. Disk Usage/ Export Data
+Include `ExportLogsToPortal()` in your Composable function. You can pass in a lambda function to be called when the dialog is dismissed and a ditto object which will contain your AppID.
+
+```kotlin
+ExportLogsToPortal(ditto: Ditto, onDismiss: () -> Unit)
+```
+
+You'll also be able to use a new public API found at DittoTools.uploadLogsToPortal(ditto: Ditto) that takes a ditto object which will allow you to upload logs from anywhere in your app.
+
+<img src="/Img/exportLogsToPortal.png" alt="Export Logs Image" width="300">
+
+### 6. Disk Usage/ Export Data
 
 Disk Usage allows you to see Ditto's file space usage.  
 Export Data allows you to export the Ditto directory.
@@ -115,9 +127,9 @@ DittoDiskUsage(ditto = ditto)
 
  <img src="/Img/diskUsage.png" alt="Disk Usage Image" width="300">
 
-### 6. Health
+### 7. Health
 
-Health allows you to see the status of Ditto's services. 
+Health allows you to see the status of Ditto's services.
 
 Example: WiFi/Bluetooth state/permissions, device capabilities
 
@@ -136,11 +148,11 @@ WIFI_AWARE_STATE -- displays whether the device supports WiFi Aware
 
  <img src="/Img/health.png" alt="Health" width="400">
 
-### 7. Heartbeat
+### 8. Heartbeat
 
 The Ditto Heartbeat tool allows you to monitor, locally or remotely, the peers in your mesh.
 
-**Configure Heartbeat** 
+**Configure Heartbeat**
 
 These are the values you need to provide to the Heartbeat:
 1. `id` - Unique value that identifies the device
@@ -240,7 +252,7 @@ data class DittoHeartbeatInfo(
 )
 ```
 
-### 8. Presence Degradation Reporter
+### 9. Presence Degradation Reporter
 Tracks the status of your mesh, allowing to define the minimum of required peers that needs to be connected.
 Exposes an API to notify when the condition of minimum required peers is not met.
 
@@ -293,14 +305,14 @@ There are two ways you can test things locally. Either in the demo app, or in an
 
 ### Testing in the Demo App Locally
 
-To run the demo app locally, get valid playground Ditto instance credentials and store them in `local.properties` file. You can find both the app ID and token in the [Ditto Portal](https://portal.ditto.live) 
+To run the demo app locally, get valid playground Ditto instance credentials and store them in `local.properties` file. You can find both the app ID and token in the [Ditto Portal](https://portal.ditto.live)
 
 ```properties
 ditto.onlinePlayground.appId="YOUR_APPID"
 ditto.onlinePlayground.token="YOUR_TOKEN"
 ```
 
-To test your changes to a module in the demo app, make sure to import the local module in `app/build.gradle` dependencies section: 
+To test your changes to a module in the demo app, make sure to import the local module in `app/build.gradle` dependencies section:
 
 add: `implementation(project(":DittoToolsAndroid"))`
 remove/comment out: `implementation libs.live.ditto.ditto-tools-android`
