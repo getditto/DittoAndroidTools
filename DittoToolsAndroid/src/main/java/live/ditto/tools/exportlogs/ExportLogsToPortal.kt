@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -87,7 +88,7 @@ fun ExportLogsToPortal(
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = (uiState as ExportLogsUiState.Error).message,
-                        color = androidx.compose.material3.MaterialTheme.colorScheme.error
+                        color = MaterialTheme.colorScheme.error
                     )
                 }
             }
