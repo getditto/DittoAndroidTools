@@ -72,7 +72,6 @@ fun ExportLogsToPortal(
                                     "currentTime" to currentTime, "peerKey" to peerKey
                                 )
                             )
-                            delay(3000)
                             onDismiss()
                         } catch (e: DittoError) {
                             Log.d("ExportLogsToPortal", "ToolsViewerNavHost: $e")
