@@ -62,21 +62,7 @@ fun ExportLogsToPortal(
                     isExporting = true
                     scope.launch {
                         try {
-                            val peerKey = ditto.presence.graph.localPeer.peerKeyString
-                            val formatter = DateTimeFormatterBuilder()
-                                .append(ISODateTimeFormat.dateHourMinuteSecond())
-                                .appendTimeZoneOffset(null, true, 2, 2)
-                                .toFormatter()
-                            val currentTime = formatter.print(DateTime.now(DateTimeZone.UTC))
-                            val query = """UPDATE __small_peer_info
-                            SET log_requests.device_logs.requested_at = :currentTime
-                            WHERE _id = :peerKey""".trimIndent()
-                            ditto.store.execute(
-                                query = query,
-                                arguments = mapOf(
-                                    "currentTime" to currentTime, "peerKey" to peerKey
-                                )
-                            )
+                            DittoTools.requestLogExport(ditto)
                             onDismiss()
                         } catch (e: DittoError) {
                             Log.d("ExportLogsToPortal", "ToolsViewerNavHost: $e")
