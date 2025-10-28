@@ -48,7 +48,12 @@ fun ExportLogsToPortal(
             Text(title)
         },
         text = {
-            Text("Logs will be exported to Portal for appID: ${ditto.appId}")
+            Text(
+                text = stringResource(
+                    R.string.logs_will_be_exported_to_portal_for_appid,
+                    ditto.appId ?: "unknown"
+                )
+            )
         },
         confirmButton = {
             Button(
