@@ -86,7 +86,7 @@ fun ExportLogsToPortal(
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             modifier = Modifier.align(Alignment.CenterVertically),
-                            text = "Exporting..."
+                            text = stringResource(R.string.exporting)
                         )
                     } else {
                         Text(confirmText)
