@@ -1,5 +1,7 @@
 package live.ditto.tools.toolsviewer
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -23,17 +25,18 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import live.ditto.tools.presenceviewer.DittoPresenceViewer
 import live.ditto.Ditto
 import live.ditto.tools.R
 import live.ditto.tools.databrowser.DittoDataBrowser
 import live.ditto.tools.diskusage.DittoDiskUsage
-import live.ditto.tools.health.ui.composables.HealthScreen
-import live.ditto.tools.toolsviewer.navigation.Screens
-import live.ditto.tools.toolsviewer.viewmodel.ToolsViewerViewModel
 import live.ditto.tools.exportlogs.ExportLogs
+import live.ditto.tools.exportlogs.ExportLogsToPortal
+import live.ditto.tools.health.ui.composables.HealthScreen
 import live.ditto.tools.peerslist.PeersListViewer
 import live.ditto.tools.presencedegradationreporter.PresenceDegradationReporterScreen
+import live.ditto.tools.presenceviewer.DittoPresenceViewer
+import live.ditto.tools.toolsviewer.navigation.Screens
+import live.ditto.tools.toolsviewer.viewmodel.ToolsViewerViewModel
 
 /**
  * A Composable that you can include in your app that will give a single entry point for all Ditto
@@ -44,6 +47,7 @@ import live.ditto.tools.presencedegradationreporter.PresenceDegradationReporterS
  * @param onExitTools an optional lambda function that will be called whenever a user taps the
  * "Exit Tools" button. Use this to do any back navigation or dismissal/hiding of the Tools Viewer
  */
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DittoToolsViewer(
     modifier: Modifier = Modifier,
@@ -57,6 +61,7 @@ fun DittoToolsViewer(
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun DittoToolsViewerScaffold(
     modifier: Modifier,
@@ -95,6 +100,7 @@ private fun DittoToolsViewerScaffold(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun ToolsViewerContent(
     navController: NavHostController,
@@ -110,6 +116,7 @@ private fun ToolsViewerContent(
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun ToolsViewerNavHost(
     navController: NavHostController,
@@ -143,6 +150,11 @@ private fun ToolsViewerNavHost(
                     navController.popBackStack()
                 }
             )
+        }
+        composable(Screens.ExportLogsToPortalScreen.route) {
+            ExportLogsToPortal(
+                ditto = ditto,
+                onDismiss = { navController.popBackStack() })
         }
         composable(Screens.DiskUsageScreen.route) {
             DittoDiskUsage(ditto = ditto)

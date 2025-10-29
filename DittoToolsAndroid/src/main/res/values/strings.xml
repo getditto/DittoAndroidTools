@@ -6,7 +6,8 @@
     <string name="presence_viewer_tool_label">Presence Viewer</string>
     <string name="peers_list_tool_label">Peers List</string>
     <string name="data_browser_tool_label">Data Browser</string>
-    <string name="export_logs_tool_label">Export Logs</string>
+    <string name="export_logs_tool_label">Export Logs to Device</string>
+    <string name="export_logs_to_portal_tool_label">Export Logs to Portal</string>
     <string name="disk_usage_tool_label">Disk Usage</string>
     <string name="health_viewer_tool_label">Health Viewer</string>
     <string name="heartbeat_tool_label">Heartbeat</string>
@@ -52,6 +53,7 @@
     <string name="export_logs">Export Logs</string>
     <string name="do_you_want_to_export_logs">Do you want to export logs?</string>
     <string name="export">Export</string>
+    <string name="retry">Retry</string>
     <string name="cancel">Cancel</string>
     <string name="application_x_zip">application/x-zip</string>
     <string name="export_logs_message">Logs will be exported to: \nDownloads/%1$s\"</string>
@@ -89,5 +91,10 @@
     <string name="local_self_peer">LOCAL (SELF) PEER</string>
     <string name="remote_peers">REMOTE PEERS</string>
     <string name="sdk_version">SDK v%1$s</string>
+    <string name="logs_will_be_exported_to_portal_for_appid">Logs will be exported to Portal for appID: %1$s</string>
+    <string name="exporting">Exporting…</string>
+    <string name="export_requested_successfully">Export requested successfully</string>
+    <string name="export_failed">Export failed</string>
+    <string name="log_export_failed">Log export failed: %1$s</string>
 
 </resources>

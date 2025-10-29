@@ -20,6 +20,9 @@ sealed class Screens {
     object ExportLogsScreen: Screen {
         override val route = "exportLogs"
     }
+    object ExportLogsToPortalScreen: Screen {
+        override val route = "exportLogsToPortal"
+    }
     object DiskUsageScreen: Screen {
         override val route = "diskUsage"
     }

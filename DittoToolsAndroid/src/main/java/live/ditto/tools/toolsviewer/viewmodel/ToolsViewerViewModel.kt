@@ -26,6 +26,10 @@ class ToolsViewerViewModel: ViewModel() {
                 route = Screens.ExportLogsScreen.route
             ),
             ToolMenuItem(
+                label = R.string.export_logs_to_portal_tool_label,
+                route = Screens.ExportLogsToPortalScreen.route
+            ),
+            ToolMenuItem(
                 label = R.string.disk_usage_tool_label,
                 route = Screens.DiskUsageScreen.route
             ),
