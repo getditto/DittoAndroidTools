@@ -98,14 +98,16 @@ private fun DittoToolsViewerScaffold(
     val isSystemInDarkTheme = androidx.compose.foundation.isSystemInDarkTheme()
     val backgroundColor = if (isSystemInDarkTheme) Color(0xFF1C1C1E) else Color(0xFFF2F2F7)
 
-    // Handle system back button
-    BackHandler(enabled = true) {
+    val handleBackNavigation: () -> Unit = {
         if (isMainScreen) {
             onExitTools()
         } else {
             navController.popBackStack()
         }
     }
+
+    // Handle system back button
+    BackHandler(enabled = true, onBack = handleBackNavigation)
 
     Scaffold(
         modifier = modifier,
@@ -130,13 +132,7 @@ private fun DittoToolsViewerScaffold(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = {
-                        if (isMainScreen) {
-                            onExitTools()
-                        } else {
-                            navController.popBackStack()
-                        }
-                    }) {
+                    IconButton(onClick = handleBackNavigation) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = if (isMainScreen) {
