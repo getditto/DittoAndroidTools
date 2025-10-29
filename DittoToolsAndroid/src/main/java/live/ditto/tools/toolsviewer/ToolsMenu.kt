@@ -1,22 +1,37 @@
 package live.ditto.tools.toolsviewer
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.background
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
@@ -24,60 +39,60 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import live.ditto.tools.R
 import live.ditto.tools.toolsviewer.navigation.Screens
-import live.ditto.tools.toolsviewer.theme.MenuCardContainerColor
-import live.ditto.tools.toolsviewer.theme.MenuItemSelectedBackgroundColor
-import live.ditto.tools.toolsviewer.theme.MenuItemTextColor
-import live.ditto.tools.toolsviewer.theme.ToolsMenuHeaderBackground
-import live.ditto.tools.toolsviewer.theme.ToolsMenuHeaderTextColor
 
 
 @Composable
 fun ToolsMenu(
     navController: NavHostController,
-    menuItems: List<ToolMenuItem>
+    menuSections: List<ToolMenuSection>
 ) {
-    Card(
+    // Simple hardcoded colors that adapt to dark mode
+    val isSystemInDarkTheme = androidx.compose.foundation.isSystemInDarkTheme()
+    val itemBackgroundColor = if (isSystemInDarkTheme) Color(0xFF2C2C2E) else Color.White
+    val itemTextColor = if (isSystemInDarkTheme) Color.White else Color.Black
+    val sectionHeaderColor = if (isSystemInDarkTheme) Color(0xFF8E8E93) else Color(0xFF6C6C70)
+
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MenuCardContainerColor
-        )
+            .verticalScroll(rememberScrollState())
+            .padding(12.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        ToolsMenuHeader()
-        ToolsMenuItems(
-            menuItems = menuItems,
-            navController = navController
-        )
-    }
-}
+        menuSections.forEachIndexed { index, section ->
+            // Add spacing before section headers (except the first one)
+            if (index > 0) {
+                Spacer(modifier = Modifier.padding(top = 4.dp))
+            }
 
-@Composable
-private fun ToolsMenuItems(
-    navController: NavHostController,
-    menuItems: List<ToolMenuItem>
-) {
-    Column(
-        modifier = Modifier.padding(8.dp).verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        menuItems.forEach { toolMenuItem ->
-            ToolMenuItem(
-                name = stringResource(id = toolMenuItem.label),
-                onClick = {
-                    navController.navigate(toolMenuItem.route) {
-                        popUpTo(route = Screens.MainScreen.route)
-                    }
-                }
+            // Section header
+            Text(
+                text = section.title.uppercase(),
+                style = MaterialTheme.typography.labelSmall,
+                color = sectionHeaderColor,
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 0.dp)
             )
+
+            // Section items
+            section.items.forEach { toolMenuItem ->
+                ToolMenuItem(
+                    name = stringResource(id = toolMenuItem.label),
+                    icon = toolMenuItem.icon,
+                    containerColor = itemBackgroundColor,
+                    textColor = itemTextColor,
+                    onClick = {
+                        navController.navigate(toolMenuItem.route) {
+                            popUpTo(route = Screens.MainScreen.route)
+                        }
+                    }
+                )
+            }
         }
     }
 }
@@ -85,13 +100,30 @@ private fun ToolsMenuItems(
 @Composable
 private fun ToolMenuItem(
     name: String,
-    containerColor: Color = MenuItemSelectedBackgroundColor,
+    icon: androidx.compose.ui.graphics.vector.ImageVector?,
+    containerColor: Color,
+    textColor: Color,
     onClick: () -> Unit
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.96f else 1f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
+        label = "scale"
+    )
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() }
+            .scale(scale)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = rememberRipple()
+            ) { onClick() }
             .onKeyEvent { keyEvent ->
                 when (keyEvent.key) {
                     Key.Spacebar -> {
@@ -109,33 +141,33 @@ private fun ToolMenuItem(
         colors = CardDefaults.cardColors(
             containerColor = containerColor
         ),
-        shape = RoundedCornerShape(24.dp),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 2.dp,
+            pressedElevation = 6.dp
+        )
     ) {
-        Box(modifier = Modifier.padding(16.dp)) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            icon?.let {
+                Icon(
+                    imageVector = it,
+                    contentDescription = name,
+                    tint = textColor,
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+            }
             Text(
                 text = name,
                 style = MaterialTheme.typography.titleMedium,
-                color = MenuItemTextColor
+                color = textColor
             )
         }
-    }
-}
-
-@Composable
-private fun ToolsMenuHeader() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(color = ToolsMenuHeaderBackground)
-            .padding(8.dp)
-    ) {
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = stringResource(R.string.tools_menu_title),
-            style = MaterialTheme.typography.titleLarge,
-            textAlign = TextAlign.Center,
-            color = ToolsMenuHeaderTextColor
-        )
     }
 }
 
@@ -144,14 +176,11 @@ private fun ToolsMenuHeader() {
 private fun ToolMenuItemPreview() {
     ToolMenuItem(
         name = "Tool Menu Item",
+        icon = androidx.compose.material.icons.Icons.Default.Settings,
+        containerColor = Color.White,
+        textColor = Color.Black,
         onClick = { }
     )
-}
-
-@Preview
-@Composable
-private fun ToolsMenuHeaderPreview() {
-    ToolsMenuHeader()
 }
 
 @Preview
@@ -159,11 +188,17 @@ private fun ToolsMenuHeaderPreview() {
 private fun ToolsMenuPreview() {
     ToolsMenu(
         navController = rememberNavController(),
-        menuItems = emptyList()
+        menuSections = emptyList()
     )
 }
 
 data class ToolMenuItem(
     @StringRes val label: Int,
-    val route: String
+    val route: String,
+    val icon: androidx.compose.ui.graphics.vector.ImageVector? = null
+)
+
+data class ToolMenuSection(
+    val title: String,
+    val items: List<ToolMenuItem>
 )

@@ -29,6 +29,8 @@
     <string name="close_button_description">Close</string>
     <string name="tools_menu_title">Ditto Tools</string>
     <string name="exit_tools_menu_item">Exit Tools</string>
+    <string name="back_button_content_description">Back</string>
+    <string name="exit_tools_content_description">Exit Tools</string>
 
     <!-- Health -->
     <string name="missing_permissions">Missing Permissions</string>
