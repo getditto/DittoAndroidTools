@@ -114,7 +114,7 @@ ExportLogsToPortal(ditto: Ditto, onDismiss: () -> Unit)
 
 You'll also be able to use a new public API found at DittoTools.uploadLogsToPortal(ditto: Ditto) that takes a ditto object which will allow you to upload logs from anywhere in your app.
 
-<img src="/Img/exportLogsToPortal.png" alt="Export Logs Image" width="300">
+<img src="/Img/exportLogToPortal.png" alt="Export Logs Image" width="300">
 
 ### 6. Disk Usage/ Export Data
 
