@@ -1,18 +1,15 @@
 package live.ditto.tools.diskusage
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -25,7 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,7 +38,8 @@ private val ScreenTypography = Typography()
 @Composable
 fun DiskUsageView(
     ditto: Ditto,
-    viewModel: DiskUsageViewModel = viewModel()
+    viewModel: DiskUsageViewModel = viewModel(),
+    onExport: ((File) -> Unit)? = null
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -51,6 +48,7 @@ fun DiskUsageView(
         fileProvider = {
             viewModel.exportButtonOnClick(ditto)
         },
+        skipFilePicker = onExport != null
     )
 }
 
@@ -58,35 +56,12 @@ fun DiskUsageView(
 private fun DiskUsageView(
     uiState: DiskUsageState,
     fileProvider: suspend () -> File,
+    skipFilePicker: Boolean = false
 ) {
     var isExportDialogOpen by remember { mutableStateOf(false) }
 
     Surface {
         Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Row {
-                Text(
-                    text = stringResource(R.string.disk_usage),
-                    style = ScreenTypography.headlineLarge,
-                )
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                IconButton(
-                    enabled = !isExportDialogOpen,
-                    onClick = { isExportDialogOpen = true },
-                    modifier = Modifier
-                        .widthIn(min = 60.dp) // Ensure a minimum width for the button
-                        .background(Color.LightGray, shape = RoundedCornerShape(8.dp))
-                        .padding(horizontal = 5.dp)
-                ) {
-                    Text(
-                        text = "Export"
-                    )
-                }
-            }
-
             Spacer(modifier = Modifier.height(24.dp))
 
             LazyColumn(modifier = Modifier.weight(1f)) {
@@ -111,6 +86,18 @@ private fun DiskUsageView(
                 }
             }
 
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                enabled = !isExportDialogOpen,
+                onClick = { isExportDialogOpen = true },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = stringResource(R.string.export))
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             if (isExportDialogOpen) {
                 ExportDialog(
                     title = stringResource(R.string.export_ditto_directory),
@@ -119,7 +106,8 @@ private fun DiskUsageView(
                     cancelText = stringResource(R.string.cancel),
                     fileProvider = fileProvider,
                     mimeType = stringResource(R.string.application_x_zip),
-                    onDismiss = { isExportDialogOpen = false }
+                    onDismiss = { isExportDialogOpen = false },
+                    skipFilePicker = skipFilePicker
                 )
             }
         }

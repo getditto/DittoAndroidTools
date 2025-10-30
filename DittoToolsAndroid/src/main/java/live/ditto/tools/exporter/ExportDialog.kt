@@ -35,6 +35,7 @@ import java.io.FileInputStream
  * @param mimeType: The file's mime-type
  * @param onDismiss: Callback to execute when Dialog dismissed
  * @param modifier: Compose Modifier applied to the AlertDialog
+ * @param skipFilePicker: If true, skips the Android file picker and only invokes the callback
  */
 @Composable
 fun ExportDialog(
@@ -45,7 +46,8 @@ fun ExportDialog(
     fileProvider: suspend () -> File,
     mimeType: String,
     onDismiss: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    skipFilePicker: Boolean = false
 ) {
     val coroutineScope = rememberCoroutineScope()
     var isLoading by remember { mutableStateOf(false) }
@@ -78,10 +80,18 @@ fun ExportDialog(
                     coroutineScope.launch {
                         isLoading = true
                         file = fileProvider()
-                        file?.let {
-                            exportLauncher.launch(it.absolutePath)
+                        if (skipFilePicker) {
+                            // When skipFilePicker is true, the callback has already been invoked
+                            // in the ViewModel, so we just dismiss the dialog
+                            isLoading = false
+                            onDismiss()
+                        } else {
+                            // Default behavior: launch Android file picker
+                            file?.let {
+                                exportLauncher.launch(it.absolutePath)
+                            }
+                            isLoading = false
                         }
-                        isLoading = false
                     }
                 }
             ) {

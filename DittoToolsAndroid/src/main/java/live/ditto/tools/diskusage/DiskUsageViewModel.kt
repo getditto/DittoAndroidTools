@@ -23,6 +23,7 @@ class DiskUsageViewModel(
     private val zipFolderUseCase: ZipFolderUseCase = ZipFolderUseCase(),
     private val dispatcherIO: CoroutineDispatcher = Dispatchers.IO,
     private val getDiskUsageMetrics: GetDiskUsageMetrics = GetDiskUsageMetrics(),
+    private val onExport: ((File) -> Unit)? = null
     ) : ViewModel(), HealthMetricProvider {
     /* Private mutable state */
     private val _uiState = MutableStateFlow(DiskUsageState())
@@ -82,6 +83,9 @@ class DiskUsageViewModel(
             inputDirectory = inputDirectory,
             outputZipFile = outputZipFile
         )
+
+        // Invoke custom callback if provided
+        onExport?.invoke(outputZipFile)
 
         return outputZipFile
     }

@@ -9,7 +9,10 @@ import androidx.navigation.compose.rememberNavController
 import live.ditto.Ditto
 
 @Composable
-fun DittoDiskUsage(ditto: Ditto) {
+fun DittoDiskUsage(
+    ditto: Ditto,
+    onExport: ((java.io.File) -> Unit)? = null
+) {
     DittoHandler.ditto = ditto
 
     val navController = rememberNavController()
@@ -17,8 +20,8 @@ fun DittoDiskUsage(ditto: Ditto) {
     // A surface container using the 'background' color from the theme
     Surface(color = MaterialTheme.colorScheme.background) {
         NavHost(navController = navController, startDestination = "diskusage") {
-            composable("diskusage") { DiskUsageScreen() }
-            composable("diskUsageView") { DiskUsageView(ditto = ditto) }
+            composable("diskusage") { DiskUsageScreen(onExport = onExport) }
+            composable("diskUsageView") { DiskUsageView(ditto = ditto, onExport = onExport) }
         }
     }
 }
