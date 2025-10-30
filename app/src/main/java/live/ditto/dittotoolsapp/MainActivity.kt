@@ -51,7 +51,6 @@ class MainActivity : ComponentActivity() {
                     LaunchedEffect(key1 = true) {
                         try {
                             ditto = createDitto()
-                            ditto?.startSync()
                         } catch (e: Throwable) {
                             dittoError = e.message.toString()
                             Log.e("Ditto error", e.message.toString())
@@ -85,17 +84,32 @@ class MainActivity : ComponentActivity() {
     }
 
     private suspend fun createDitto(): Ditto = withContext(Dispatchers.Default) {
-        val androidDependencies = DefaultAndroidDittoDependencies(applicationContext)
-        val identity = DittoIdentity.OnlinePlayground(
-            androidDependencies,
-            appId = BuildConfig.DITTO_ONLINE_PLAYGROUND_APP_ID,
-            token = BuildConfig.DITTO_ONLINE_PLAYGROUND_TOKEN,
-            enableDittoCloudSync = true
-        )
-        val ditto = Ditto(androidDependencies, identity)
         DittoLogger.minimumLogLevel = DittoLogLevel.DEBUG
 
-        ditto
+        val androidDependencies = DefaultAndroidDittoDependencies(applicationContext)
+        val identity = DittoIdentity.OnlinePlayground(
+            dependencies = androidDependencies,
+            appId = BuildConfig.DITTO_ONLINE_PLAYGROUND_APP_ID,
+            token = BuildConfig.DITTO_ONLINE_PLAYGROUND_TOKEN,
+            customAuthUrl = BuildConfig.DITTO_CUSTOM_AUTH_URL,
+            enableDittoCloudSync = false
+        )
+        val ditto = Ditto(
+            dependencies = androidDependencies,
+            identity = identity
+        ).apply {
+            disableSyncWithV3()
+
+            updateTransportConfig { transportConfig ->
+                transportConfig.connect.websocketUrls.add(BuildConfig.DITTO_WEBSOCKET_URL)
+            }
+
+            store.execute("ALTER SYSTEM SET DQL_STRICT_MODE = false")
+
+            startSync()
+        }
+
+        return@withContext ditto
     }
 
     private fun checkPermissions() {
