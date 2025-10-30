@@ -3,6 +3,9 @@
     <string name="tools_menu">Tools Menu</string>
     <string name="tools_menu_content_description">Tools Menu Icon</string>
     <string name="drawer_title">Tools</string>
+    <string name="tools_menu_section_network">Network</string>
+    <string name="tools_menu_section_system">System</string>
+    <string name="tools_menu_section_data_debugging">Data &amp; Debugging</string>
     <string name="presence_viewer_tool_label">Presence Viewer</string>
     <string name="peers_list_tool_label">Peers List</string>
     <string name="data_browser_tool_label">Data Browser</string>

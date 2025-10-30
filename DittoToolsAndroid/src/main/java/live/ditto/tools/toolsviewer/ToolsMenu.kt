@@ -73,7 +73,7 @@ fun ToolsMenu(
 
             // Section header
             Text(
-                text = section.title.uppercase(),
+                text = stringResource(id = section.title).uppercase(),
                 style = MaterialTheme.typography.labelSmall,
                 color = sectionHeaderColor,
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 0.dp)
@@ -199,6 +199,6 @@ data class ToolMenuItem(
 )
 
 data class ToolMenuSection(
-    val title: String,
+    @StringRes val title: Int,
     val items: List<ToolMenuItem>
 )

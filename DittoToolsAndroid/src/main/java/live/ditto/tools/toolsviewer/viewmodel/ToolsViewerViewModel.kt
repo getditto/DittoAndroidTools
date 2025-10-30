@@ -21,7 +21,7 @@ class ToolsViewerViewModel: ViewModel() {
     fun toolsMenuSections(): List<ToolMenuSection> {
         return listOf(
             ToolMenuSection(
-                title = "Network",
+                title = R.string.tools_menu_section_network,
                 items = listOf(
                     ToolMenuItem(
                         label = R.string.presence_viewer_tool_label,
@@ -46,7 +46,7 @@ class ToolsViewerViewModel: ViewModel() {
                 )
             ),
             ToolMenuSection(
-                title = "System",
+                title = R.string.tools_menu_section_system,
                 items = listOf(
                     ToolMenuItem(
                         label = R.string.health_viewer_tool_label,
@@ -61,7 +61,7 @@ class ToolsViewerViewModel: ViewModel() {
                 )
             ),
             ToolMenuSection(
-                title = "Data & Debugging",
+                title = R.string.tools_menu_section_data_debugging,
                 items = listOf(
                     ToolMenuItem(
                         label = R.string.data_browser_tool_label,
