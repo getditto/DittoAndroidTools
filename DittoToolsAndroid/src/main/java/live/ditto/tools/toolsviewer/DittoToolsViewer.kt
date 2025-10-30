@@ -40,6 +40,8 @@ import live.ditto.tools.peerslist.PeersListViewer
 import live.ditto.tools.presencedegradationreporter.PresenceDegradationReporterScreen
 import live.ditto.tools.presenceviewer.DittoPresenceViewer
 import live.ditto.tools.toolsviewer.navigation.Screens
+import live.ditto.tools.toolsviewer.theme.ToolsBackgroundDark
+import live.ditto.tools.toolsviewer.theme.ToolsBackgroundLight
 import live.ditto.tools.toolsviewer.viewmodel.ToolsViewerViewModel
 
 /**
@@ -94,9 +96,9 @@ private fun DittoToolsViewerScaffold(
     val useLightContent = statusBarColor.luminance() < 0.5f
     val contentColor = if (useLightContent) Color.White else Color.Black
 
-    // Hardcoded background color that adapts to dark mode
+    // Background color that adapts to dark mode
     val isSystemInDarkTheme = androidx.compose.foundation.isSystemInDarkTheme()
-    val backgroundColor = if (isSystemInDarkTheme) Color(0xFF1C1C1E) else Color(0xFFF2F2F7)
+    val backgroundColor = if (isSystemInDarkTheme) ToolsBackgroundDark else ToolsBackgroundLight
 
     val handleBackNavigation: () -> Unit = {
         if (isMainScreen) {

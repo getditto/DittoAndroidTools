@@ -8,7 +8,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -43,8 +42,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import live.ditto.tools.R
 import live.ditto.tools.toolsviewer.navigation.Screens
+import live.ditto.tools.toolsviewer.theme.ToolsItemBackgroundDark
+import live.ditto.tools.toolsviewer.theme.ToolsItemBackgroundLight
+import live.ditto.tools.toolsviewer.theme.ToolsSectionHeaderDark
+import live.ditto.tools.toolsviewer.theme.ToolsSectionHeaderLight
 
 
 @Composable
@@ -52,11 +54,11 @@ fun ToolsMenu(
     navController: NavHostController,
     menuSections: List<ToolMenuSection>
 ) {
-    // Simple hardcoded colors that adapt to dark mode
+    // Colors that adapt to dark mode
     val isSystemInDarkTheme = androidx.compose.foundation.isSystemInDarkTheme()
-    val itemBackgroundColor = if (isSystemInDarkTheme) Color(0xFF2C2C2E) else Color.White
+    val itemBackgroundColor = if (isSystemInDarkTheme) ToolsItemBackgroundDark else ToolsItemBackgroundLight
     val itemTextColor = if (isSystemInDarkTheme) Color.White else Color.Black
-    val sectionHeaderColor = if (isSystemInDarkTheme) Color(0xFF8E8E93) else Color(0xFF6C6C70)
+    val sectionHeaderColor = if (isSystemInDarkTheme) ToolsSectionHeaderDark else ToolsSectionHeaderLight
 
     Column(
         modifier = Modifier
