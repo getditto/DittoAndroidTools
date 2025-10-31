@@ -4,13 +4,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
+import java.io.File
 
 /**
  * Wrapper composable function for `DiskUsageView`.
  */
 @Composable
 fun DiskUsageScreen(
-    onExport: ((java.io.File) -> Unit)? = null
+    onExport: ((File) -> Unit)? = null
 ) {
     val ditto = DittoHandler.ditto
 
