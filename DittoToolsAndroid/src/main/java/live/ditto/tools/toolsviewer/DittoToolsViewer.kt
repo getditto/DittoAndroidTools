@@ -43,6 +43,7 @@ import live.ditto.tools.toolsviewer.navigation.Screens
 import live.ditto.tools.toolsviewer.theme.ToolsBackgroundDark
 import live.ditto.tools.toolsviewer.theme.ToolsBackgroundLight
 import live.ditto.tools.toolsviewer.viewmodel.ToolsViewerViewModel
+import java.io.File
 
 /**
  * A Composable that you can include in your app that will give a single entry point for all Ditto
@@ -58,12 +59,14 @@ import live.ditto.tools.toolsviewer.viewmodel.ToolsViewerViewModel
 fun DittoToolsViewer(
     modifier: Modifier = Modifier,
     ditto: Ditto,
-    onExitTools: () -> Unit = { }
+    onExitTools: () -> Unit = { },
+    onExport: ((File) -> Unit)? = null
 ) {
     DittoToolsViewerScaffold(
         modifier = modifier,
         ditto = ditto,
-        onExitTools = onExitTools
+        onExitTools = onExitTools,
+        onExport = onExport
     )
 }
 
@@ -74,7 +77,8 @@ private fun DittoToolsViewerScaffold(
     modifier: Modifier,
     ditto: Ditto,
     onExitTools: () -> Unit,
-    viewModel: ToolsViewerViewModel = ToolsViewerViewModel()
+    viewModel: ToolsViewerViewModel = ToolsViewerViewModel(),
+    onExport: ((File) -> Unit)? = null
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -166,7 +170,8 @@ private fun DittoToolsViewerScaffold(
             navController = navController,
             viewModel = viewModel,
             contentPadding = contentPadding,
-            ditto = ditto
+            ditto = ditto,
+            onExport = onExport
         )
     }
 }
@@ -178,12 +183,14 @@ private fun ToolsViewerContent(
     viewModel: ToolsViewerViewModel,
     contentPadding: PaddingValues,
     ditto: Ditto,
+    onExport: ((File) -> Unit)? = null
 ) {
     ToolsViewerNavHost(
         navController = navController,
         contentPadding = contentPadding,
         ditto = ditto,
-        toolMenuSections = viewModel.toolsMenuSections()
+        toolMenuSections = viewModel.toolsMenuSections(),
+        onExport = onExport
     )
 }
 
@@ -193,7 +200,8 @@ private fun ToolsViewerNavHost(
     navController: NavHostController,
     contentPadding: PaddingValues,
     ditto: Ditto,
-    toolMenuSections: List<ToolMenuSection>
+    toolMenuSections: List<ToolMenuSection>,
+    onExport: ((File) -> Unit)? = null
 ) {
     NavHost(
         modifier = Modifier
@@ -230,7 +238,7 @@ private fun ToolsViewerNavHost(
                 onDismiss = { navController.popBackStack() })
         }
         composable(Screens.DiskUsageScreen.route) {
-            DittoDiskUsage(ditto = ditto)
+            DittoDiskUsage(ditto = ditto, onExport = onExport)
         }
         composable(Screens.HealthScreen.route) {
             HealthScreen()

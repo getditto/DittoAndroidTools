@@ -49,6 +49,7 @@ It is available as a Composable element that requires a Ditto instance. Optional
 
 - `modifier`: If you need to adjust the layout
 - `onExitTools`: Lambda function that will be called when the "Exit Tools" button is tapped. Use this to do any back navigation or dismissal of the tools composable if you need to.
+- `onExport`: Lambda function that receives the exported file when using the Disk Usage export feature. Useful for custom export handling on locked-down devices.  Using the onExport parameter overrides the default file picker.
 
 Example code:
 
@@ -58,9 +59,19 @@ import live.ditto.tools.DittoToolsViewer
 DittoToolsViewer(
     ditto = YOUR_DITTO_INSTANCE
 )
+
+// with custom export callback
+DittoToolsViewer(
+    ditto = YOUR_DITTO_INSTANCE,
+    // Using the onExport parameter overrides the default file picker
+    onExport = { file ->
+        // Handle the exported file (e.g., upload to server)
+        uploadToServer(file)
+    }
+)
 ```
 
- <img src="/Img/toolsViewer.png" alt="Tools Viewer Image" width="1000">  
+ <img src="/Img/toolsViewer.png" alt="Tools Viewer Image" width="1000">
 
 To integrate it in a Views-based app - see instructions here: https://developer.android.com/develop/ui/compose/migrate/interoperability-apis/compose-in-views
 
@@ -118,12 +129,24 @@ You'll also be able to use a new public API found at DittoTools.uploadLogsToPort
 
 ### 6. Disk Usage/ Export Data
 
-Disk Usage allows you to see Ditto's file space usage.  
+Disk Usage allows you to see Ditto's file space usage.
 Export Data allows you to export the Ditto directory.
 
 ```kotlin
 DittoDiskUsage(ditto = ditto)
+
+// with custom export callback
+DittoDiskUsage(
+    ditto = ditto,
+    // Using the onExport parameter overrides the default file picker
+    onExport = { file ->
+        // Handle the exported file (e.g., upload to server)
+        uploadToServer(file)
+    }
+)
 ```
+
+The `onExport` callback allows you to provide custom export logic instead of using the default Android file picker. This is particularly useful for locked-down devices where file picker access may be restricted.
 
  <img src="/Img/diskUsage.png" alt="Disk Usage Image" width="300">
 

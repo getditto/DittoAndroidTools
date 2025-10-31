@@ -4,15 +4,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
+import java.io.File
 
 /**
  * Wrapper composable function for `DiskUsageView`.
  */
 @Composable
-fun DiskUsageScreen() {
+fun DiskUsageScreen(
+    onExport: ((File) -> Unit)? = null
+) {
     val ditto = DittoHandler.ditto
 
-    val viewModel = viewModel<DiskUsageViewModel>()
+    val viewModel = viewModel<DiskUsageViewModel> {
+        DiskUsageViewModel(onExport = onExport)
+    }
     val observerHandle = remember(ditto.diskUsage, viewModel) {
         ditto.diskUsage.observe { diskUsageItem ->
             val children = diskUsageItem.childItems ?: return@observe
@@ -29,7 +34,8 @@ fun DiskUsageScreen() {
     }
     DiskUsageView(
         ditto = ditto,
-        viewModel = viewModel
+        viewModel = viewModel,
+        onExport = onExport
     )
 }
 
