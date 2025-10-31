@@ -3,6 +3,9 @@
     <string name="tools_menu">Tools Menu</string>
     <string name="tools_menu_content_description">Tools Menu Icon</string>
     <string name="drawer_title">Tools</string>
+    <string name="tools_menu_section_network">Network</string>
+    <string name="tools_menu_section_system">System</string>
+    <string name="tools_menu_section_data_debugging">Data &amp; Debugging</string>
     <string name="presence_viewer_tool_label">Presence Viewer</string>
     <string name="peers_list_tool_label">Peers List</string>
     <string name="data_browser_tool_label">Data Browser</string>
@@ -29,6 +32,8 @@
     <string name="close_button_description">Close</string>
     <string name="tools_menu_title">Ditto Tools</string>
     <string name="exit_tools_menu_item">Exit Tools</string>
+    <string name="back_button_content_description">Back</string>
+    <string name="exit_tools_content_description">Exit Tools</string>
 
     <!-- Health -->
     <string name="missing_permissions">Missing Permissions</string>

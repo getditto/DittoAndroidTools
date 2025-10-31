@@ -1,8 +1,10 @@
 package live.ditto.dittotoolsapp
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,6 +33,8 @@ import live.ditto.tools.toolsviewer.DittoToolsViewer
 class MainActivity : ComponentActivity() {
 
     private val app by lazy { application as DittoToolsApplication }
+    
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
