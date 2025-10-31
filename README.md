@@ -310,6 +310,8 @@ To run the demo app locally, get valid playground Ditto instance credentials and
 ```properties
 ditto.onlinePlayground.appId="YOUR_APPID"
 ditto.onlinePlayground.token="YOUR_TOKEN"
+ditto.onlinePlayground.customAuthUrl="YOUR_AUTHURL"
+ditto.onlinePlayground.websocketUrl="YOUR_WEBSOCKETURL"
 ```
 
 To test your changes to a module in the demo app, make sure to import the local module in `app/build.gradle` dependencies section:

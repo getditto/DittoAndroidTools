@@ -2,7 +2,6 @@ package live.ditto.dittotoolsapp
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -26,18 +25,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.delay
 import live.ditto.Ditto
-import live.ditto.DittoIdentity
-import live.ditto.DittoLogLevel
-import live.ditto.DittoLogger
-import live.ditto.android.DefaultAndroidDittoDependencies
 import live.ditto.dittotoolsapp.ui.theme.DittoToolsAppTheme
 import live.ditto.tools.toolsviewer.DittoToolsViewer
-import live.ditto.transports.DittoSyncPermissions
 
 class MainActivity : ComponentActivity() {
+
+    private val app by lazy { application as DittoToolsApplication }
+    
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,21 +45,12 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
                     var ditto: Ditto? by remember { mutableStateOf(null) }
-                    var dittoError: String? by remember { mutableStateOf(null) }
 
                     LaunchedEffect(key1 = true) {
-                        try {
-                            ditto = createDitto()
-                            ditto?.startSync()
-                        } catch (e: Throwable) {
-                            dittoError = e.message.toString()
-                            Log.e("Ditto error", e.message.toString())
+                        while (app.getDittoOrNull() == null) {
+                            delay(100)
                         }
-                    }
-
-                    dittoError?.let {
-                        DittoError(it)
-                        return@Surface
+                        ditto = app.ditto
                     }
 
                     if (ditto == null) {
@@ -71,12 +58,9 @@ class MainActivity : ComponentActivity() {
                         return@Surface
                     }
 
-                    ditto?.let {
-                        DittoToolsViewer(
-                            ditto = it,
-                            onExitTools = {  }
-                        )
-                    }
+                    DittoToolsViewer(
+                        ditto = ditto!!
+                    )
                 }
             }
         }
@@ -87,24 +71,11 @@ class MainActivity : ComponentActivity() {
         checkPermissions()
     }
 
-    private suspend fun createDitto(): Ditto = withContext(Dispatchers.Default) {
-        val androidDependencies = DefaultAndroidDittoDependencies(applicationContext)
-        val identity = DittoIdentity.OnlinePlayground(
-            androidDependencies,
-            appId = BuildConfig.DITTO_ONLINE_PLAYGROUND_APP_ID,
-            token = BuildConfig.DITTO_ONLINE_PLAYGROUND_TOKEN,
-            enableDittoCloudSync = true
-        )
-        val ditto = Ditto(androidDependencies, identity)
-        DittoLogger.minimumLogLevel = DittoLogLevel.DEBUG
-
-        ditto
-    }
-
     private fun checkPermissions() {
-        val missing = DittoSyncPermissions(this).missingPermissions()
+        val missing = app.missingPermissions()
         if (missing.isNotEmpty()) {
-            this.requestPermissions(missing, 0)
+            requestPermissions(missing, 0)
+            app.getDittoOrNull()?.refreshPermissions()
         }
     }
 }
