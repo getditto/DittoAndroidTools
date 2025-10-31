@@ -1,7 +1,6 @@
 package live.ditto.dittotoolsapp
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
@@ -24,18 +23,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.delay
 import live.ditto.Ditto
-import live.ditto.DittoIdentity
-import live.ditto.DittoLogLevel
-import live.ditto.DittoLogger
-import live.ditto.android.DefaultAndroidDittoDependencies
 import live.ditto.dittotoolsapp.ui.theme.DittoToolsAppTheme
 import live.ditto.tools.toolsviewer.DittoToolsViewer
-import live.ditto.transports.DittoSyncPermissions
 
 class MainActivity : ComponentActivity() {
+
+    private val app by lazy { application as DittoToolsApplication }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -46,20 +41,12 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
                     var ditto: Ditto? by remember { mutableStateOf(null) }
-                    var dittoError: String? by remember { mutableStateOf(null) }
 
                     LaunchedEffect(key1 = true) {
-                        try {
-                            ditto = createDitto()
-                        } catch (e: Throwable) {
-                            dittoError = e.message.toString()
-                            Log.e("Ditto error", e.message.toString())
+                        while (app.getDittoOrNull() == null) {
+                            delay(100)
                         }
-                    }
-
-                    dittoError?.let {
-                        DittoError(it)
-                        return@Surface
+                        ditto = app.ditto
                     }
 
                     if (ditto == null) {
@@ -67,12 +54,9 @@ class MainActivity : ComponentActivity() {
                         return@Surface
                     }
 
-                    ditto?.let {
-                        DittoToolsViewer(
-                            ditto = it,
-                            onExitTools = {  }
-                        )
-                    }
+                    DittoToolsViewer(
+                        ditto = ditto!!
+                    )
                 }
             }
         }
@@ -83,39 +67,11 @@ class MainActivity : ComponentActivity() {
         checkPermissions()
     }
 
-    private suspend fun createDitto(): Ditto = withContext(Dispatchers.Default) {
-        DittoLogger.minimumLogLevel = DittoLogLevel.DEBUG
-
-        val androidDependencies = DefaultAndroidDittoDependencies(applicationContext)
-        val identity = DittoIdentity.OnlinePlayground(
-            dependencies = androidDependencies,
-            appId = BuildConfig.DITTO_ONLINE_PLAYGROUND_APP_ID,
-            token = BuildConfig.DITTO_ONLINE_PLAYGROUND_TOKEN,
-            customAuthUrl = BuildConfig.DITTO_CUSTOM_AUTH_URL,
-            enableDittoCloudSync = false
-        )
-        val ditto = Ditto(
-            dependencies = androidDependencies,
-            identity = identity
-        ).apply {
-            disableSyncWithV3()
-
-            updateTransportConfig { transportConfig ->
-                transportConfig.connect.websocketUrls.add(BuildConfig.DITTO_WEBSOCKET_URL)
-            }
-
-            store.execute("ALTER SYSTEM SET DQL_STRICT_MODE = false")
-
-            startSync()
-        }
-
-        return@withContext ditto
-    }
-
     private fun checkPermissions() {
-        val missing = DittoSyncPermissions(this).missingPermissions()
+        val missing = app.missingPermissions()
         if (missing.isNotEmpty()) {
-            this.requestPermissions(missing, 0)
+            requestPermissions(missing, 0)
+            app.getDittoOrNull()?.refreshPermissions()
         }
     }
 }
