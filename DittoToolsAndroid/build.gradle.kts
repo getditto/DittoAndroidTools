@@ -27,6 +27,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(platform(libs.androidx.compose.composeBom))
     implementation(libs.androidx.compose.runtime.runtimeLivedata)
+    implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.joda.time.joda.time)
     implementation(libs.androidx.datastore.preferences)
 

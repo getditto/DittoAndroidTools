@@ -8,6 +8,10 @@ apply from: "$rootProject.projectDir/gradle/android-common.gradle"
 
 ext.dittoOnlinePlaygroundAppId = getValueFromLocalProperties('ditto.onlinePlayground.appId', "null")
 ext.dittoOnlinePlaygroundToken = getValueFromLocalProperties('ditto.onlinePlayground.token', "null")
+ext.dittoCustomAuthUrl = getValueFromLocalProperties('ditto.onlinePlayground.customAuthUrl', "null")
+ext.dittoWebsocketUrl = getValueFromLocalProperties('ditto.onlinePlayground.websocketUrl', "null")
+
+
 
 android {
     namespace "live.ditto.dittotoolsapp"
@@ -19,6 +23,8 @@ android {
 
         buildConfigField "String", "DITTO_ONLINE_PLAYGROUND_APP_ID", dittoOnlinePlaygroundAppId
         buildConfigField "String", "DITTO_ONLINE_PLAYGROUND_TOKEN", dittoOnlinePlaygroundToken
+        buildConfigField "String", "DITTO_CUSTOM_AUTH_URL", dittoCustomAuthUrl
+        buildConfigField "String", "DITTO_WEBSOCKET_URL", dittoWebsocketUrl
     }
     buildTypes {
         release {
@@ -45,7 +51,7 @@ dependencies {
     implementation libs.live.ditto.ditto
 
     implementation platform(libs.androidx.compose.composeBom)
-    implementation(libs.ditto.tools.android)
+    implementation project(':DittoToolsAndroid')
 
     testImplementation libs.junit.junit
 }

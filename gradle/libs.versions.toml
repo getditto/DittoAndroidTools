@@ -14,7 +14,7 @@ androidx-navigation = "2.5.3"
 androidx-test-ext = "1.1.5"
 androidx-webkit = "1.7.0"
 datastorePreferences = "1.0.0"
-ditto = "4.9.3"
+ditto = "4.11.6"
 ditto-tools-android = "4.0.1"
 
 junit = "4.13.2"
@@ -34,6 +34,7 @@ jreleaser = "1.20.0"
 [libraries]
 androidx-appcompat-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
 androidx-compose-composeBom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidx-compose" }
+androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 androidx-compose-material3-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-compose-runtime-runtimeLivedata = { group = "androidx.compose.runtime", name = "runtime-livedata" }
 androidx-compose-ui-ui = { group = "androidx.compose.ui", name = "ui" }
