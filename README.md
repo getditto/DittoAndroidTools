@@ -117,6 +117,9 @@ ExportLogs(onDismiss: () -> Unit)
 ### 5. Export Logs to Portal
 Export Logs to Portal allows you to export logs from your application into the Ditto Portal associated with your AppID
 
+> **Note:** For this feature to work, `DQL_STRICT_MODE` must be set to `false`. For more information about DQL strict mode, see the [DQL Strict Mode documentation](https://docs.ditto.live/dql/strict-mode).
+
+
 Include `ExportLogsToPortal()` in your Composable function. You can pass in a lambda function to be called when the dialog is dismissed and a ditto object which will contain your AppID.
 
 ```kotlin
