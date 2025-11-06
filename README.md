@@ -54,7 +54,7 @@ It is available as a Composable element that requires a Ditto instance. Optional
 Example code:
 
 ```kotlin
-import live.ditto.tools.DittoToolsViewer
+import live.ditto.tools.toolsviewer.DittoToolsViewer
 // minimum code required to get started
 DittoToolsViewer(
     ditto = YOUR_DITTO_INSTANCE
