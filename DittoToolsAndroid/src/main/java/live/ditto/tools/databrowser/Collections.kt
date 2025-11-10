@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -116,7 +116,7 @@ fun ListItem(collectionName: String, navController: NavHostController, isStandAl
             modifier = Modifier.weight(1f)
         )
         Icon(
-            imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+            imageVector = Icons.Filled.ArrowForward,
             contentDescription = "Navigate to Item screen",
             modifier = Modifier.padding(end = 16.dp)
         )

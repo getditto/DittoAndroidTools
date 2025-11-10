@@ -2,7 +2,6 @@ plugins {
     alias libs.plugins.com.android.application apply false
     alias libs.plugins.com.android.library apply false
     alias libs.plugins.org.jetbrains.kotlin.android apply false
-    alias(libs.plugins.compose.compiler) apply false
     alias(libs.plugins.jreleaser) apply false
 }
 
@@ -25,6 +24,28 @@ ext.getValueFromLocalProperties = { name, defValue ->
     def prop = project.properties[name] ?:
             getValueFromPropertiesFile(project.rootProject.file('local.properties'), name)
     return (null == prop) ? defValue : prop
+}
+
+subprojects {
+    configurations.configureEach {
+        resolutionStrategy.eachDependency { details ->
+            // Force androidx.activity to 1.7.2 for SDK 33 compatibility
+            if (details.requested.group == "androidx.activity") {
+                details.useVersion("1.7.2")
+                details.because("SDK 33 compatibility - 1.8.0+ requires API 34")
+            }
+            // Force material3 to 1.0.1 to avoid v34 resources
+            if (details.requested.group == "androidx.compose.material3" && details.requested.name == "material3") {
+                details.useVersion("1.0.1")
+                details.because("SDK 33 compatibility - 1.1.0+ includes API 34 only resources")
+            }
+            // Force material to 1.10.0 to avoid v34 resources
+            if (details.requested.group == "com.google.android.material" && details.requested.name == "material") {
+                details.useVersion("1.10.0")
+                details.because("SDK 33 compatibility - 1.11.0+ includes API 34 only resources")
+            }
+        }
+    }
 }
 
 // Built-in task

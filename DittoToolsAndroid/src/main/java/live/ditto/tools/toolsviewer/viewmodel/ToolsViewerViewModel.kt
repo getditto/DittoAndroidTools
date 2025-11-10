@@ -1,7 +1,7 @@
 package live.ditto.tools.toolsviewer.viewmodel
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.CloudUpload
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.HealthAndSafety
@@ -31,7 +31,7 @@ class ToolsViewerViewModel: ViewModel() {
                     ToolMenuItem(
                         label = R.string.peers_list_tool_label,
                         route = Screens.PeersListViewerScreen.route,
-                        icon = Icons.AutoMirrored.Filled.List
+                        icon = Icons.Filled.List
                     ),
                     ToolMenuItem(
                         label = R.string.presence_degradation_reporter_tool_label,
