@@ -26,6 +26,7 @@ ext.getValueFromLocalProperties = { name, defValue ->
     return (null == prop) ? defValue : prop
 }
 
+// This only enforces dependency constraints for subprojects in Ditto Tools, not on consuming projects
 subprojects {
     configurations.configureEach {
         resolutionStrategy.eachDependency { details ->
