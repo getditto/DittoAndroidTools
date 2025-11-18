@@ -20,7 +20,7 @@ kotlin-gradle-plugin = "1.9.25"
 androidComposeKotlinCompiler = "1.5.15"
 core-ktx = "1.9.0"
 espresso-core = "3.5.1"
-material = "1.10.0"
+material = "1.9.0"
 
 gradle-wrapper = "8.10.2"
 kotlin = "1.9.25"

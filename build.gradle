@@ -40,10 +40,10 @@ subprojects {
                 details.useVersion("1.0.1")
                 details.because("SDK 33 compatibility - 1.1.0+ includes API 34 only resources")
             }
-            // Force material to 1.10.0 to avoid v34 resources
+            // Force material to 1.9.0 to avoid v34 dependencies
             if (details.requested.group == "com.google.android.material" && details.requested.name == "material") {
-                details.useVersion("1.10.0")
-                details.because("SDK 33 compatibility - 1.11.0+ includes API 34 only resources")
+                details.useVersion("1.9.0")
+                details.because("SDK 33 compatibility - 1.10.0+ requires androidx.activity:1.8.0 which needs API 34")
             }
         }
     }

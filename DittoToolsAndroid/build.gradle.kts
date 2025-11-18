@@ -14,6 +14,13 @@ android {
 }
 
 dependencies {
+    // Explicit androidx.activity dependencies for SDK 33 compatibility
+    // These are published to the POM and take precedence over transitive dependencies
+    // material:1.10.0 and other libs request 1.8.0+, which requires SDK 34
+    implementation("androidx.activity:activity:1.7.2")
+    implementation("androidx.activity:activity-compose:1.7.2")
+    implementation("androidx.activity:activity-ktx:1.7.2")
+
     implementation(libs.core.ktx)
     implementation(libs.androidx.appcompat.appcompat)
 
