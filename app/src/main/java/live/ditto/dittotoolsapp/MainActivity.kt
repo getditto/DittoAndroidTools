@@ -6,14 +6,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -22,9 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import live.ditto.Ditto
 import live.ditto.dittotoolsapp.ui.theme.DittoToolsAppTheme
@@ -76,26 +70,6 @@ class MainActivity : ComponentActivity() {
         if (missing.isNotEmpty()) {
             requestPermissions(missing, 0)
             app.getDittoOrNull()?.refreshPermissions()
-        }
-    }
-}
-
-
-@Composable
-private fun DittoError(text: String) {
-    DittoToolsAppTheme {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Column(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .align(Alignment.Center)
-            ) {
-                Text(
-                    text = "Ditto Error", fontWeight = FontWeight.Bold
-                )
-                HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
-                Text(text = text)
-            }
         }
     }
 }

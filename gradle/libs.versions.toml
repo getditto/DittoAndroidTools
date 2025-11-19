@@ -3,32 +3,27 @@
 [versions]
 # https://developer.android.com/studio/releases/gradle-plugin
 android-gradle-plugin = "8.7.1"
-android-sdk = "34"
+android-sdk = "33"
 android-minsdk = "23"
 
-androidx-activity = "1.7.1"
 androidx-appcompat = "1.6.1"
 # Compose 1.6.8 - https://developer.android.com/develop/ui/compose/bom/bom-mapping
-androidx-compose = "2024.06.00"
+androidx-compose = "2023.06.01"
 androidx-navigation = "2.5.3"
 androidx-test-ext = "1.1.5"
-androidx-webkit = "1.7.0"
+webkit = "1.7.0"
 datastorePreferences = "1.0.0"
 ditto = "4.11.6"
-ditto-tools-android = "4.0.1"
 
 junit = "4.13.2"
-kotlin-gradle-plugin = "2.1.0"
-androidComposeKotlinCompiler = "2.1.0"
+kotlin-gradle-plugin = "1.9.25"
+androidComposeKotlinCompiler = "1.5.15"
 core-ktx = "1.9.0"
 espresso-core = "3.5.1"
-material = "1.11.0"
+material = "1.9.0"
 
 gradle-wrapper = "8.10.2"
-gradle-nexus-publish-plugin = "2.0.0"
-runtimeAndroid = "1.7.6"
-webkit = "1.12.1"
-kotlin = "2.1.0"
+kotlin = "1.9.25"
 jreleaser = "1.20.0"
 
 [libraries]
@@ -44,20 +39,16 @@ androidx-datastore-preferences = { module = "androidx.datastore:datastore-prefer
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose" }
 androidx-navigation-navigationCompose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext" }
-ditto-tools-android = { module = "live.ditto:ditto-tools-android", version.ref = "ditto-tools-android" }
 live-ditto-ditto = { group = "live.ditto", name = "ditto", version.ref = "ditto" }
 junit-junit = { group = "junit", name = "junit", version.ref = "junit" }
 joda-time-joda-time = { group = "joda-time", name = "joda-time", version = "2.10.10" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-androidx-runtime-android = { group = "androidx.compose.runtime", name = "runtime-android", version.ref = "runtimeAndroid" }
 androidx-webkit = { group = "androidx.webkit", name = "webkit", version.ref = "webkit" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
 com-android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-gradle-plugin" }
-io-github-gradle-nexus-publish-plugin = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "gradle-nexus-publish-plugin"}
-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jreleaser = { id = "org.jreleaser", version.ref = "jreleaser"}

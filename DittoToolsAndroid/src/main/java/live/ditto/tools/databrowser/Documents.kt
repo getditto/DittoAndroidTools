@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Documents(collectionName: String, isStandAlone: Boolean) {
 
@@ -35,7 +37,7 @@ fun Documents(collectionName: String, isStandAlone: Boolean) {
 
     val selectedDoc by viewModel.selectedDoc.observeAsState()
     val docsList by viewModel.docsList.observeAsState()
-    var selectedIndex by remember { mutableIntStateOf(0) }
+    var selectedIndex by remember { mutableStateOf(0) }
     var startUp by remember { mutableStateOf(true) }
 
         Column(
@@ -122,7 +124,7 @@ fun Documents(collectionName: String, isStandAlone: Boolean) {
                 }
             }
 
-            HorizontalDivider()
+            Divider()
 
             LazyColumn {
                 items(viewModel.docProperties.value?.map { it } ?: emptyList()) { property ->
