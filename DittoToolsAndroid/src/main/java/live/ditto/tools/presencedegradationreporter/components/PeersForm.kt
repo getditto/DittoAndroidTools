@@ -23,9 +23,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import live.ditto.tools.R
 import live.ditto.tools.presencedegradationreporter.theme.PresenceDegradationReporterTheme
 
 @Composable
@@ -44,9 +46,7 @@ fun PeersForm(
                 .align(Alignment.Center)
                 .padding(horizontal = 16.dp),
         ) {
-            Text(
-                "Expected minimum number of peers in the mesh:"
-            )
+            Text(stringResource(R.string.expected_number_of_peers_in_the_mesh))
             BasicTextField(
                 value = peers.toString(),
                 onValueChange = {
