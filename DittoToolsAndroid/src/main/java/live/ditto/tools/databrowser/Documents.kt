@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -21,7 +22,7 @@ import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
-import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,8 +38,18 @@ fun Documents(collectionName: String, isStandAlone: Boolean) {
 
     val selectedDoc by viewModel.selectedDoc.observeAsState()
     val docsList by viewModel.docsList.observeAsState()
+    val errorMessage by viewModel.errorMessage.observeAsState()
     var selectedIndex by remember { mutableStateOf(0) }
     var startUp by remember { mutableStateOf(true) }
+
+    // Auto-select first document when docsList loads/changes
+    LaunchedEffect(docsList) {
+        if (!docsList.isNullOrEmpty() && startUp) {
+            selectedIndex = 0
+            viewModel.selectedDoc.value = docsList!![0]
+            startUp = false
+        }
+    }
 
         Column(
             modifier = Modifier
@@ -55,8 +66,32 @@ fun Documents(collectionName: String, isStandAlone: Boolean) {
                 viewModel.filterDocs(searchText)
                 selectedIndex = 0
             })
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "Type an ID to search, or use DQL: id == \"value\"  •  name CONTAINS \"text\"",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(start = 4.dp)
+            )
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "Docs count: ${docsList?.size}")
+
+            errorMessage?.let { error ->
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer
+                    )
+                ) {
+                    Text(
+                        text = error,
+                        color = MaterialTheme.colorScheme.onErrorContainer,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            Text(text = "Docs count: ${docsList?.size ?: "Loading..."}")
             Spacer(modifier = Modifier.height(16.dp))
 
             Row {
@@ -71,17 +106,15 @@ fun Documents(collectionName: String, isStandAlone: Boolean) {
 
                 if (!docsList.isNullOrEmpty()) {
                     Box {
-                        // Show selected item or "select" if no item is selected
-                        (if ((startUp)) "select" else docsList?.get(selectedIndex)?.id)?.let {
+                        // Show selected document ID
+                        docsList?.getOrNull(selectedIndex)?.id?.let { docId ->
                             Text(
-                                text = it,
+                                text = docId,
                                 textAlign = TextAlign.Start,
                                 color = Color.Blue,
                                 modifier = Modifier
                                     .clickable {
                                         showMenu = true
-
-                                        startUp = false
                                     }
                             )
                         }
@@ -95,6 +128,7 @@ fun Documents(collectionName: String, isStandAlone: Boolean) {
                                 DropdownMenuItem(onClick = {
                                     selectedIndex = index
                                     viewModel.selectedDoc.value = item
+                                    showMenu = false
                                 }, text = {
                                     Text(text = item.id)
                                 }, modifier = Modifier.onKeyEvent { keyEvent ->
@@ -104,6 +138,7 @@ fun Documents(collectionName: String, isStandAlone: Boolean) {
                                                 KeyEventType.KeyUp -> {
                                                     selectedIndex = index
                                                     viewModel.selectedDoc.value = item
+                                                    showMenu = false
                                                     true
                                                 }
                                                 else -> false
@@ -165,31 +200,56 @@ fun DocItem(property: String, viewModel: DocumentsViewModel, selectedDoc: Docume
 
 @Composable
 fun SearchBar(onSearch: (String) -> Unit) {
-    var searchText by remember { mutableStateOf(TextFieldValue("")) }
+    var searchText by remember { mutableStateOf("") }
+    val textColor = MaterialTheme.colorScheme.onSurface
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
-            .border(1.dp, Color.Gray, RoundedCornerShape(4.dp))
+            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(4.dp))
             .padding(horizontal = 16.dp),
         contentAlignment = Alignment.CenterStart
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onClick = { onSearch(searchText.text) }) {
-                Icon(Icons.Default.Search, contentDescription = "Search")
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Icon(Icons.Default.Search, contentDescription = "Search")
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Box(modifier = Modifier.weight(1f)) {
+                if (searchText.isEmpty()) {
+                    Text(
+                        text = "Search by ID or DQL query...",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 16.sp
+                    )
+                }
+                BasicTextField(
+                    value = searchText,
+                    onValueChange = { newValue ->
+                        searchText = newValue
+                        onSearch(newValue)
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    textStyle = TextStyle(
+                        fontSize = 16.sp,
+                        color = textColor
+                    )
+                )
             }
 
-            BasicTextField(
-                modifier = Modifier
-                    .padding(),
-                value = searchText,
-                onValueChange = { searchText = it },
-                singleLine = true,
-                decorationBox = { innerTextField ->
-                    innerTextField()
+            if (searchText.isNotEmpty()) {
+                IconButton(onClick = {
+                    searchText = ""
+                    onSearch("")
+                }) {
+                    Icon(Icons.Default.Clear, contentDescription = "Clear search")
                 }
-            )
+            }
         }
     }
 }
