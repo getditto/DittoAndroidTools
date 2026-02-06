@@ -7,7 +7,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
@@ -73,6 +82,18 @@ fun Documents(collectionName: String, isStandAlone: Boolean) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(start = 4.dp)
             )
+
+            // Show message for large datasets
+            if ((docsList?.size ?: 0) > 1000) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "Large dataset: Use search bar to find documents, or Previous/Next buttons to browse",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(start = 4.dp)
+                )
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
 
             errorMessage?.let { error ->
@@ -94,68 +115,96 @@ fun Documents(collectionName: String, isStandAlone: Boolean) {
             Text(text = "Docs count: ${docsList?.size ?: "Loading..."}")
             Spacer(modifier = Modifier.height(16.dp))
 
-            Row {
-                Text(
-                    text = "Doc ID:  ",
-                    textAlign = TextAlign.Start,
-                    modifier = Modifier
-                        .clickable {
+            Column {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Doc ID:  ",
+                        textAlign = TextAlign.Start
+                    )
 
-                        }
-                )
+                    if (!docsList.isNullOrEmpty()) {
+                        val isLargeDataset = (docsList?.size ?: 0) > 1000
 
-                if (!docsList.isNullOrEmpty()) {
-                    Box {
-                        // Show selected document ID
-                        docsList?.getOrNull(selectedIndex)?.id?.let { docId ->
-                            Text(
-                                text = docId,
-                                textAlign = TextAlign.Start,
-                                color = Color.Blue,
-                                modifier = Modifier
-                                    .clickable {
-                                        showMenu = true
-                                    }
-                            )
-                        }
-
-                        // Dropdown menu
-                        DropdownMenu(
-                            expanded = showMenu,
-                            onDismissRequest = { showMenu = false }
-                        ) {
-                            docsList?.forEachIndexed { index, item ->
-                                DropdownMenuItem(onClick = {
-                                    selectedIndex = index
-                                    viewModel.selectedDoc.value = item
-                                    showMenu = false
-                                }, text = {
-                                    Text(text = item.id)
-                                }, modifier = Modifier.onKeyEvent { keyEvent ->
-                                    when (keyEvent.key) {
-                                        Key.Spacebar -> {
-                                            when (keyEvent.type) {
-                                                KeyEventType.KeyUp -> {
-                                                    selectedIndex = index
-                                                    viewModel.selectedDoc.value = item
-                                                    showMenu = false
-                                                    true
-                                                }
-                                                else -> false
+                        if (isLargeDataset) {
+                            // For large datasets, show ID without dropdown
+                            docsList?.getOrNull(selectedIndex)?.id?.let { docId ->
+                                Text(
+                                    text = docId,
+                                    textAlign = TextAlign.Start,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        } else {
+                            // For small datasets, show dropdown
+                            Box {
+                                docsList?.getOrNull(selectedIndex)?.id?.let { docId ->
+                                    Text(
+                                        text = docId,
+                                        textAlign = TextAlign.Start,
+                                        color = Color.Blue,
+                                        modifier = Modifier
+                                            .clickable {
+                                                showMenu = true
                                             }
-                                        }
-                                        else -> false
+                                    )
+                                }
+
+                                DropdownMenu(
+                                    expanded = showMenu,
+                                    onDismissRequest = { showMenu = false }
+                                ) {
+                                    docsList?.forEachIndexed { index, item ->
+                                        DropdownMenuItem(onClick = {
+                                            selectedIndex = index
+                                            viewModel.selectedDoc.value = item
+                                            showMenu = false
+                                        }, text = {
+                                            Text(text = item.id)
+                                        })
                                     }
-                                })
+                                }
                             }
                         }
+                    } else {
+                        Text(
+                            text = "No Docs",
+                            textAlign = TextAlign.Start,
+                            color = MaterialTheme.colorScheme.primary
+                        )
                     }
-                } else {
-                    Text(
-                        text = "No Docs",
-                        textAlign = TextAlign.Start,
-                        color = Color.Blue,
-                    )
+                }
+
+                // Navigation buttons - below the Doc ID row
+                if (!docsList.isNullOrEmpty()) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Button(
+                            onClick = {
+                                if (selectedIndex > 0) {
+                                    selectedIndex--
+                                    viewModel.selectedDoc.value = docsList!![selectedIndex]
+                                }
+                            },
+                            enabled = selectedIndex > 0
+                        ) {
+                            Text("Previous")
+                        }
+                        Button(
+                            onClick = {
+                                if (selectedIndex < (docsList?.size ?: 0) - 1) {
+                                    selectedIndex++
+                                    viewModel.selectedDoc.value = docsList!![selectedIndex]
+                                }
+                            },
+                            enabled = selectedIndex < (docsList?.size ?: 0) - 1
+                        ) {
+                            Text("Next")
+                        }
+                    }
                 }
             }
 
