@@ -36,6 +36,8 @@ import live.ditto.tools.diskusage.DittoDiskUsage
 import live.ditto.tools.exportlogs.ExportLogs
 import live.ditto.tools.exportlogs.ExportLogsToPortal
 import live.ditto.tools.health.ui.composables.HealthScreen
+import live.ditto.tools.logviewer.LogDetailsScreen
+import live.ditto.tools.logviewer.LogFileScreen
 import live.ditto.tools.peerslist.PeersListViewer
 import live.ditto.tools.presencedegradationreporter.PresenceDegradationReporterScreen
 import live.ditto.tools.presenceviewer.DittoPresenceViewer
@@ -133,6 +135,7 @@ private fun DittoToolsViewerScaffold(
                             Screens.HealthScreen.route -> stringResource(R.string.health_viewer_tool_label)
                             Screens.HeartbeatScreen.route -> stringResource(R.string.heartbeat_tool_label)
                             Screens.PresenceDegradationReporterScreen.route -> stringResource(R.string.presence_degradation_reporter_tool_label)
+                            Screens.LogDetailsScreen.route -> stringResource(R.string.log_details_label)
                             else -> stringResource(R.string.tools_menu_title)
                         }
                     )
@@ -248,6 +251,12 @@ private fun ToolsViewerNavHost(
         }
         composable(Screens.PresenceDegradationReporterScreen.route) {
             PresenceDegradationReporterScreen(ditto = ditto)
+        }
+        composable(Screens.LogDetailsScreen.route) {
+            LogDetailsScreen(navController = navController, ditto = ditto)
+        }
+        composable(Screens.LogViewerScreen.route) {
+            LogFileScreen(ditto = ditto)
         }
     }
 }
