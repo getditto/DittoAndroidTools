@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Log Colors -->
+    <color name="log_debug">#9BCEFD</color>
+    <color name="log_info">#36C492</color>
+    <color name="log_warn">#E17D32</color>
+    <color name="log_error">#CD5D67</color>
+    <color name="log_fatal">#BE0000</color>
+    <color name="log_unknown">#D3D3D3</color>
+    <color name="log_tail">#4CAF50</color>
+</resources>
