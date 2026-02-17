@@ -88,7 +88,7 @@ DittoPresenceViewer(ditto = ditto)
 
 ### 3. Data Browser
 
-The Ditto Data Browser allows you to view all your collections, documents within each collection and the propeties/values of a document. With the Data Browser, you can observe any changes that are made to your collections and documents in real time.
+The Ditto Data Browser allows you to view all your collections, documents within each collection and the properties/values of a document. With the Data Browser, you can observe any changes that are made to your collections and documents in real time.
 
 Within a Composable function, you pass ditto to the constructor:
 
@@ -96,9 +96,18 @@ Within a Composable function, you pass ditto to the constructor:
 DittoDataBrowser(ditto = ditto)
 ```
 
- <img src="/Img/collections.png" alt="Collections Image" width="300">  
+**Features**
 
- <img src="/Img/document.png" alt="Document Image" width="300">  
+- **Search**: Filter documents by ID or use DQL queries
+  - Simple ID search: Type any part of a document ID
+  - DQL queries: Use expressions like `id == "value"` or `name CONTAINS "text"`
+- **Large Dataset Support**: Handles up to 50,000 documents with client-side filtering for fast searches
+- **Navigation**: Use Previous/Next buttons to browse through documents sequentially
+- **Real-time Updates**: Watch collections and documents update live as changes occur
+
+ <img src="/Img/collections.png" alt="Collections Image" width="300">
+
+ <img src="/Img/document.png" alt="Document Image" width="300">
 
 **Standalone App**
 
