@@ -253,7 +253,10 @@ private fun ToolsViewerNavHost(
             PresenceDegradationReporterScreen(ditto = ditto)
         }
         composable(Screens.LogDetailsScreen.route) {
-            LogDetailsScreen(navController = navController, ditto = ditto)
+            LogDetailsScreen(
+                onButtonClick = { navController.navigate(route = Screens.LogViewerScreen.route) },
+                ditto = ditto
+            )
         }
         composable(Screens.LogViewerScreen.route) {
             LogFileScreen(ditto = ditto)

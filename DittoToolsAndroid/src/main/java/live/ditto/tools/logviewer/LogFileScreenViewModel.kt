@@ -1,6 +1,5 @@
 package live.ditto.tools.logviewer
 
-import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -17,13 +16,14 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import live.ditto.Ditto
-import live.ditto.tools.LogUtils
+import live.ditto.tools.utils.LogUtils
+import java.io.File
 import kotlin.collections.plus
 import kotlin.collections.takeLast
 
-class LogFileScreenViewModel(val ditto : Ditto, val context: Context) : ViewModel(){
+class LogFileScreenViewModel(val ditto : Ditto, val filesDir: File) : ViewModel(){
 
-    private val dittoLogUtils = LogUtils(applicationContext = context, ditto = ditto)
+    private val dittoLogUtils = LogUtils(filesDir = filesDir, ditto = ditto)
     private var tailJob: Job? = null
     private var _expandedInnerMenu by  mutableStateOf(false)
     val isExpandedInnerMenu : Boolean
@@ -161,12 +161,12 @@ class LogFileScreenViewModel(val ditto : Ditto, val context: Context) : ViewMode
 
 class LogFileScreenViewModelFactory(
     private val ditto: Ditto,
-    private val context: Context
+    private val filesDir: File
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(LogFileScreenViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return LogFileScreenViewModel(ditto, context) as T
+            return LogFileScreenViewModel(ditto, filesDir) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

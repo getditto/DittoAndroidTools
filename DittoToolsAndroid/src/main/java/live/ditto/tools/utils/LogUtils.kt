@@ -1,6 +1,5 @@
-package live.ditto.tools
+package live.ditto.tools.utils
 
-import android.content.Context
 import android.util.Log
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
@@ -9,14 +8,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import live.ditto.Ditto
+import live.ditto.tools.R
 import live.ditto.tools.data.LogConfiguration
 import java.io.File
 import java.io.RandomAccessFile
 
-class LogUtils(applicationContext: Context, val ditto: Ditto) {
-    private val dittoFileDir = applicationContext.filesDir
+class LogUtils(filesDir: File, val ditto: Ditto) {
+    private val dittoFileDir = filesDir
     private val dittoLogDir = File("${dittoFileDir.path}/ditto/ditto_logs")
     private val logConfigItems = listOf(MAX_AGE, MAX_SIZE, MAX_FILES_ON_DISK)
 
@@ -175,18 +176,18 @@ class LogUtils(applicationContext: Context, val ditto: Ditto) {
         return result
     }
 
-    fun tailLogFile(): Flow<String> = flow{
+    fun tailLogFile(): Flow<String> = flow {
         val file = getCurrentLogFile() ?: return@flow
 
         RandomAccessFile(file, "r").use { raf ->
             var filePointer = raf.length()
             raf.seek(filePointer)
-            while (true){
+            while (true) {
                 val newLength = file.length()
-                if (newLength > filePointer){
+                if (newLength > filePointer) {
                     raf.seek(filePointer)
 
-                    while (true){
+                    while (true) {
                         val line = raf.readLine() ?: break
                         emit(line)
                     }
@@ -196,7 +197,7 @@ class LogUtils(applicationContext: Context, val ditto: Ditto) {
                 delay(1000)
             }
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
     companion object{
         private const val TAG = "DittoLogUtils"

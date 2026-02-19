@@ -7,15 +7,16 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -23,6 +24,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
@@ -37,14 +40,10 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -65,18 +64,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import live.ditto.Ditto
-import live.ditto.tools.LogUtils.Companion.getBackgroundColor
+import live.ditto.tools.utils.LogUtils.Companion.getBackgroundColor
 import live.ditto.tools.R
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LogFileScreen(
     ditto: Ditto,
-    logFileScreenViewModel: LogFileScreenViewModel = viewModel(factory = LogFileScreenViewModelFactory(ditto, context = LocalContext.current))
+    logFileScreenViewModel: LogFileScreenViewModel = viewModel(
+        factory = LogFileScreenViewModelFactory(
+            ditto,
+            filesDir = LocalContext.current.applicationContext.filesDir
+        )
+    )
 ) {
 
     val lines by logFileScreenViewModel.filteredLines.collectAsState()
@@ -98,32 +99,42 @@ fun LogFileScreen(
         }
     }
 
-    val innerPaddingValues = PaddingValues(start = 5.dp, end = 5.dp)
+    Column {
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.log_details_label)) },
-                actions = {
-                    TailIndicator(tail)
-
-                    LogDropdownMenu(
-                        setExpandedNested = { value -> logFileScreenViewModel.setExpandedInnerMenu(value) },
-                        tailEnabled = tail,
-                        onToggleTail = logFileScreenViewModel::toggleTail,
-                        onToggleReverse = logFileScreenViewModel::toggleReverse,
-                    )
-
-                    NestedMenu(
-                        getExpanded = { logFileScreenViewModel.isExpandedInnerMenu},
-                        setExpanded = { value -> logFileScreenViewModel.setExpandedInnerMenu(value) },
-                        setMenuFilter = { value -> logFileScreenViewModel.setMenuFilter(value) },
-                        onSearchQueryChange = { query -> logFileScreenViewModel.onQueryChange(query)}
-                    )
-                }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(height = 48.dp)
+                .padding(start = 5.dp, end = 5.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(R.string.log_details_label), style = MaterialTheme.typography.headlineMedium
             )
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TailIndicator(tail)
+
+                LogDropdownMenu(
+                    setExpandedNested = { value -> logFileScreenViewModel.setExpandedInnerMenu(value) },
+                    tailEnabled = tail,
+                    onToggleTail = logFileScreenViewModel::toggleTail,
+                    onToggleReverse = logFileScreenViewModel::toggleReverse,
+                )
+
+                NestedMenu(
+                    getExpanded = { logFileScreenViewModel.isExpandedInnerMenu},
+                    setExpanded = { value -> logFileScreenViewModel.setExpandedInnerMenu(value) },
+                    setMenuFilter = { value -> logFileScreenViewModel.setMenuFilter(value) },
+                    onSearchQueryChange = { query -> logFileScreenViewModel.onQueryChange(query)}
+                )
+            }
         }
-    ) { paddingValues ->
+
         if (lines.isEmpty()  && searchQuery.isBlank()){
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -135,70 +146,78 @@ fun LogFileScreen(
                 )
             }
         }else{
-            Column(
-                modifier = Modifier
-                    .padding(paddingValues = paddingValues)
-                    .padding(innerPaddingValues)
 
-            ) {
-                //Search
-                OutlinedTextField(
-                    value = searchQuery,
-                    onValueChange = {
-                        logFileScreenViewModel.setMenuFilter(false)
-                        logFileScreenViewModel.onQueryChange(it)
-                    },
-                    label = { Text(stringResource(R.string.log_search)) },
-                    modifier = Modifier.fillMaxWidth(),
-                    maxLines = 3,
-                    leadingIcon = {
-                        Icon(
-                            Icons.Default.Search,
-                            contentDescription = "Search"
-                        )
-                    },
-                    trailingIcon = {
-                        if (searchQuery.isNotEmpty()){
-                            IconButton(onClick = {
-                                logFileScreenViewModel.onQueryChange("")
-                                logFileScreenViewModel.setMenuFilter(false)
-                            }) {
-                                Icon(
-                                    Icons.Default.Close,
-                                    contentDescription = "Clear"
-                                )
-                            }
+            //Search Box
+            BasicTextField(
+                value = searchQuery,
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth().padding(start = 5.dp, end = 5.dp).height(height = 56.dp),
+                onValueChange = {
+                    logFileScreenViewModel.setMenuFilter(false)
+                    logFileScreenViewModel.onQueryChange(it)
+                }
+            ){ innerTextField ->
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .border(1.dp, Color.Gray, RoundedCornerShape(4.dp))
+                ) {
+
+                    //Leading Icon
+                    Icon(
+                        Icons.Default.Search,
+                        contentDescription = "Search",
+                        modifier = Modifier.padding(start = 4.dp)
+                    )
+
+                    // Text Field
+                    Box(Modifier.weight(1f)) {
+                        innerTextField()
+                    }
+
+                    // Trailing icon
+                    if (searchQuery.isNotEmpty()){
+                        IconButton(onClick = {
+                            logFileScreenViewModel.onQueryChange("")
+                            logFileScreenViewModel.setMenuFilter(false)
+                        }) {
+                            Icon(
+                                Icons.Default.Close,
+                                contentDescription = "Clear"
+                            )
                         }
                     }
-                )
+                }
 
-                if (lines.isEmpty()){
-                    Column (
-                        modifier = Modifier.fillMaxSize(), // Make the Box fill the whole screen
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+            }
+
+            if (lines.isEmpty()){
+                Column (
+                    modifier = Modifier.fillMaxSize(), // Make the Box fill the whole screen
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Icon(imageVector = Icons.Default.Warning,
+                        contentDescription = "Warning",
+                        tint = colorResource(R.color.log_warn),
+                        modifier = Modifier.size(100.dp).padding(bottom = 6.dp)
+                    )
+                    Text(
+                        text = "No Result",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
+            }else{
+                //Log Lines
+                Box(modifier = Modifier.fillMaxSize()) {
+                    LazyColumn(
+                        state = listState,
+                        reverseLayout = reverse,
+                        modifier = Modifier.fillMaxSize()
                     ) {
-                        Icon(imageVector = Icons.Default.Warning,
-                            contentDescription = "Warning",
-                            tint = colorResource(R.color.log_warn),
-                            modifier = Modifier.size(100.dp).padding(bottom = 6.dp)
-                        )
-                        Text(
-                            text = "No Result",
-                            style = MaterialTheme.typography.titleLarge
-                        )
-                    }
-                }else{
-                    //Log Lines
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        LazyColumn(
-                            state = listState,
-                            reverseLayout = reverse,
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            items(lines) { logLine ->
-                                LogCard(logLine = logLine)
-                            }
+                        items(lines) { logLine ->
+                            LogCard(logLine = logLine)
                         }
                     }
                 }
@@ -257,7 +276,7 @@ fun LogCard(logLine: Map<String, Any>) {
             )
 
         }
-        // Only show detailed content when expanded, with animation
+        // Only show detailed content when expanded
         AnimatedVisibility(visible = expanded) {
             Text(getExpandedText(logLine), modifier = Modifier.padding(start = 8.dp, end = 8.dp))
         }
@@ -273,10 +292,7 @@ fun LogDropdownMenu(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    Box(
-        modifier = Modifier
-            .padding(16.dp)
-    ) {
+    Box{
         IconButton(onClick = { expanded = !expanded }) {
             Icon(Icons.Default.MoreVert, contentDescription = "More options")
         }

@@ -42,7 +42,7 @@ dependencies {
     implementation(libs.live.ditto.ditto)
 
     //Moshi
-    implementation("com.squareup.moshi:moshi-kotlin:1.15.2")
+    implementation(libs.moshi.kotlin)
 
     testImplementation(libs.junit.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

@@ -15,9 +15,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -31,17 +29,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import live.ditto.Ditto
 import live.ditto.tools.R
-import live.ditto.tools.toolsviewer.navigation.Screens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LogDetailsScreen(
-    navController: NavController,
+    onButtonClick: () -> Unit,
     ditto: Ditto,
-    logDetailsScreenViewModel: LogDetailsScreenViewModel = viewModel(factory = LogDetailsScreenViewModelFactory(ditto, context = LocalContext.current))
+    logDetailsScreenViewModel: LogDetailsScreenViewModel = viewModel(
+        factory = LogDetailsScreenViewModelFactory(
+            ditto,
+            filesDir = LocalContext.current.applicationContext.filesDir
+        )
+    )
 ) {
     
     val logConfiguration = logDetailsScreenViewModel.logConfiguration
@@ -55,29 +56,22 @@ fun LogDetailsScreen(
         logDetailsScreenViewModel.getLogDirInfo()
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(title = { Text(stringResource(R.string.log_details)) })
-        }
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .fillMaxHeight()
-                .padding(padding)
-                .padding(all = 18.dp)
-        ) {
-            LogInfoCard(stringResource(R.string.log_config), logConfiguration.value)
-            LogInfoCard(stringResource(R.string.log_dir_info), logDirectoryInfo.value)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .fillMaxHeight()
+            .padding(all = 18.dp)
+    ) {
+        LogInfoCard(stringResource(R.string.log_config), logConfiguration.value)
+        LogInfoCard(stringResource(R.string.log_dir_info), logDirectoryInfo.value)
 
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = { navController.navigate(route = Screens.LogViewerScreen.route) }
-            ) {
-                Icon(Icons.Default.DensitySmall, contentDescription = "Logs")
-                Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-                Text(stringResource(R.string.log_view))
-            }
+        Button(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = { onButtonClick() }
+        ) {
+            Icon(Icons.Default.DensitySmall, contentDescription = "Logs")
+            Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+            Text(stringResource(R.string.log_view))
         }
     }
 }

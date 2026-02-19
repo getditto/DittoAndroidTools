@@ -1,6 +1,5 @@
 package live.ditto.tools.logviewer
 
-import android.content.Context
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -13,14 +12,15 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import live.ditto.Ditto
-import live.ditto.tools.LogUtils
+import live.ditto.tools.utils.LogUtils
 import live.ditto.tools.utils.Utils
+import java.io.File
 
-class LogDetailsScreenViewModel(val ditto : Ditto, val context: Context) : ViewModel(){
+class LogDetailsScreenViewModel(val ditto : Ditto, val filesDir: File) : ViewModel(){
 
     private val dittoLogUtils = LogUtils(
         ditto = ditto,
-        applicationContext = context
+        filesDir = filesDir
     )
 
     private val _logConfiguration = mutableStateOf<AnnotatedString>(AnnotatedString(""))
@@ -65,7 +65,7 @@ class LogDetailsScreenViewModel(val ditto : Ditto, val context: Context) : ViewM
     fun getLogDirInfo(){
 
         viewModelScope.launch(Dispatchers.IO) {
-            val fileSize = Utils.formatFileSize(context = context, dittoLogUtils.getLogFileDirSize())
+            val fileSize = Utils.formatFileSize(null, dittoLogUtils.getLogFileDirSize())
             val logFileCount = dittoLogUtils.getLogFileCount()
             val errorCount = getLogErrorCount()
 
@@ -92,12 +92,12 @@ class LogDetailsScreenViewModel(val ditto : Ditto, val context: Context) : ViewM
 
 class LogDetailsScreenViewModelFactory(
     private val ditto: Ditto,
-    private val context: Context
+    private val filesDir: File
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(LogDetailsScreenViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return LogDetailsScreenViewModel(ditto, context) as T
+            return LogDetailsScreenViewModel(ditto, filesDir = filesDir) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
