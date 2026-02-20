@@ -141,7 +141,7 @@ fun LogFileScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "No log found.",
+                    text = stringResource(R.string.log_no_log_found),
                     textAlign = TextAlign.Center
                 )
             }
@@ -194,6 +194,8 @@ fun LogFileScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
+            LogLevelLegend()
+
             if (lines.isEmpty()){
                 Column (
                     modifier = Modifier.fillMaxSize(), // Make the Box fill the whole screen
@@ -206,7 +208,7 @@ fun LogFileScreen(
                         modifier = Modifier.size(100.dp).padding(bottom = 6.dp)
                     )
                     Text(
-                        text = "No Result",
+                        text = stringResource(R.string.log_no_result),
                         style = MaterialTheme.typography.titleLarge
                     )
                 }
@@ -272,7 +274,7 @@ fun LogCard(logLine: Map<String, Any>) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            Text(if (expanded) "Less" else "More")
+            Text(if (expanded) stringResource(R.string.log_less) else stringResource(R.string.log_more))
             Icon(
                 if (expanded) Icons.Default.KeyboardArrowDown else Icons.Default.KeyboardArrowRight, contentDescription = "Expand"
             )
@@ -281,6 +283,35 @@ fun LogCard(logLine: Map<String, Any>) {
         // Only show detailed content when expanded
         AnimatedVisibility(visible = expanded) {
             Text(getExpandedText(logLine), modifier = Modifier.padding(start = 16.dp, end = 16.dp))
+        }
+    }
+}
+
+@Composable
+fun LogLevelLegend() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        val levels = listOf("DEBUG", "INFO", "WARN", "ERROR", "FATAL")
+        levels.forEach { level ->
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(10.dp)
+                        .background(
+                            color = colorResource(getBackgroundColor(level)),
+                            shape = CircleShape
+                        )
+                )
+                Text(level, style = MaterialTheme.typography.labelSmall)
+            }
         }
     }
 }

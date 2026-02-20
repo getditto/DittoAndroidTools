@@ -114,5 +114,9 @@
     <string name="log_reverse">Reverse Log</string>
     <string name="log_filter">Filter</string>
     <string name="log_search">Search Log</string>
+    <string name="log_no_log_found">No log found.</string>
+    <string name="log_no_result">No Result</string>
+    <string name="log_less">Less</string>
+    <string name="log_more">More</string>
 
 </resources>
