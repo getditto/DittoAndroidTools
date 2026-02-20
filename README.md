@@ -301,6 +301,78 @@ ditto.presenceDegradationReporterFlow().collect { state: PresenceDegradationRepo
 
 <img src="/Img/presencedegradationreporter.png" alt="Health" width="300">  
 
+### 10. Log File Viewer
+
+The Log File Viewer provides a comprehensive interface for viewing and analyzing Ditto log files directly within your application. It includes two main screens:
+
+**Log Details Screen** - Displays log configuration settings and directory information:
+- Max file age, size, and files on disk settings
+- Total log directory size
+- Log file count
+- Current log file error count
+
+**Log File Screen** - View and analyze log file contents with:
+- Real-time log tailing (continuously updates as new logs are written)
+- Search and filter capabilities by log level (DEBUG, INFO, WARN, ERROR)
+- Expandable log entries for detailed inspection
+- Reverse chronological order option
+
+#### UI Composables
+
+**Log Details Screen:**
+```kotlin
+LogDetailsScreen(
+    ditto = ditto,
+    onButtonClick = { /* Navigate to log file screen */ }
+)
+```
+
+**Log File Screen:**
+```kotlin
+LogFileScreen(
+    ditto = ditto
+)
+```
+
+#### Features
+
+- **Real-time Tailing**: Automatically updates with new log entries as they're written
+- **Search**: Full-text search across all log entries
+- **Filter by Level**: Show only specific log levels (DEBUG, INFO, WARN, ERROR)
+- **Expandable Entries**: Tap to expand and see full log details
+- **Reverse Order**: Toggle chronological vs reverse chronological order
+- **Color-coded**: Log levels are color-coded for easy identification
+  - DEBUG: Blue
+  - INFO: Green
+  - WARN: Orange
+  - ERROR: Red
+
+#### Integration
+
+The Log File Viewer is available in the Data/Debugging section when using `DittoToolsViewer`. It can be accessed directly through the tools menu or embedded as standalone composables:
+
+**As Standalone Screens:**
+```kotlin
+// In your navigation graph
+composable("logDetails") {
+    LogDetailsScreen(
+        onButtonClick = { navController.navigate("logFile") },
+        ditto = ditto
+    )
+}
+
+composable("logFile") {
+    LogFileScreen(ditto = ditto)
+}
+
+//Or if  only interested in LogFileScreen can use as standalone
+LogFileScreen(ditto = ditto)
+```
+<div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-start;">
+  <img src="/Img/log_details.png" alt="Log Details" style="width: 30%; min-width: 250px; max-width: 300px;">
+  <img src="/Img/log_viewer.png" alt="Log Viewer" style="width: 30%; min-width: 250px; max-width: 300px;">
+  <img src="/Img/log_tailing.png" alt="Log Tails" style="width: 30%; min-width: 250px; max-width: 300px;">
+</div>  
 
 ## Shrinking the app size then not using all tools
 
