@@ -293,7 +293,7 @@ fun LogLevelLegend() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically
     ) {
         val levels = listOf("DEBUG", "INFO", "WARN", "ERROR", "FATAL")
@@ -499,6 +499,16 @@ private fun NestedMenu(
         logLevels.forEach { logLevel ->
             DropdownMenuItem(
                 text = { Text(logLevel) },
+                leadingIcon = {
+                    Box(
+                        modifier = Modifier
+                            .size(10.dp)
+                            .background(
+                                color = colorResource(getBackgroundColor(logLevel)),
+                                shape = CircleShape
+                            )
+                    )
+                },
                 onClick = {
                     setMenuFilter(true)
                     setExpanded(false)
