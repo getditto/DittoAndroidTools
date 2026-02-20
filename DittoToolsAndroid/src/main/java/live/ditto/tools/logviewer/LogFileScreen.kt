@@ -32,6 +32,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SwapVert
@@ -40,6 +41,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -50,7 +52,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -85,6 +89,7 @@ fun LogFileScreen(
     val reverse by logFileScreenViewModel.reverse.collectAsState()
     val tail by logFileScreenViewModel.tail.collectAsState()
     val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(lines, tail, reverse) {
         if (tail && lines.isNotEmpty()){
@@ -222,6 +227,20 @@ fun LogFileScreen(
                     ) {
                         items(lines) { logLine ->
                             LogCard(logLine = logLine)
+                        }
+                    }
+                    if (listState.firstVisibleItemIndex > 0) {
+                        FloatingActionButton(
+                            onClick = {
+                                coroutineScope.launch {
+                                    listState.animateScrollToItem(0)
+                                }
+                            },
+                            modifier = Modifier
+                                .align(Alignment.BottomEnd)
+                                .padding(16.dp)
+                        ) {
+                            Icon(Icons.Default.KeyboardArrowUp, contentDescription = "Scroll to top")
                         }
                     }
                 }
