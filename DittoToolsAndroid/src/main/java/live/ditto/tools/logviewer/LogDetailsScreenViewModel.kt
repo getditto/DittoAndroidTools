@@ -29,14 +29,6 @@ class LogDetailsScreenViewModel(val ditto : Ditto, val filesDir: File) : ViewMod
     private val _logDirectoryInfo = mutableStateOf<AnnotatedString>(AnnotatedString(""))
     val logDirectoryInfo = _logDirectoryInfo
 
-    private fun getLogErrorCount() : Int{
-        var count = 0
-        viewModelScope.launch(Dispatchers.IO) {
-            count = dittoLogUtils.logErrorCount()
-        }
-        return count
-    }
-
     fun getLogConfigurationInfo(){
         viewModelScope.launch(Dispatchers.IO) {
             val config = dittoLogUtils.getLogConfiguration()
@@ -65,9 +57,7 @@ class LogDetailsScreenViewModel(val ditto : Ditto, val filesDir: File) : ViewMod
     fun getLogDirInfo(){
 
         viewModelScope.launch(Dispatchers.IO) {
-            val fileSize = Utils.formatFileSize(null, dittoLogUtils.getLogFileDirSize())
-            val logFileCount = dittoLogUtils.getLogFileCount()
-            val errorCount = getLogErrorCount()
+            val fileSize = Utils.formatFileSize(dittoLogUtils.getLogFileDirSize())
 
             _logDirectoryInfo.value = buildAnnotatedString {
 
@@ -79,12 +69,12 @@ class LogDetailsScreenViewModel(val ditto : Ditto, val filesDir: File) : ViewMod
                 withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                     append("Log File Count: ")
                 }
-                append("$logFileCount\n")
+                append("${dittoLogUtils.getLogFileCount()}\n")
 
                 withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                     append("Current Log File Error Count: ")
                 }
-                append("$errorCount")
+                append("${dittoLogUtils.logErrorCount()}")
             }
         }
     }

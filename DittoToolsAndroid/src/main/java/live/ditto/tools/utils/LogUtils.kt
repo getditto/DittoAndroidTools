@@ -143,23 +143,23 @@ class LogUtils(filesDir: File, val ditto: Ditto) {
      * Checks number of errors contained in log file.
      * Based solely on log level ERROR
      * */
-    suspend fun logErrorCount() : Int {
+     fun logErrorCount() : Int {
         var count = 0
-        withContext(Dispatchers.IO){
-            try{
-                if(dittoLogDir.exists() && dittoLogDir.isDirectory){
-                    dittoLogDir.listFiles()
-                        ?.filter { file -> file.name.endsWith(".log") }
-                        ?.get(0)
-                        ?.bufferedReader()
-                        ?.useLines { sequence ->
-                            sequence.forEach { line -> if (line.contains(ERROR_REGEX)) count++ }
-                        }
-                } else return@withContext
-            }catch (e: Exception ){
-                Log.e(TAG, "Error getting log files: $e")
+
+        try{
+            if(dittoLogDir.exists() && dittoLogDir.isDirectory){
+                dittoLogDir.listFiles()
+                    ?.filter { file -> file.name.endsWith(".log") }
+                    ?.get(0)
+                    ?.bufferedReader()
+                    ?.useLines { sequence ->
+                        sequence.forEach { line -> if (line.contains(ERROR_REGEX)) count++ }
+                    }
             }
+        }catch (e: Exception ){
+            Log.e(TAG, "Error getting log files: $e")
         }
+
         return count
     }
 

@@ -21,7 +21,7 @@ import java.io.File
 import kotlin.collections.plus
 import kotlin.collections.takeLast
 
-class LogFileScreenViewModel(val ditto : Ditto, val filesDir: File) : ViewModel(){
+class LogFileViewerScreenViewModel(val ditto : Ditto, val filesDir: File) : ViewModel(){
 
     private val dittoLogUtils = LogUtils(filesDir = filesDir, ditto = ditto)
     private var tailJob: Job? = null
@@ -164,9 +164,9 @@ class LogFileScreenViewModelFactory(
     private val filesDir: File
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(LogFileScreenViewModel::class.java)) {
+        if (modelClass.isAssignableFrom(LogFileViewerScreenViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return LogFileScreenViewModel(ditto, filesDir) as T
+            return LogFileViewerScreenViewModel(ditto, filesDir) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

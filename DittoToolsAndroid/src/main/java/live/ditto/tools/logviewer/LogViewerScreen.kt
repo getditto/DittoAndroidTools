@@ -74,9 +74,9 @@ import live.ditto.tools.utils.LogUtils.Companion.getBackgroundColor
 import live.ditto.tools.R
 
 @Composable
-fun LogFileScreen(
+fun LogViewerScreen(
     ditto: Ditto,
-    logFileScreenViewModel: LogFileScreenViewModel = viewModel(
+    logFileViewerScreenViewModel: LogFileViewerScreenViewModel = viewModel(
         factory = LogFileScreenViewModelFactory(
             ditto,
             filesDir = LocalContext.current.applicationContext.filesDir
@@ -84,10 +84,10 @@ fun LogFileScreen(
     )
 ) {
 
-    val lines by logFileScreenViewModel.filteredLines.collectAsState()
-    val searchQuery by logFileScreenViewModel.query.collectAsState()
-    val reverse by logFileScreenViewModel.reverse.collectAsState()
-    val tail by logFileScreenViewModel.tail.collectAsState()
+    val lines by logFileViewerScreenViewModel.filteredLines.collectAsState()
+    val searchQuery by logFileViewerScreenViewModel.query.collectAsState()
+    val reverse by logFileViewerScreenViewModel.reverse.collectAsState()
+    val tail by logFileViewerScreenViewModel.tail.collectAsState()
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -100,7 +100,7 @@ fun LogFileScreen(
 
     LaunchedEffect(listState.isScrollInProgress) {
         if(listState.isScrollInProgress && tail){
-            logFileScreenViewModel.toggleTail()
+            logFileViewerScreenViewModel.toggleTail()
         }
     }
 
@@ -125,17 +125,17 @@ fun LogFileScreen(
                 TailIndicator(tail)
 
                 LogDropdownMenu(
-                    setExpandedNested = { value -> logFileScreenViewModel.setExpandedInnerMenu(value) },
+                    setExpandedNested = { value -> logFileViewerScreenViewModel.setExpandedInnerMenu(value) },
                     tailEnabled = tail,
-                    onToggleTail = logFileScreenViewModel::toggleTail,
-                    onToggleReverse = logFileScreenViewModel::toggleReverse,
+                    onToggleTail = logFileViewerScreenViewModel::toggleTail,
+                    onToggleReverse = logFileViewerScreenViewModel::toggleReverse,
                 )
 
                 NestedMenu(
-                    getExpanded = { logFileScreenViewModel.isExpandedInnerMenu},
-                    setExpanded = { value -> logFileScreenViewModel.setExpandedInnerMenu(value) },
-                    setMenuFilter = { value -> logFileScreenViewModel.setMenuFilter(value) },
-                    onSearchQueryChange = { query -> logFileScreenViewModel.onQueryChange(query)}
+                    getExpanded = { logFileViewerScreenViewModel.isExpandedInnerMenu},
+                    setExpanded = { value -> logFileViewerScreenViewModel.setExpandedInnerMenu(value) },
+                    setMenuFilter = { value -> logFileViewerScreenViewModel.setMenuFilter(value) },
+                    onSearchQueryChange = { query -> logFileViewerScreenViewModel.onQueryChange(query)}
                 )
             }
         }
@@ -158,8 +158,8 @@ fun LogFileScreen(
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp).height(height = 56.dp),
                 onValueChange = {
-                    logFileScreenViewModel.setMenuFilter(false)
-                    logFileScreenViewModel.onQueryChange(it)
+                    logFileViewerScreenViewModel.setMenuFilter(false)
+                    logFileViewerScreenViewModel.onQueryChange(it)
                 }
             ){ innerTextField ->
 
@@ -184,8 +184,8 @@ fun LogFileScreen(
                     // Trailing icon
                     if (searchQuery.isNotEmpty()){
                         IconButton(onClick = {
-                            logFileScreenViewModel.onQueryChange("")
-                            logFileScreenViewModel.setMenuFilter(false)
+                            logFileViewerScreenViewModel.onQueryChange("")
+                            logFileViewerScreenViewModel.setMenuFilter(false)
                         }) {
                             Icon(
                                 Icons.Default.Close,

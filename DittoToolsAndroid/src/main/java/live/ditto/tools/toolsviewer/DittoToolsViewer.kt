@@ -37,7 +37,7 @@ import live.ditto.tools.exportlogs.ExportLogs
 import live.ditto.tools.exportlogs.ExportLogsToPortal
 import live.ditto.tools.health.ui.composables.HealthScreen
 import live.ditto.tools.logviewer.LogDetailsScreen
-import live.ditto.tools.logviewer.LogFileScreen
+import live.ditto.tools.logviewer.LogViewerScreen
 import live.ditto.tools.peerslist.PeersListViewer
 import live.ditto.tools.presencedegradationreporter.PresenceDegradationReporterScreen
 import live.ditto.tools.presenceviewer.DittoPresenceViewer
@@ -259,7 +259,7 @@ private fun ToolsViewerNavHost(
             )
         }
         composable(Screens.LogViewerScreen.route) {
-            LogFileScreen(ditto = ditto)
+            LogViewerScreen(ditto = ditto)
         }
     }
 }
