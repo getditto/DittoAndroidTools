@@ -105,7 +105,7 @@ fun LogFileScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(height = 48.dp)
-                .padding(start = 5.dp, end = 5.dp),
+                .padding(start = 16.dp, end = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -151,7 +151,7 @@ fun LogFileScreen(
             BasicTextField(
                 value = searchQuery,
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth().padding(start = 5.dp, end = 5.dp).height(height = 56.dp),
+                modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp).height(height = 56.dp),
                 onValueChange = {
                     logFileScreenViewModel.setMenuFilter(false)
                     logFileScreenViewModel.onQueryChange(it)
@@ -260,11 +260,11 @@ fun LogCard(logLine: Map<String, Any>) {
             containerColor = colorResource( getBackgroundColor(logLine["level"] as String))
         ),
         modifier = Modifier
-            .padding(all = 4.dp)
+            .padding(horizontal = 16.dp, vertical = 4.dp)
             .fillMaxWidth()
             .clickable { expanded = !expanded }
     ) {
-        Text(text = aString, modifier = Modifier.padding(all = 8.dp))
+        Text(text = aString, modifier = Modifier.padding(all = 16.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -278,7 +278,7 @@ fun LogCard(logLine: Map<String, Any>) {
         }
         // Only show detailed content when expanded
         AnimatedVisibility(visible = expanded) {
-            Text(getExpandedText(logLine), modifier = Modifier.padding(start = 8.dp, end = 8.dp))
+            Text(getExpandedText(logLine), modifier = Modifier.padding(start = 16.dp, end = 16.dp))
         }
     }
 }

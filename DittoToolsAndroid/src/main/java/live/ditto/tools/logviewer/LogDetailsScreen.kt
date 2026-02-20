@@ -60,7 +60,7 @@ fun LogDetailsScreen(
         modifier = Modifier
             .fillMaxSize()
             .fillMaxHeight()
-            .padding(all = 18.dp)
+            .padding(all = 16.dp)
     ) {
         LogInfoCard(stringResource(R.string.log_config), logConfiguration.value)
         LogInfoCard(stringResource(R.string.log_dir_info), logDirectoryInfo.value)
@@ -83,11 +83,11 @@ fun LogInfoCard(title: String, info: AnnotatedString){
             defaultElevation = 6.dp
         ),
         modifier = Modifier
-            .padding(all = 8.dp)
+            .padding(vertical = 8.dp)
             .fillMaxWidth()
     ) {
         Column(
-            modifier = Modifier.padding(all = 8.dp)
+            modifier = Modifier.padding(all = 16.dp)
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
