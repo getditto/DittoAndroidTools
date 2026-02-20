@@ -192,6 +192,8 @@ fun LogFileScreen(
 
             }
 
+            Spacer(modifier = Modifier.height(8.dp))
+
             if (lines.isEmpty()){
                 Column (
                     modifier = Modifier.fillMaxSize(), // Make the Box fill the whole screen
