@@ -7,7 +7,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material3.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
@@ -37,8 +45,18 @@ fun Documents(collectionName: String, isStandAlone: Boolean) {
 
     val selectedDoc by viewModel.selectedDoc.observeAsState()
     val docsList by viewModel.docsList.observeAsState()
+    val errorMessage by viewModel.errorMessage.observeAsState()
     var selectedIndex by remember { mutableStateOf(0) }
     var startUp by remember { mutableStateOf(true) }
+
+    // Auto-select first document when docsList loads/changes
+    LaunchedEffect(docsList) {
+        if (!docsList.isNullOrEmpty() && startUp) {
+            selectedIndex = 0
+            viewModel.selectedDoc.value = docsList!![0]
+            startUp = false
+        }
+    }
 
         Column(
             modifier = Modifier
@@ -56,62 +74,72 @@ fun Documents(collectionName: String, isStandAlone: Boolean) {
                 selectedIndex = 0
             })
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "Docs count: ${docsList?.size}")
+
+            errorMessage?.let { error ->
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer
+                    )
+                ) {
+                    Text(
+                        text = error,
+                        color = MaterialTheme.colorScheme.onErrorContainer,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            Text(text = "Docs count: ${docsList?.size ?: "Loading..."}")
             Spacer(modifier = Modifier.height(16.dp))
 
             Row {
                 Text(
                     text = "Doc ID:  ",
-                    textAlign = TextAlign.Start,
-                    modifier = Modifier
-                        .clickable {
-
-                        }
+                    textAlign = TextAlign.Start
                 )
 
                 if (!docsList.isNullOrEmpty()) {
-                    Box {
-                        // Show selected item or "select" if no item is selected
-                        (if ((startUp)) "select" else docsList?.get(selectedIndex)?.id)?.let {
-                            Text(
-                                text = it,
-                                textAlign = TextAlign.Start,
-                                color = Color.Blue,
-                                modifier = Modifier
-                                    .clickable {
-                                        showMenu = true
+                    val isLargeDataset = (docsList?.size ?: 0) > 1000
 
-                                        startUp = false
-                                    }
+                    if (isLargeDataset) {
+                        // For large datasets, show ID without dropdown to prevent OutOfMemoryError
+                        docsList?.getOrNull(selectedIndex)?.id?.let { docId ->
+                            Text(
+                                text = docId,
+                                textAlign = TextAlign.Start,
+                                color = MaterialTheme.colorScheme.primary
                             )
                         }
-
-                        // Dropdown menu
-                        DropdownMenu(
-                            expanded = showMenu,
-                            onDismissRequest = { showMenu = false }
-                        ) {
-                            docsList?.forEachIndexed { index, item ->
-                                DropdownMenuItem(onClick = {
-                                    selectedIndex = index
-                                    viewModel.selectedDoc.value = item
-                                }, text = {
-                                    Text(text = item.id)
-                                }, modifier = Modifier.onKeyEvent { keyEvent ->
-                                    when (keyEvent.key) {
-                                        Key.Spacebar -> {
-                                            when (keyEvent.type) {
-                                                KeyEventType.KeyUp -> {
-                                                    selectedIndex = index
-                                                    viewModel.selectedDoc.value = item
-                                                    true
-                                                }
-                                                else -> false
-                                            }
+                    } else {
+                        // For small datasets, show dropdown
+                        Box {
+                            docsList?.getOrNull(selectedIndex)?.id?.let { docId ->
+                                Text(
+                                    text = docId,
+                                    textAlign = TextAlign.Start,
+                                    color = Color.Blue,
+                                    modifier = Modifier
+                                        .clickable {
+                                            showMenu = true
                                         }
-                                        else -> false
-                                    }
-                                })
+                                )
+                            }
+
+                            DropdownMenu(
+                                expanded = showMenu,
+                                onDismissRequest = { showMenu = false }
+                            ) {
+                                docsList?.forEachIndexed { index, item ->
+                                    DropdownMenuItem(onClick = {
+                                        selectedIndex = index
+                                        viewModel.selectedDoc.value = item
+                                        showMenu = false
+                                    }, text = {
+                                        Text(text = item.id)
+                                    })
+                                }
                             }
                         }
                     }
@@ -119,7 +147,7 @@ fun Documents(collectionName: String, isStandAlone: Boolean) {
                     Text(
                         text = "No Docs",
                         textAlign = TextAlign.Start,
-                        color = Color.Blue,
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
             }
