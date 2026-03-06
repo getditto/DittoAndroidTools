@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import com.ditto.kotlin.Ditto
 import com.ditto.kotlin.DittoConnectionType
 import com.ditto.kotlin.DittoPeer
+import com.ditto.kotlin.serialization.DittoCborSerializable
 import com.ditto.kotlin.serialization.toDittoCbor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -80,6 +81,23 @@ fun observePeers(ditto: Ditto): List<DittoPeer> {
     return presenceGraph.remotePeers
 }
 
+private fun anyToCbor(value: Any?): DittoCborSerializable = when (value) {
+    is String -> value.toDittoCbor()
+    is Int -> value.toDittoCbor()
+    is Long -> value.toDittoCbor()
+    is Double -> value.toDittoCbor()
+    is Float -> value.toDittoCbor()
+    is Boolean -> value.toDittoCbor()
+    is Map<*, *> -> {
+        @Suppress("UNCHECKED_CAST")
+        val map = value as Map<String, Any?>
+        map.mapValues { (_, v) -> anyToCbor(v) }.toDittoCbor()
+    }
+    is List<*> -> value.map { anyToCbor(it) }.toDittoCbor()
+    null -> DittoCborSerializable.NullValue()
+    else -> value.toString().toDittoCbor()
+}
+
 suspend fun addToCollection(info: DittoHeartbeatInfo, config: DittoHeartbeatConfig, ditto: Ditto) {
     if (!config.publishToDittoCollection) return
     val metaData = config.metaData ?: emptyMap()
@@ -87,8 +105,9 @@ suspend fun addToCollection(info: DittoHeartbeatInfo, config: DittoHeartbeatConf
         "_id" to info.id.toDittoCbor(),
         "secondsInterval" to info.secondsInterval.toDittoCbor(),
         "presenceSnapshotDirectlyConnectedPeersCount" to info.presenceSnapshotDirectlyConnectedPeersCount.toDittoCbor(),
+        "presenceSnapshotDirectlyConnectedPeers" to info.presenceSnapshotDirectlyConnectedPeers.mapValues { (_, v) -> anyToCbor(v) }.toDittoCbor(),
         "lastUpdated" to info.lastUpdated.toDittoCbor(),
-        "metaData" to metaData.toString().toDittoCbor(),
+        "metaData" to metaData.mapValues { (_, v) -> anyToCbor(v) }.toDittoCbor(),
         "sdk" to info.sdk.toDittoCbor(),
         "_schema" to info.schema.toDittoCbor(),
         "peerKey" to info.peerKeyString.toDittoCbor(),
@@ -114,7 +133,7 @@ fun getConnections(
         val connectionMap: Map<String, Any?> = mapOf(
             "deviceName" to peer.deviceName,
             "sdk" to Ditto.VERSION,
-            "isConnectedToDittoCloud" to peer.isConnectedToDittoServer,
+            "isConnectedToDittoServer" to peer.isConnectedToDittoServer,
             "bluetooth" to connectionsTypeMap["bt"],
             "p2pWifi" to connectionsTypeMap["p2pWifi"],
             "lan" to connectionsTypeMap["lan"],

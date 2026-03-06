@@ -2,23 +2,24 @@ package live.ditto.tools.databrowser
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.CoroutineScope
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class CollectionsViewModel : ViewModel() {
 
+    companion object {
+        private const val POLL_INTERVAL_MS = 2000L
+    }
+
     var collections: MutableLiveData<List<String>> = MutableLiveData(emptyList())
     var isStandAlone = false
 
-    private val scope = CoroutineScope(Dispatchers.IO + Job())
-
     // system:collections is a virtual collection that doesn't support registerObserver,
     // so we poll periodically with store.execute().
-    private val pollJob: Job = scope.launch {
+    private val pollJob = viewModelScope.launch(Dispatchers.IO) {
         while (isActive) {
             try {
                 val result = DittoHandler.ditto.store.execute(
@@ -31,17 +32,12 @@ class CollectionsViewModel : ViewModel() {
             } catch (e: Exception) {
                 // Query may fail if store is not yet ready; retry on next poll
             }
-            delay(2000)
+            delay(POLL_INTERVAL_MS)
         }
     }
 
     fun startSubscription() {
         // "Stand alone" mode: subscribe to all discovered collections so data syncs in
         isStandAlone = true
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        pollJob.cancel()
     }
 }

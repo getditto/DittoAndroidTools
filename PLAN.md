@@ -94,16 +94,27 @@ SDK version in `gradle/libs.versions.toml`: `ditto = "4.11.6"`
 - [ ] Smoke test remaining tools on device (Galaxy S20 FE)
 - [ ] Update `README.md` if API surface for consumers changed
 
-### Phase 5: Runtime Fixes 🔄
+### Phase 5: Runtime Fixes ✅
 - [x] Fix Log Details crash: `SHOW` query returns `DittoCborSerializable.UnsignedInteger`, not Java `Number`. Used `cbor.longOrNull?.toInt()` to extract values in `LogUtils.kt`.
-- [ ] Investigate why `system:collections` returns a different set of collections than v4's `__collections` (v4 shows `__presence`, `__feature_flags`; v5 shows `__presence`, `dittotools_devices`, `pdr_local_peer`, `pdr_remote_peers`) — may need SDK team input on what `system:collections` is expected to return
+- [x] Investigate `system:collections` discrepancy: **expected behavior** — `system:collections` on-device only returns collections with local data, while the portal query runs against the Big Peer which has all collections. The device correctly shows only locally-synced collections.
 - [x] Fix document display: values were only extracted as string/long/boolean/double primitives, falling through to `null` for complex CBOR types (maps, arrays, byte strings). Added `cborToDisplayValue()` helper with `toString()` fallback.
 - [x] Fix document attributes not showing on initial load: `docProperties` LiveData was read via `.value` instead of `observeAsState()`, so Compose never recomposed when properties arrived. Fixed in `Documents.kt`.
 - [x] Fix text color in DocItem for dark theme: property names and values now use `MaterialTheme.colorScheme.onBackground`.
+- [x] Fix Heartbeat crash: `HeartbeatScreen.kt` used old key `isConnectedToDittoCloud` with unsafe cast; updated to `isConnectedToDittoServer` with safe cast.
+- [x] PR review fixes: restore `presenceSnapshotDirectlyConnectedPeers` in heartbeat doc, proper CBOR serialization for `metaData` map, use `viewModelScope` in `CollectionsViewModel`, update CLAUDE.md docs for v5.
 
 ### Phase 6: Pre-merge Cleanup ⏳
 - [ ] Delete `PLAN.md`, `PHASE_1.md`, and any other temporary planning files
 - [ ] Commit cleanup and push before merging to `main`
+
+## What Just Happened (2026-03-06 PR review fixes)
+
+- Addressed Copilot PR review comments:
+  - Heartbeat: restored `presenceSnapshotDirectlyConnectedPeers` field in upserted doc, added `anyToCbor()` helper for proper CBOR map serialization (was using `toString()`), renamed key `isConnectedToDittoCloud` → `isConnectedToDittoServer`
+  - HeartbeatScreen: fixed crash from unsafe `as Boolean` cast on renamed key; changed to `as? Boolean == true`
+  - CollectionsViewModel: replaced standalone `CoroutineScope` with `viewModelScope`, extracted `POLL_INTERVAL_MS` constant
+  - CLAUDE.md: removed obsolete SDK 33 version pinning section, updated dependency info to v5 coordinates
+- Verified Heartbeat screen displays correctly on Galaxy S20 FE
 
 ## What Just Happened (2026-03-06 Log Details fix)
 

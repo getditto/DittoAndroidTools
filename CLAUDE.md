@@ -60,13 +60,6 @@ All tools live under `DittoToolsAndroid/src/main/java/live/ditto/tools/`:
 
 Tools receive a `Ditto` instance from the host app. Two `DittoHandler` singletons exist (`databrowser/DittoHandler.kt`, `diskusage/DittoHandler.kt`) that hold a `companion object { lateinit var ditto: Ditto }` — these are set by the composables before use.
 
-### Version Pinning (SDK 33 Compatibility)
-
-The root `build.gradle` forces specific dependency versions via `resolutionStrategy` to maintain SDK 33 compatibility:
-- `androidx.activity` → 1.7.2
-- `androidx.compose.material3` → 1.0.1
-- `com.google.android.material` → 1.9.0
-
 ## Publishing
 
 Uses JReleaser + Maven Publishing plugin. CI workflow at `.github/workflows/gradle-publish-release.yml` triggers on GitHub releases. Requires GPG signing and Maven Central credentials via environment/secrets.
@@ -76,8 +69,8 @@ The `gradle/deploy.gradle` includes custom POM processing to resolve Compose BOM
 ## Key Dependencies
 
 Managed in `gradle/libs.versions.toml`:
-- Ditto SDK: `live.ditto:ditto` (version in `[versions].ditto`)
-- Kotlin: 1.9.25 with Compose compiler 1.5.15
+- Ditto SDK: `com.ditto:ditto-kotlin` (version in `[versions].ditto`)
+- Kotlin: 2.1.0 with bundled Compose compiler plugin
 - Compose BOM: 2023.06.01
 - Kotlin Serialization (not Moshi)
 
