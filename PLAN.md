@@ -1,7 +1,7 @@
 # Project: Update DittoAndroidTools to Ditto Kotlin SDK v5
 
 **Branch:** `kj/sdks-1489/ditto-android-tools-v5`
-**Status:** Pushed
+**Status:** In Progress
 **Linear Issue:** https://linear.app/ditto/issue/SDKS-1489/update-dittoandroidtools-to-use-ditto-kotlin-sdk-v5
 
 ## Objective
@@ -86,10 +86,11 @@ SDK version in `gradle/libs.versions.toml`: `ditto = "4.11.6"`
 - [x] Migrate `databrowser/DocumentsViewModel.kt` to v5 `registerObserver` + DQL queries
 - [x] Migrate `databrowser/Collections.kt` (remove `DittoCollection` usage)
 
-### Phase 4: Build & Verify ✅
+### Phase 4: Build & Verify 🔄
 - [x] Run `./gradlew assembleDebug` — library and app both build clean
 - [x] Run `./gradlew :DittoToolsAndroid:assembleRelease` — library builds clean
-- [ ] Smoke test on device (Pixel 3 or Galaxy S20 FE)
+- [x] Presence Viewer — v5 JS assets replaced, renders local peer on Galaxy S20 FE
+- [ ] Smoke test remaining tools on device (Galaxy S20 FE)
 - [ ] Update `README.md` if API surface for consumers changed
 
 ### Phase 5: Pre-merge Cleanup ⏳
@@ -111,8 +112,15 @@ Key changes applied:
 - `ditto.appId` removed in v5 — `ExportLogsToPortal` now shows `localPeer.peerKey`
 - SDK 33 forced dependency pins removed from root `build.gradle`
 
+Device testing in progress on Galaxy S20 FE (v5), Pixel 3 remains on v4.
+
+Fixes applied during testing:
+- `DittoConfig.Connect.Server` requires `https://` URL, not `wss://` — auth was failing with "URL scheme is not allowed"
+- `auth.expirationHandler` must be set before `sync.start()` — v5 throws `AuthenticationException` otherwise
+- v4 presence viewer JS assets replaced with v5 (inline JS in index.html) — v4 JS couldn't parse v5 JSON format
+
 Still needed:
-- Device smoke test
+- Smoke test remaining tools (data browser, disk usage, heartbeat, peers list, export logs, health, presence degradation reporter)
 - README update (if consumer API changed)
 
 ## Key Learnings
@@ -124,6 +132,9 @@ Still needed:
 - `DittoPeer.peerKeyString` renamed to `DittoPeer.peerKey`
 - `DittoConnection` is a new type wrapping connection details (replaces direct connection type lists)
 - `store.registerObserver()` callback is `suspend` — uses coroutines natively
+- **v5 auth (ALL SDKs)**: `auth.expirationHandler` MUST be set before `sync.start()` when using `DittoConfig.Connect.Server` — omitting it throws `AuthenticationException`. Saved to `android-dev` and `ditto-sdk-dev` skills.
+- **Server URL**: Must be `https://`, not `wss://` — SDK derives websocket URL internally. Pattern: `"https://$appId.cloud.ditto.live"`
+- **Presence viewer JS**: v5 ships new JS assets (inline in `index.html`) incompatible with v4 `main.js` — must replace assets when migrating
 
 ## Decisions Made
 

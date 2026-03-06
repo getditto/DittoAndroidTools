@@ -32,7 +32,7 @@ class DittoToolsApplication : Application() {
                 ditto = DittoFactory.create(
                     DittoConfig(
                         databaseId = appId,
-                        connect = DittoConfig.Connect.Server("https://$appId.cloud.ditto.live"),
+                        connect = DittoConfig.Connect.Server(BuildConfig.DITTO_CUSTOM_AUTH_URL),
                     )
                 ).apply {
                     auth?.expirationHandler = { dittoInstance, _ ->
