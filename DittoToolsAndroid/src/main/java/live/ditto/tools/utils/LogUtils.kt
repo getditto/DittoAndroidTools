@@ -1,15 +1,20 @@
 package live.ditto.tools.utils
 
 import android.util.Log
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.Types
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.booleanOrNull
+import kotlinx.serialization.json.doubleOrNull
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.longOrNull
 import live.ditto.Ditto
 import live.ditto.tools.R
 import live.ditto.tools.data.LogConfiguration
@@ -98,16 +103,30 @@ class LogUtils(filesDir: File, val ditto: Ditto) {
     /**
      * Parses log line
      * @param line line that will be parsed
-     * @return List<String> containing log lines parsed.
+     * @return Map<String, Any> containing parsed log data, or null if parsing fails
      * */
-    fun parseLogLine(line: String) : Map<String, Any>?{
-        var logLine : Map<String, Any>? = null
-        try {
-            logLine = moshiAdapter.lenient().fromJson(line)
-        }catch (e: Exception){
+    fun parseLogLine(line: String): Map<String, Any>? {
+        return try {
+            json.parseToJsonElement(line)
+                .jsonObject
+                .mapValues { (_, value) ->
+                    when (value) {
+                        is JsonPrimitive -> {
+                            // Try to preserve primitive types
+                            value.booleanOrNull
+                                ?: value.longOrNull
+                                ?: value.doubleOrNull
+                                ?: value.content
+                        }
+                        is JsonObject -> value  // Keep as JsonObject
+                        is JsonArray -> value   // Keep as JsonArray
+                        else -> value.toString()
+                    }
+                }
+        } catch (e: Exception) {
             Log.e(TAG, "Error parsing log line [$line]", e)
+            null
         }
-        return logLine
     }
 
     /**
@@ -210,9 +229,12 @@ class LogUtils(filesDir: File, val ditto: Ditto) {
         // but ignores metrics like doc_id_filter_error_rate
         private val ERROR_REGEX = Regex(""""level"\s*:\s*"ERROR"|(?<![a-z_])(?i)error(?-i)(?![a-z_])""")
 
-        private val moshi: Moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
-        private val paramType = Types.newParameterizedType(Map::class.java, String::class.java, Any::class.java)
-        private val moshiAdapter = moshi.adapter<Map<String, Any>>(paramType)
+        // Kotlin Serialization JSON configuration
+        private val json = Json {
+            ignoreUnknownKeys = true
+            isLenient = true  // Equivalent to moshiAdapter.lenient()
+        }
+
         fun getBackgroundColor(level: String) : Int{
             return when(level){
                 "DEBUG" -> R.color.log_debug

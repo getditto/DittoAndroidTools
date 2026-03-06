@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.com.android.library)
     alias(libs.plugins.org.jetbrains.kotlin.android)
     alias(libs.plugins.jreleaser)
+    kotlin("plugin.serialization") version "1.9.25"
 }
 
 val libraryArtifactId by extra("ditto-tools-android")
@@ -41,8 +42,8 @@ dependencies {
 
     implementation(libs.live.ditto.ditto)
 
-    //Moshi
-    implementation(libs.moshi.kotlin)
+    // Kotlin Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 
     testImplementation(libs.junit.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

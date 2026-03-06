@@ -70,9 +70,9 @@ class LogFileViewerScreenViewModel(val ditto : Ditto, val filesDir: File) : View
                 val trimmedQuery = q.trim()
                 lines
                     .filter {
-                        (it["message"] as String).contains(trimmedQuery, ignoreCase = true)
-                                || (it["level"] as String).contains(trimmedQuery, ignoreCase = true)
-                                || (it["target"] as String).contains(trimmedQuery, ignoreCase = true)
+                        it.message().contains(trimmedQuery, ignoreCase = true)
+                            || (it["level"] as String).contains(trimmedQuery, ignoreCase = true)
+                            || (it["target"] as String).contains(trimmedQuery, ignoreCase = true)
                     }
             }
         }.stateIn(
@@ -80,6 +80,14 @@ class LogFileViewerScreenViewModel(val ditto : Ditto, val filesDir: File) : View
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
         )
+
+    private fun Map<String, Any>.message(): String =
+        when (val v = this["message"]) {
+            is String -> v
+            is Long -> v.toString()
+            is Int -> v.toString()
+            else -> ""
+    }
 
 
     init {

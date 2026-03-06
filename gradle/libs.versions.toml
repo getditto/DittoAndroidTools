@@ -11,7 +11,6 @@ androidx-appcompat = "1.6.1"
 androidx-compose = "2023.06.01"
 androidx-navigation = "2.5.3"
 androidx-test-ext = "1.1.5"
-moshiKotlin = "1.15.2"
 webkit = "1.7.0"
 datastorePreferences = "1.0.0"
 ditto = "4.11.6"
@@ -24,7 +23,6 @@ espresso-core = "3.5.1"
 material = "1.9.0"
 
 gradle-wrapper = "8.10.2"
-kotlin = "1.9.25"
 jreleaser = "1.20.0"
 
 [libraries]
@@ -47,7 +45,6 @@ core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-webkit = { group = "androidx.webkit", name = "webkit", version.ref = "webkit" }
-moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshiKotlin" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
