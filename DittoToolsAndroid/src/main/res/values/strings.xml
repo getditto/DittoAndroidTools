@@ -14,6 +14,7 @@
     <string name="disk_usage_tool_label">Disk Usage</string>
     <string name="health_viewer_tool_label">Health Viewer</string>
     <string name="heartbeat_tool_label">Heartbeat</string>
+    <string name="log_viewer_title">Log Viewer</string>
     <string name="presence_degradation_reporter_tool_label">Presence Degradation Reporter</string>
 
     <!-- Heartbeat -->
@@ -101,5 +102,21 @@
     <string name="export_requested_successfully">Export requested successfully</string>
     <string name="export_failed">Export failed</string>
     <string name="log_export_failed">Log export failed: %1$s</string>
+
+    <!-- Log Viewer -->
+    <string name="log_details_label">Log Details</string>
+    <string name="log_tail">Tail Logs</string>
+    <string name="log_tail_live">Live (1s Delay)</string>
+    <string name="log_view">View Current Log</string>
+    <string name="log_details">Log Details</string>
+    <string name="log_config">Log Configuration</string>
+    <string name="log_dir_info">Log Directory Info</string>
+    <string name="log_reverse">Reverse Log</string>
+    <string name="log_filter">Filter</string>
+    <string name="log_search">Search Log</string>
+    <string name="log_no_log_found">No log found.</string>
+    <string name="log_no_result">No Result</string>
+    <string name="log_less">Less</string>
+    <string name="log_more">More</string>
 
 </resources>
