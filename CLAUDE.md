@@ -80,3 +80,26 @@ Managed in `gradle/libs.versions.toml`:
 - Kotlin: 1.9.25 with Compose compiler 1.5.15
 - Compose BOM: 2023.06.01
 - Kotlin Serialization (not Moshi)
+
+## Demo App on Device
+
+- Package ID: `live.ditto.DittoToolsApp` (note capitalization)
+- Activity: `live.ditto.dittotoolsapp.MainActivity`
+- Launch: `adb shell am start -n live.ditto.DittoToolsApp/live.ditto.dittotoolsapp.MainActivity`
+- Test devices: Pixel 3 (`89UX0GNQ1`), Galaxy S20 FE (`RFCN90XKR4X`)
+
+## v4 to v5 Migration Reference
+
+The Ditto Kotlin SDK v5 introduces breaking changes. See `PHASE_1.md` for the full mapping.
+
+Key changes:
+- **Artifact**: `live.ditto:ditto` → `com.ditto:ditto-kotlin`
+- **Package**: `live.ditto.*` → `com.ditto.kotlin.*` (transports: `com.ditto.kotlin.transports.*`)
+- **Initialization**: `Ditto(dependencies, identity)` → `DittoFactory.create(DittoConfig(...))`
+- **Presence**: callback-based `observe {}` → Flow-based `observe()` returning `Flow<DittoPresenceGraph>`
+- **Store**: `observeLocal {}` → `registerObserver(query) {}` with DQL; `DittoDocument` → `DittoQueryResultItem`
+- **Subscriptions**: `DittoSubscription` → `DittoSyncSubscription` via `ditto.sync.registerSubscription()`
+- **Removed types**: `DittoCollection`, `DittoDocument`, `DittoLiveQuery`, `DittoIdentity`, `DefaultAndroidDittoDependencies`
+- **Renames**: `peerKeyString` → `peerKey`, `DittoError` → `DittoException`
+
+Local v5 SDK source reference: `~/getditto/ditto/sdks/kotlin/`
