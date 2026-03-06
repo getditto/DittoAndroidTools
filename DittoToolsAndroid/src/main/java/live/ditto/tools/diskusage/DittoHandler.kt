@@ -1,7 +1,7 @@
 package live.ditto.tools.diskusage
 
 import android.app.Application
-import live.ditto.Ditto
+import com.ditto.kotlin.Ditto
 
 class DittoHandler : Application() {
     companion object {

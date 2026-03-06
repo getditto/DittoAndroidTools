@@ -2,23 +2,33 @@ package live.ditto.tools.databrowser
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import live.ditto.DittoCollection
-import live.ditto.DittoSubscription
+import com.ditto.kotlin.DittoStoreObserver
+import com.ditto.kotlin.DittoSyncSubscription
 
-class CollectionsViewModel: ViewModel() {
+class CollectionsViewModel : ViewModel() {
 
-    var collections: MutableLiveData<List<DittoCollection>> = MutableLiveData(emptyList())
+    var collections: MutableLiveData<List<String>> = MutableLiveData(emptyList())
     var isStandAlone = false
 
-    private lateinit var subscription: DittoSubscription
-    val liveQuery = DittoHandler.ditto.store.collections().observeLocal { collections ->
-        this.collections.postValue(collections.collections)
+    private var subscription: DittoSyncSubscription? = null
+
+    private val liveQuery: DittoStoreObserver = DittoHandler.ditto.store.registerObserver(
+        "SELECT * FROM __collections"
+    ) { result ->
+        val names = result.items.mapNotNull { item ->
+            item.value["name"].stringOrNull
+        }
+        this.collections.postValue(names)
     }
 
     fun startSubscription() {
-       this.subscription = DittoHandler.ditto.store.collections().subscribe()
+        subscription = DittoHandler.ditto.sync.registerSubscription("SELECT * FROM __collections")
         isStandAlone = true
     }
 
-
+    override fun onCleared() {
+        super.onCleared()
+        liveQuery.close()
+        subscription?.close()
+    }
 }

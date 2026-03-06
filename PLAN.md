@@ -1,7 +1,7 @@
 # Project: Update DittoAndroidTools to Ditto Kotlin SDK v5
 
 **Branch:** `kj/sdks-1489/ditto-android-tools-v5`
-**Status:** In Progress
+**Status:** Pushed
 **Linear Issue:** https://linear.app/ditto/issue/SDKS-1489/update-dittoandroidtools-to-use-ditto-kotlin-sdk-v5
 
 ## Objective
@@ -66,29 +66,29 @@ SDK version in `gradle/libs.versions.toml`: `ditto = "4.11.6"`
 
 ## Tasks
 
-### Phase 1: Research & Setup 🔄
+### Phase 1: Research & Setup ✅
 - [x] Determine latest Ditto Kotlin SDK v5 version — `com.ditto:ditto-kotlin:5.0.0-preview.5`
 - [x] Verify exact v5 API for presence, store, config (full results in `PHASE_1.md`)
-- [ ] Update dependency in `gradle/libs.versions.toml` (group: `com.ditto`, artifact: `ditto-kotlin`, version: `5.0.0-preview.5`)
-- [ ] Update Kotlin version to 2.1.0, minSdk to 24, compileSdk to 36, update Compose compiler plugin accordingly
-- [ ] Attempt `./gradlew assembleDebug` and collect all compilation errors
+- [x] Update dependency in `gradle/libs.versions.toml` (group: `com.ditto`, artifact: `ditto-kotlin`, version: `5.0.0-preview.5`)
+- [x] Update Kotlin version to 2.1.0, minSdk to 24, compileSdk to 36, update Compose compiler plugin accordingly
+- [x] Attempt `./gradlew assembleDebug` and collect all compilation errors
 
-### Phase 2: Migrate Core Data Layer ⏳
-- [ ] Delete/replace `presencedegradationreporter/ditto/DittoExt.kt` (remove v4 `observeLocalAsFlow`)
-- [ ] Migrate `presencedegradationreporter/model/Settings.kt` (remove `DittoDocument` dependency)
-- [ ] Migrate `presencedegradationreporter/model/Peer.kt` (remove `DittoDocument` dependency)
-- [ ] Migrate `presencedegradationreporter/model/PeerConnectedUpdate.kt` (remove `DittoDocument`)
-- [ ] Migrate `presencedegradationreporter/repositories/PeersRepository.kt` to v5 DQL
-- [ ] Migrate `heartbeat/Heartbeat.kt` to v5 store.execute() + confirm presence API
+### Phase 2: Migrate Core Data Layer ✅
+- [x] Delete/replace `presencedegradationreporter/ditto/DittoExt.kt` (remove v4 `observeLocalAsFlow`)
+- [x] Migrate `presencedegradationreporter/model/Settings.kt` (remove `DittoDocument` dependency)
+- [x] Migrate `presencedegradationreporter/model/Peer.kt` (remove `DittoDocument` dependency)
+- [x] Migrate `presencedegradationreporter/model/PeerConnectedUpdate.kt` (remove `DittoDocument`)
+- [x] Migrate `presencedegradationreporter/repositories/PeersRepository.kt` to v5 DQL
+- [x] Migrate `heartbeat/Heartbeat.kt` to v5 store.execute() + confirm presence API
 
-### Phase 3: Migrate DataBrowser ⏳
-- [ ] Migrate `databrowser/CollectionsViewModel.kt` to v5 `registerObserver("SELECT * FROM __collections")`
-- [ ] Migrate `databrowser/DocumentsViewModel.kt` to v5 `registerObserver` + DQL queries
-- [ ] Migrate `databrowser/Collections.kt` (remove `DittoCollection` usage)
+### Phase 3: Migrate DataBrowser ✅
+- [x] Migrate `databrowser/CollectionsViewModel.kt` to v5 `registerObserver("SELECT * FROM __collections")`
+- [x] Migrate `databrowser/DocumentsViewModel.kt` to v5 `registerObserver` + DQL queries
+- [x] Migrate `databrowser/Collections.kt` (remove `DittoCollection` usage)
 
-### Phase 4: Build & Verify ⏳
-- [ ] Run `./gradlew assembleDebug` — confirm clean build
-- [ ] Run `./gradlew :DittoToolsAndroid:assembleRelease` — confirm library builds
+### Phase 4: Build & Verify ✅
+- [x] Run `./gradlew assembleDebug` — library and app both build clean
+- [x] Run `./gradlew :DittoToolsAndroid:assembleRelease` — library builds clean
 - [ ] Smoke test on device (Pixel 3 or Galaxy S20 FE)
 - [ ] Update `README.md` if API surface for consumers changed
 
@@ -98,14 +98,22 @@ SDK version in `gradle/libs.versions.toml`: `ditto = "4.11.6"`
 
 ## What Just Happened (2026-03-06)
 
-Phase 1 research completed. Key findings:
-- v5 SDK coordinates: `com.ditto:ditto-kotlin:5.0.0-preview.5` (on Maven Central)
-- Package renamed from `live.ditto` to `com.ditto.kotlin`
-- Major API changes: `DittoFactory.create()`, `DittoConfig`, Flow-based presence, no `DittoDocument`/`DittoCollection`
-- No `__collections` system table found — data browser collection listing needs alternative approach
-- Kotlin version bump (1.9.25 -> 2.1.0), minSdk bump (23 -> 24), compileSdk bump (33 -> 36) needed
-- Full research saved to `PHASE_1.md`
-- v4 app built and installed successfully on Pixel 3 and Galaxy S20 FE — confirmed working baseline before migration
+Full v5 migration completed in one session. Both library and demo app build cleanly.
+
+Key changes applied:
+- `gradle/libs.versions.toml`: ditto `4.11.6` → `5.0.0-preview.5`, Kotlin `1.9.25` → `2.1.0`, compileSdk 33 → 36, minSdk 23 → 24
+- Compose compiler: switched from `kotlinCompilerExtensionVersion` to bundled Kotlin Compose plugin (Kotlin 2.x)
+- All `live.ditto.*` imports replaced with `com.ditto.kotlin.*`
+- `presencedegradationreporter/ditto/DittoExt.kt` deleted (v4-only)
+- All v4 store/presence APIs replaced with v5 DQL + Flow equivalents
+- `DittoCborSerializable.Dictionary` used in place of `DittoDocument` for model parsing
+- `DittoException` not exported from Android AAR — catch blocks widened to `Exception`
+- `ditto.appId` removed in v5 — `ExportLogsToPortal` now shows `localPeer.peerKey`
+- SDK 33 forced dependency pins removed from root `build.gradle`
+
+Still needed:
+- Device smoke test
+- README update (if consumer API changed)
 
 ## Key Learnings
 

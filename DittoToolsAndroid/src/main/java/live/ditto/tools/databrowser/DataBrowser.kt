@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import live.ditto.Ditto
+import com.ditto.kotlin.Ditto
 
 @Composable
 fun DittoDataBrowser(ditto: Ditto) {

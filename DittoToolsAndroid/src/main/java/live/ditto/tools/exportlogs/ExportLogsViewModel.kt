@@ -8,12 +8,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ditto.kotlin.Ditto
+import com.ditto.kotlin.DittoLogger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import live.ditto.Ditto
-import live.ditto.DittoError
-import live.ditto.DittoLogger
 import live.ditto.tools.R
 
 class ExportLogsViewModel : ViewModel() {
@@ -33,8 +32,9 @@ class ExportLogsViewModel : ViewModel() {
                 val sizeWrittenInKB = (sizeWritten / 1024u).toInt()
                 val toastText = context.getString(R.string.exported_file_size_kb, sizeWrittenInKB)
                 Toast.makeText(context, toastText, Toast.LENGTH_LONG).show()
-            } catch (e: DittoError.IoError) {
-                Log.e("DittoTools LogExporter", e.reason.toString())
+            } catch (e: Exception) {
+                // Log and show IO errors from export
+                Log.e("DittoTools LogExporter", e.message ?: "unknown error")
                 Toast.makeText(context,
                     context.getString(R.string.error_exporting_logs, e.message), Toast.LENGTH_LONG).show()
             } finally {
@@ -44,7 +44,7 @@ class ExportLogsViewModel : ViewModel() {
         }
     }
 
-    fun onConfirmClicked(ditto: Ditto, context: Context){
+    fun onConfirmClicked(ditto: Ditto, context: Context) {
         if (_uiState.value is ExportLogsUiState.Error) {
             resetState()
         }
@@ -62,7 +62,7 @@ class ExportLogsViewModel : ViewModel() {
             try {
                 DittoTools.uploadLogsToPortal(ditto)
                 _uiState.value = ExportLogsUiState.Success
-            } catch (e: DittoError) {
+            } catch (e: Exception) {
                 _uiState.value = ExportLogsUiState.Error(
                     context.getString(
                         R.string.log_export_failed,

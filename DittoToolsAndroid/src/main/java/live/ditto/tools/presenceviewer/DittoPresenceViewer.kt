@@ -7,7 +7,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import kotlinx.coroutines.CoroutineScope
-import live.ditto.Ditto
+import com.ditto.kotlin.Ditto
 
 @Composable
 fun DittoPresenceViewer(
