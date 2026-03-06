@@ -3,8 +3,11 @@ package live.ditto.tools.databrowser
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.ditto.kotlin.DittoStoreObserver
+import com.ditto.kotlin.DittoSyncSubscription
+import com.ditto.kotlin.serialization.DittoCborSerializable
 
-class DocumentsViewModel(private val collectionName: String, isStandAlone: Boolean): ViewModel() {
+class DocumentsViewModel(private val collectionName: String, isStandAlone: Boolean) : ViewModel() {
 
     val docsList: MutableLiveData<MutableList<Document>> = MutableLiveData<MutableList<Document>>(mutableListOf())
     var docProperties: MutableLiveData<List<String>> = MutableLiveData(emptyList())
@@ -16,54 +19,60 @@ class DocumentsViewModel(private val collectionName: String, isStandAlone: Boole
     private var currentFilter: String = ""
     private var isDQLMode: Boolean = false
 
-    val subscription = if (isStandAlone) DittoHandler.ditto.store.collection(collectionName).findAll().limit(1000).subscribe() else null
-    private var liveQuery = DittoHandler.ditto.store.collection(collectionName).findAll().limit(1000).observeLocal { docs, _ ->
-
-        val newDocsList = mutableListOf<Document>()
-        for(doc in docs) {
-            this.docProperties.postValue(doc.value.keys.map{it}.sorted())
-
-            val docValues = mutableMapOf<String, Any?>()
-            for((key, value) in doc.value) {
-                docValues[key] = value
-            }
-            newDocsList.add(Document(doc.id.toString(), docValues))
-        }
-        allDocuments = newDocsList
-        applyFilter()
+    val subscription: DittoSyncSubscription? = if (isStandAlone) {
+        DittoHandler.ditto.sync.registerSubscription("SELECT * FROM $collectionName LIMIT 1000")
+    } else {
+        null
     }
 
-    private fun findAllLiveQuery() {
-        this.liveQuery =  DittoHandler.ditto.store.collection(collectionName).findAll().limit(1000).observeLocal { docs, _ ->
+    private var liveQuery: DittoStoreObserver = createFindAllObserver()
+
+    private fun createFindAllObserver(): DittoStoreObserver {
+        return DittoHandler.ditto.store.registerObserver(
+            "SELECT * FROM $collectionName LIMIT 1000"
+        ) { result ->
             val newDocsList = mutableListOf<Document>()
-            for(doc in docs) {
-                this.docProperties.postValue(doc.value.keys.map{it}.sorted())
+            for (item in result.items) {
+                val valueMap = item.value
+                val keys = valueMap.keys.mapNotNull { it.stringOrNull }.sorted()
+                this.docProperties.postValue(keys)
 
                 val docValues = mutableMapOf<String, Any?>()
-                for((key, value) in doc.value) {
-                    docValues[key] = value
+                for (key in keys) {
+                    docValues[key] = cborToDisplayValue(valueMap[key])
                 }
-                newDocsList.add(Document(doc.id.toString(), docValues))
+                val id = cborToDisplayValue(valueMap["_id"])?.toString() ?: ""
+                newDocsList.add(Document(id, docValues))
             }
             allDocuments = newDocsList
             applyFilter()
         }
     }
 
+    private fun findAllLiveQuery() {
+        liveQuery.close()
+        liveQuery = createFindAllObserver()
+    }
+
     private fun findWithFilterLiveQuery(queryString: String) {
         try {
             errorMessage.postValue(null)
-            this.liveQuery =  DittoHandler.ditto.store.collection(collectionName).find(queryString).limit(1000).observeLocal { docs, _ ->
+            liveQuery.close()
+            liveQuery = DittoHandler.ditto.store.registerObserver(
+                "SELECT * FROM $collectionName WHERE $queryString LIMIT 1000"
+            ) { result ->
                 val newDocsList = mutableListOf<Document>()
-
-                for(doc in docs) {
-                    this.docProperties.postValue(doc.value.keys.map{it}.sorted())
+                for (item in result.items) {
+                    val valueMap = item.value
+                    val keys = valueMap.keys.mapNotNull { it.stringOrNull }.sorted()
+                    this.docProperties.postValue(keys)
 
                     val docValues = mutableMapOf<String, Any?>()
-                    for((key, value) in doc.value) {
-                        docValues[key] = value
+                    for (key in keys) {
+                        docValues[key] = cborToDisplayValue(valueMap[key])
                     }
-                    newDocsList.add(Document(doc.id.toString(), docValues))
+                    val id = cborToDisplayValue(valueMap["_id"])?.toString() ?: ""
+                    newDocsList.add(Document(id, docValues))
                 }
                 docsList.postValue(newDocsList)
             }
@@ -78,15 +87,12 @@ class DocumentsViewModel(private val collectionName: String, isStandAlone: Boole
 
         if (isDQLQuery(queryString)) {
             // User provided explicit DQL query - use server-side filtering
-            liveQuery.close()
             isDQLMode = true
             findWithFilterLiveQuery(queryString)
         } else {
             // Simple text search - use client-side filtering
             if (isDQLMode) {
                 // Switching from DQL mode back to simple search
-                // Need to restart the findAll query
-                liveQuery.close()
                 isDQLMode = false
                 findAllLiveQuery()
             } else {
@@ -112,6 +118,21 @@ class DocumentsViewModel(private val collectionName: String, isStandAlone: Boole
         // Check if the text contains DQL operators
         val dqlOperators = listOf("==", "!=", "CONTAINS", "contains", ">", "<", ">=", "<=", "AND", "and", "OR", "or", "IN", "in")
         return dqlOperators.any { text.contains(it) }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        liveQuery.close()
+        subscription?.close()
+    }
+
+    private fun cborToDisplayValue(cbor: DittoCborSerializable): Any? {
+        return cbor.stringOrNull
+            ?: cbor.longOrNull
+            ?: cbor.booleanOrNull
+            ?: cbor.doubleOrNull
+            ?: cbor.floatOrNull
+            ?: if (cbor.isNull) null else cbor.toString()
     }
 
     class MyViewModelFactory(private val collectionName: String, private val isStandAlone: Boolean) :

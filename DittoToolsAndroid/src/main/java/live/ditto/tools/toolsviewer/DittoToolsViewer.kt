@@ -29,7 +29,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import live.ditto.Ditto
+import com.ditto.kotlin.Ditto
 import live.ditto.tools.R
 import live.ditto.tools.databrowser.DittoDataBrowser
 import live.ditto.tools.diskusage.DittoDiskUsage

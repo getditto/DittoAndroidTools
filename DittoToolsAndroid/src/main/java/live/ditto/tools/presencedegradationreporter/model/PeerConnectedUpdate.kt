@@ -1,6 +1,6 @@
 package live.ditto.tools.presencedegradationreporter.model
 
-import live.ditto.DittoDocument
+import com.ditto.kotlin.serialization.DittoCborSerializable
 
 data class PeerConnectedUpdate(
     val name: String,
@@ -12,7 +12,7 @@ fun PeerConnectedUpdate.toMap() = mapOf(
     "connected" to connected.toString(),
 )
 
-fun DittoDocument.toPeerConnectedUpdate() = PeerConnectedUpdate(
-    name = this["_id"].stringValue,
-    connected = this["connected"].stringValue.toBoolean(),
+fun DittoCborSerializable.Dictionary.toPeerConnectedUpdate() = PeerConnectedUpdate(
+    name = this["_id"].stringOrNull ?: "",
+    connected = this["connected"].stringOrNull?.toBoolean() ?: false,
 )

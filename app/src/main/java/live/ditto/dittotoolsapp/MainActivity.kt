@@ -20,7 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import kotlinx.coroutines.delay
-import live.ditto.Ditto
+import com.ditto.kotlin.Ditto
 import live.ditto.dittotoolsapp.ui.theme.DittoToolsAppTheme
 import live.ditto.tools.toolsviewer.DittoToolsViewer
 

@@ -4,7 +4,7 @@ import android.content.Context
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.isActive
-import live.ditto.transports.DittoSyncPermissions
+import com.ditto.kotlin.transports.DittoSyncPermissions
 import kotlin.coroutines.coroutineContext
 
 class GetDittoMissingPermissionsFlow(

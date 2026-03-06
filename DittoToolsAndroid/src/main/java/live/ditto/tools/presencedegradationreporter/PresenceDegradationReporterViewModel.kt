@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import live.ditto.Ditto
+import com.ditto.kotlin.Ditto
 import live.ditto.tools.presencedegradationreporter.model.Peer
 import live.ditto.tools.presencedegradationreporter.model.Settings
 import live.ditto.tools.presencedegradationreporter.repositories.PeersRepository

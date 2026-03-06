@@ -24,7 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import live.ditto.Ditto
+import com.ditto.kotlin.Ditto
 import live.ditto.tools.R
 
 @Composable
@@ -81,7 +81,7 @@ fun ExportLogsToPortal(
                 Text(
                     text = stringResource(
                         R.string.logs_will_be_exported_to_portal_for_appid,
-                        ditto.appId ?: "unknown"
+                        ditto.presence.graph.localPeer.peerKey
                     )
                 )
                 if (uiState is ExportLogsUiState.Error) {

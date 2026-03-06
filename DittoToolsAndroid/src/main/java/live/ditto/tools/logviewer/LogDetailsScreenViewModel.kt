@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import live.ditto.Ditto
+import com.ditto.kotlin.Ditto
 import live.ditto.tools.utils.LogUtils
 import live.ditto.tools.utils.Utils
 import java.io.File

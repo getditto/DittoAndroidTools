@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
-import live.ditto.DiskUsageItem
-import live.ditto.Ditto
+import com.ditto.kotlin.Ditto
+import com.ditto.kotlin.DittoDiskUsageItem
 import live.ditto.tools.diskusage.usecase.GetDiskUsageMetrics
 import live.ditto.tools.exporter.ZipFolderUseCase
 import live.ditto.tools.healthmetrics.HealthMetric
@@ -49,7 +49,7 @@ class DiskUsageViewModel(
     }
 
     // List of 1 for now
-    fun updateDiskUsage(path: String, records: List<DiskUsageItem>) {
+    fun updateDiskUsage(path: String, records: List<DittoDiskUsageItem>) {
         var totalSizeInBytes = 0
         val children = mutableListOf<DiskUsage>()
         val sortedRecords = records.sortedBy { it.path }
@@ -74,7 +74,7 @@ class DiskUsageViewModel(
     }
 
     suspend fun exportButtonOnClick(ditto: Ditto): File {
-        val inputDirectory = File(ditto.persistenceDirectory)
+        val inputDirectory = File(ditto.absolutePersistenceDirectory)
         val outputZipFile = withContext(dispatcherIO) {
             File.createTempFile("ditto_", ".zip")
         }

@@ -2,7 +2,7 @@ package live.ditto.tools.exportlogs
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import live.ditto.Ditto
+import com.ditto.kotlin.Ditto
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.format.DateTimeFormatterBuilder
@@ -24,7 +24,7 @@ object DittoTools {
      */
     suspend fun uploadLogsToPortal(ditto: Ditto) {
         withContext(Dispatchers.IO) {
-            val peerKey = ditto.presence.graph.localPeer.peerKeyString
+            val peerKey = ditto.presence.graph.localPeer.peerKey
 
             val formatter = DateTimeFormatterBuilder()
                 .append(ISODateTimeFormat.dateHourMinuteSecond())

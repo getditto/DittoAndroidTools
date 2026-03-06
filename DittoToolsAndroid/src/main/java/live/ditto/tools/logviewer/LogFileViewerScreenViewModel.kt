@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import live.ditto.Ditto
+import com.ditto.kotlin.Ditto
 import live.ditto.tools.utils.LogUtils
 import java.io.File
 import kotlin.collections.plus

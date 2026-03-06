@@ -2,16 +2,17 @@ package live.ditto.dittotoolsapp
 
 import android.app.Application
 import android.util.Log
+import com.ditto.kotlin.Ditto
+import com.ditto.kotlin.DittoAuthenticationProvider
+import com.ditto.kotlin.DittoConfig
+import com.ditto.kotlin.DittoFactory
+import com.ditto.kotlin.DittoLogLevel
+import com.ditto.kotlin.DittoLogger
+import com.ditto.kotlin.transports.DittoSyncPermissions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import live.ditto.Ditto
-import live.ditto.DittoIdentity
-import live.ditto.DittoLogLevel
-import live.ditto.DittoLogger
-import live.ditto.android.DefaultAndroidDittoDependencies
-import live.ditto.transports.DittoSyncPermissions
 
 class DittoToolsApplication : Application() {
 
@@ -25,30 +26,23 @@ class DittoToolsApplication : Application() {
         // Initialize Ditto in the background
         applicationScope.launch {
             try {
-                DittoLogger.minimumLogLevel = DittoLogLevel.DEBUG
+                DittoLogger.minimumLogLevel = DittoLogLevel.Debug
 
-                val androidDependencies = DefaultAndroidDittoDependencies(applicationContext)
-                val identity = DittoIdentity.OnlinePlayground(
-                    dependencies = androidDependencies,
-                    appId = BuildConfig.DITTO_ONLINE_PLAYGROUND_APP_ID,
-                    token = BuildConfig.DITTO_ONLINE_PLAYGROUND_TOKEN,
-                    customAuthUrl = BuildConfig.DITTO_CUSTOM_AUTH_URL,
-                    enableDittoCloudSync = false
-                )
-
-                ditto = Ditto(
-                    dependencies = androidDependencies,
-                    identity = identity
+                val appId = BuildConfig.DITTO_ONLINE_PLAYGROUND_APP_ID
+                ditto = DittoFactory.create(
+                    DittoConfig(
+                        databaseId = appId,
+                        connect = DittoConfig.Connect.Server(BuildConfig.DITTO_CUSTOM_AUTH_URL),
+                    )
                 ).apply {
-                    disableSyncWithV3()
-
-                    updateTransportConfig { transportConfig ->
-                        transportConfig.connect.websocketUrls.add(BuildConfig.DITTO_WEBSOCKET_URL)
+                    auth?.expirationHandler = { dittoInstance, _ ->
+                        dittoInstance.auth?.login(
+                            token = BuildConfig.DITTO_ONLINE_PLAYGROUND_TOKEN,
+                            provider = DittoAuthenticationProvider.development(),
+                        )
                     }
-
                     store.execute("ALTER SYSTEM SET DQL_STRICT_MODE = false")
-
-                    startSync()
+                    sync.start()
                 }
 
                 Log.d(TAG, "Ditto initialized successfully")

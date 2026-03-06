@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import live.ditto.Ditto
+import com.ditto.kotlin.Ditto
 import live.ditto.tools.R
 import live.ditto.tools.diskusage.DiskUsageViewModel
 import live.ditto.tools.healthmetrics.HealthMetricProvider
@@ -119,12 +119,12 @@ fun ConnectionInfo(connection: Map<String, Any>) {
     Column {
         Text(stringResource(R.string.connection_info_connection, connection["deviceName"] ?: ""))
         Text(stringResource(R.string.connection_info_sdk, connection["sdk"] ?: ""))
-        val isConnectedToDittoCloudString = if (connection["isConnectedToDittoCloud"] as Boolean) {
+        val isConnectedToDittoServerString = if (connection["isConnectedToDittoServer"] as? Boolean == true) {
             stringResource(R.string.connection_info_online)
         } else stringResource(
             R.string.connection_info_offline
         )
-        Text(isConnectedToDittoCloudString)
+        Text(isConnectedToDittoServerString)
         Text(stringResource(R.string.connection_info_bt, connection["bluetooth"] ?: ""))
         Text(stringResource(R.string.connection_info_p2pwifi, connection["p2pWifi"] ?: ""))
         Text(stringResource(R.string.connection_info_lan, connection["lan"] ?: ""))

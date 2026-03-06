@@ -31,8 +31,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import live.ditto.Ditto
-import live.ditto.DittoPeer
+import com.ditto.kotlin.Ditto
+import com.ditto.kotlin.DittoPeer
 import live.ditto.tools.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -114,7 +114,7 @@ private fun PeerListView(
                 )
             }
 
-            items(state.remotePeers, key = { it.peerKeyString }) { peer ->
+            items(state.remotePeers, key = { it.peerKey }) { peer ->
                 // Remote peer
                 PeerView(peer)
             }
@@ -136,7 +136,7 @@ private fun PeerView(peer: DittoPeer) {
         Box(modifier = Modifier.padding(16.dp)) {
             Column {
                 Text("${peer.deviceName}:", style = MaterialTheme.typography.titleLarge)
-                Text(peer.peerKeyString)
+                Text(peer.peerKey)
                 peer.dittoSdkVersion?.let { Text(stringResource(R.string.sdk_version, it)) }
             }
         }

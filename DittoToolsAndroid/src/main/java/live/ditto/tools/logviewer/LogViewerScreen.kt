@@ -69,7 +69,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import live.ditto.Ditto
+import com.ditto.kotlin.Ditto
 import live.ditto.tools.utils.LogUtils.Companion.getBackgroundColor
 import live.ditto.tools.R
 

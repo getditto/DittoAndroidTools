@@ -17,14 +17,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import live.ditto.DittoCollection
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun Collections(navController: NavHostController? = null) {
     val collectionsViewModel: CollectionsViewModel = viewModel()
-    val collections: List<DittoCollection> by collectionsViewModel.collections.observeAsState(emptyList())
+    val collections: List<String> by collectionsViewModel.collections.observeAsState(emptyList())
     var showDialog by remember { mutableStateOf(false) }
 
 
@@ -59,10 +58,10 @@ fun Collections(navController: NavHostController? = null) {
                 Spacer(modifier = Modifier.height(6.dp))
 
                 LazyColumn {
-                    items(collections) { collection ->
+                    items(collections) { collectionName ->
                         if (navController != null) {
                             ListItem(
-                                collectionName = collection.name,
+                                collectionName = collectionName,
                                 navController = navController,
                                 isStandAlone = collectionsViewModel.isStandAlone
                             )
@@ -73,13 +72,14 @@ fun Collections(navController: NavHostController? = null) {
                 if (showDialog) {
                     AlertDialog(
                         onDismissRequest = { showDialog = false },
-                        title = { Text(text = "Stand Alone App?")},
+                        title = { Text(text = "Stand Alone App?") },
                         text = { Text(text = "Only start subscriptions if using the Data Browser in a stand alone application") },
                         confirmButton = {
                             Button(
                                 onClick = {
                                     collectionsViewModel.startSubscription()
-                                    showDialog = false }
+                                    showDialog = false
+                                }
                             ) {
                                 Text(text = "Start")
                             }
@@ -122,6 +122,3 @@ fun ListItem(collectionName: String, navController: NavHostController, isStandAl
         )
     }
 }
-
-
-

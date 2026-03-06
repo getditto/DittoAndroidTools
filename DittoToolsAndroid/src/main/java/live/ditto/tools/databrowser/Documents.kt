@@ -45,6 +45,7 @@ fun Documents(collectionName: String, isStandAlone: Boolean) {
 
     val selectedDoc by viewModel.selectedDoc.observeAsState()
     val docsList by viewModel.docsList.observeAsState()
+    val docProperties by viewModel.docProperties.observeAsState(emptyList())
     val errorMessage by viewModel.errorMessage.observeAsState()
     var selectedIndex by remember { mutableStateOf(0) }
     var startUp by remember { mutableStateOf(true) }
@@ -155,7 +156,7 @@ fun Documents(collectionName: String, isStandAlone: Boolean) {
             Divider()
 
             LazyColumn {
-                items(viewModel.docProperties.value?.map { it } ?: emptyList()) { property ->
+                items(docProperties) { property ->
                     selectedDoc?.let {
                         DocItem(
                             property = property,
@@ -180,13 +181,17 @@ fun DocItem(property: String, viewModel: DocumentsViewModel, selectedDoc: Docume
         Text(
             text = property,
             fontSize = 16.sp,
+            color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.weight(1f)
         )
         val doc: Document? = viewModel.docsList.value?.find {
             it == selectedDoc
         }
         if (doc != null) {
-            Text(doc.properties[property].toString())
+            Text(
+                text = doc.properties[property].toString(),
+                color = MaterialTheme.colorScheme.onBackground
+            )
         }
     }
 }
