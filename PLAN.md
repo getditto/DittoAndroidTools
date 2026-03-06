@@ -94,9 +94,24 @@ SDK version in `gradle/libs.versions.toml`: `ditto = "4.11.6"`
 - [ ] Smoke test remaining tools on device (Galaxy S20 FE)
 - [ ] Update `README.md` if API surface for consumers changed
 
-### Phase 5: Pre-merge Cleanup ⏳
+### Phase 5: Data Browser Investigation 🔄
+- [ ] Investigate why `system:collections` returns a different set of collections than v4's `__collections` (v4 shows `__presence`, `__feature_flags`; v5 shows `__presence`, `dittotools_devices`, `pdr_local_peer`, `pdr_remote_peers`) — may need SDK team input on what `system:collections` is expected to return
+- [x] Fix document display: values were only extracted as string/long/boolean/double primitives, falling through to `null` for complex CBOR types (maps, arrays, byte strings). Added `cborToDisplayValue()` helper with `toString()` fallback.
+- [x] Fix document attributes not showing on initial load: `docProperties` LiveData was read via `.value` instead of `observeAsState()`, so Compose never recomposed when properties arrived. Fixed in `Documents.kt`.
+- [x] Fix text color in DocItem for dark theme: property names and values now use `MaterialTheme.colorScheme.onBackground`.
+
+### Phase 6: Pre-merge Cleanup ⏳
 - [ ] Delete `PLAN.md`, `PHASE_1.md`, and any other temporary planning files
 - [ ] Commit cleanup and push before merging to `main`
+
+## What Just Happened (2026-03-06 continued)
+
+Data Browser fixes:
+- Changed collection listing from `SELECT * FROM __collections` (v4 internal table) to `SELECT name FROM system:collections` (v5 virtual collection). Switched from `registerObserver` to polling with `store.execute()` since virtual collections don't support observers.
+- Fixed document display: `DittoCborSerializable` values for complex types (maps, arrays, byte strings) were falling through all primitive extractors to `null`. Added `cborToDisplayValue()` helper that falls back to `toString()` for non-primitive CBOR types.
+- Fixed `docProperties` LiveData not being observed by Compose (`Documents.kt`): was using `.value` instead of `observeAsState()`, so attributes never appeared on initial load.
+- Fixed dark theme text visibility in `DocItem`: property names and values now use `MaterialTheme.colorScheme.onBackground`.
+- Collection list discrepancy between v4 and v5 persists — added investigation task to Phase 5.
 
 ## What Just Happened (2026-03-06)
 

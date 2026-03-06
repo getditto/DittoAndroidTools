@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.ditto.kotlin.DittoStoreObserver
 import com.ditto.kotlin.DittoSyncSubscription
+import com.ditto.kotlin.serialization.DittoCborSerializable
 
 class DocumentsViewModel(private val collectionName: String, isStandAlone: Boolean) : ViewModel() {
 
@@ -38,12 +39,9 @@ class DocumentsViewModel(private val collectionName: String, isStandAlone: Boole
 
                 val docValues = mutableMapOf<String, Any?>()
                 for (key in keys) {
-                    docValues[key] = valueMap[key].stringOrNull
-                        ?: valueMap[key].longOrNull
-                        ?: valueMap[key].booleanOrNull
-                        ?: valueMap[key].doubleOrNull
+                    docValues[key] = cborToDisplayValue(valueMap[key])
                 }
-                val id = valueMap["_id"].stringOrNull ?: ""
+                val id = cborToDisplayValue(valueMap["_id"])?.toString() ?: ""
                 newDocsList.add(Document(id, docValues))
             }
             allDocuments = newDocsList
@@ -71,12 +69,9 @@ class DocumentsViewModel(private val collectionName: String, isStandAlone: Boole
 
                     val docValues = mutableMapOf<String, Any?>()
                     for (key in keys) {
-                        docValues[key] = valueMap[key].stringOrNull
-                            ?: valueMap[key].longOrNull
-                            ?: valueMap[key].booleanOrNull
-                            ?: valueMap[key].doubleOrNull
+                        docValues[key] = cborToDisplayValue(valueMap[key])
                     }
-                    val id = valueMap["_id"].stringOrNull ?: ""
+                    val id = cborToDisplayValue(valueMap["_id"])?.toString() ?: ""
                     newDocsList.add(Document(id, docValues))
                 }
                 docsList.postValue(newDocsList)
@@ -129,6 +124,15 @@ class DocumentsViewModel(private val collectionName: String, isStandAlone: Boole
         super.onCleared()
         liveQuery.close()
         subscription?.close()
+    }
+
+    private fun cborToDisplayValue(cbor: DittoCborSerializable): Any? {
+        return cbor.stringOrNull
+            ?: cbor.longOrNull
+            ?: cbor.booleanOrNull
+            ?: cbor.doubleOrNull
+            ?: cbor.floatOrNull
+            ?: if (cbor.isNull) null else cbor.toString()
     }
 
     class MyViewModelFactory(private val collectionName: String, private val isStandAlone: Boolean) :
