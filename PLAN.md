@@ -90,6 +90,7 @@ SDK version in `gradle/libs.versions.toml`: `ditto = "4.11.6"`
 - [x] Run `./gradlew assembleDebug` — library and app both build clean
 - [x] Run `./gradlew :DittoToolsAndroid:assembleRelease` — library builds clean
 - [x] Presence Viewer — v5 JS assets replaced, renders local peer on Galaxy S20 FE
+- [ ] Add license notices for bundled presence viewer JS dependencies (Hammer.js MIT, vis-network Apache 2.0/MIT, core-js MIT) — old `main.js.LICENSE.txt` was removed when v5 assets replaced v4; this is a public repo so licenses must be included
 - [ ] Smoke test remaining tools on device (Galaxy S20 FE)
 - [ ] Update `README.md` if API surface for consumers changed
 

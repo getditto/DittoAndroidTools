@@ -54,7 +54,7 @@ All tools live under `DittoToolsAndroid/src/main/java/live/ditto/tools/`:
 | `logviewer/` | View and tail log files |
 | `peerslist/` | List connected mesh peers |
 | `presencedegradationreporter/` | Detect and report mesh degradation |
-| `presenceviewer/` | WebView-based mesh graph visualization |
+| `presenceviewer/` | WebView-based mesh graph visualization (assets copied from `getditto/ditto/sdks/kotlin/ditto-presenceviewer`) |
 
 ### Shared Ditto Instance Pattern
 
