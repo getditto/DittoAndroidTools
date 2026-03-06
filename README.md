@@ -71,7 +71,7 @@ DittoToolsViewer(
 )
 ```
 
- <img src="/Img/toolsViewer.png" alt="Tools Viewer Image" width="1000">
+ <img src="/images/toolsViewer.png" alt="Tools Viewer Image" width="1000">
 
 To integrate it in a Views-based app - see instructions here: https://developer.android.com/develop/ui/compose/migrate/interoperability-apis/compose-in-views
 
@@ -84,7 +84,7 @@ Within a Composable, you pass ditto to the constructor:
 DittoPresenceViewer(ditto = ditto)
 ```
 
- <img src="/Img/presenceViewer.png" alt="Presence Viewer Image" width="300">  
+ <img src="/images/presenceViewer.png" alt="Presence Viewer Image" width="300">  
 
 ### 3. Data Browser
 
@@ -96,9 +96,9 @@ Within a Composable function, you pass ditto to the constructor:
 DittoDataBrowser(ditto = ditto)
 ```
 
- <img src="/Img/collections.png" alt="Collections Image" width="300">  
+ <img src="/images/collections.png" alt="Collections Image" width="300">  
 
- <img src="/Img/document.png" alt="Document Image" width="300">  
+ <img src="/images/document.png" alt="Document Image" width="300">  
 
 **Standalone App**
 
@@ -112,7 +112,7 @@ Include `ExportLogs()` in your Composable function. You can pass in a lambda fun
 ```kotlin
 ExportLogs(onDismiss: () -> Unit)
 ```
-<img src="/Img/exportLogs.png" alt="Export Logs Image" width="300">
+<img src="/images/exportLogs.png" alt="Export Logs Image" width="300">
 
 ### 5. Export Logs to Portal
 Export Logs to Portal allows you to export logs from your application into the Ditto Portal associated with your AppID
@@ -128,7 +128,7 @@ ExportLogsToPortal(ditto: Ditto, onDismiss: () -> Unit)
 
 You'll also be able to use a new public API found at DittoTools.uploadLogsToPortal(ditto: Ditto) that takes a ditto object which will allow you to upload logs from anywhere in your app.
 
-<img src="/Img/ExportLogToPortal.png" alt="Export Logs Image" width="300">
+<img src="/images/ExportLogToPortal.png" alt="Export Logs Image" width="300">
 
 ### 6. Disk Usage/ Export Data
 
@@ -151,7 +151,7 @@ DittoDiskUsage(
 
 The `onExport` callback allows you to provide custom export logic instead of using the default Android file picker. This is particularly useful for locked-down devices where file picker access may be restricted.
 
- <img src="/Img/diskUsage.png" alt="Disk Usage Image" width="300">
+ <img src="/images/diskUsage.png" alt="Disk Usage Image" width="300">
 
 ### 7. Health
 
@@ -172,7 +172,7 @@ TRANSPORT_HEALTH -- shows WiFi/Bluetooth status (enabled/disabled, permissions s
 WIFI_AWARE_STATE -- displays whether the device supports WiFi Aware
 ```
 
- <img src="/Img/health.png" alt="Health" width="400">
+ <img src="/images/health.png" alt="Health" width="400">
 
 ### 8. Heartbeat
 
@@ -299,7 +299,7 @@ ditto.presenceDegradationReporterFlow().collect { state: PresenceDegradationRepo
 }
 ```
 
-<img src="/Img/presencedegradationreporter.png" alt="Health" width="300">  
+<img src="/images/presencedegradationreporter.png" alt="Health" width="300">  
 
 ### 10. Log File Viewer
 
@@ -369,9 +369,9 @@ composable("logFile") {
 LogFileScreen(ditto = ditto)
 ```
 <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-start;">
-  <img src="/Img/log_details.png" alt="Log Details" style="width: 30%; min-width: 250px; max-width: 300px;">
-  <img src="/Img/log_viewer.png" alt="Log Viewer" style="width: 30%; min-width: 250px; max-width: 300px;">
-  <img src="/Img/log_tailing.png" alt="Log Tails" style="width: 30%; min-width: 250px; max-width: 300px;">
+  <img src="/images/log_details.png" alt="Log Details" style="width: 30%; min-width: 250px; max-width: 300px;">
+  <img src="/images/log_viewer.png" alt="Log Viewer" style="width: 30%; min-width: 250px; max-width: 300px;">
+  <img src="/images/log_tailing.png" alt="Log Tails" style="width: 30%; min-width: 250px; max-width: 300px;">
 </div>  
 
 ## Shrinking the app size then not using all tools
