@@ -92,6 +92,10 @@ SDK version in `gradle/libs.versions.toml`: `ditto = "4.11.6"`
 - [ ] Smoke test on device (Pixel 3 or Galaxy S20 FE)
 - [ ] Update `README.md` if API surface for consumers changed
 
+### Phase 5: Pre-merge Cleanup ⏳
+- [ ] Delete `PLAN.md`, `PHASE_1.md`, and any other temporary planning files
+- [ ] Commit cleanup and push before merging to `main`
+
 ## What Just Happened (2026-03-06)
 
 Phase 1 research completed. Key findings:
