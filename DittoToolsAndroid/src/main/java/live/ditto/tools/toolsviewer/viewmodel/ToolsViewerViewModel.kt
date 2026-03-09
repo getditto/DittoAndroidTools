@@ -3,6 +3,7 @@ package live.ditto.tools.toolsviewer.viewmodel
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.CloudUpload
+import androidx.compose.material.icons.filled.DensitySmall
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.HealthAndSafety
 import androidx.compose.material.icons.filled.Hub
@@ -67,6 +68,11 @@ class ToolsViewerViewModel: ViewModel() {
                         label = R.string.data_browser_tool_label,
                         route = Screens.DataBrowserScreen.route,
                         icon = Icons.Default.Search
+                    ),
+                    ToolMenuItem(
+                        label = R.string.log_details_label,
+                        route = Screens.LogDetailsScreen.route,
+                        icon = Icons.Default.DensitySmall
                     ),
                     ToolMenuItem(
                         label = R.string.export_logs_to_portal_tool_label,

@@ -35,4 +35,10 @@ sealed class Screens {
     object PresenceDegradationReporterScreen: Screen {
         override val route = "presenceDegradationReporter"
     }
+    object LogDetailsScreen: Screen {
+        override val route = "logDetails"
+    }
+    object LogViewerScreen: Screen {
+        override val route = "logViewer"
+    }
 }

@@ -23,7 +23,6 @@ espresso-core = "3.5.1"
 material = "1.9.0"
 
 gradle-wrapper = "8.10.2"
-kotlin = "1.9.25"
 jreleaser = "1.20.0"
 
 [libraries]
