@@ -96,7 +96,14 @@ Within a Composable function, you pass ditto to the constructor:
 DittoDataBrowser(ditto = ditto)
 ```
 
- <img src="/images/collections.png" alt="Collections Image" width="300">  
+**Features**
+
+- **Search**: Filter documents by ID or use DQL queries
+  - Simple ID search: Type any part of a document ID
+  - DQL queries: Use expressions like `id == "value"` or `name CONTAINS "text"`
+- **Large Dataset Support**: Handles up to 50,000 documents with client-side filtering for fast searches
+- **Navigation**: Use Previous/Next buttons to browse through documents sequentially
+- **Real-time Updates**: Watch collections and documents update live as changes occur
 
  <img src="/images/document.png" alt="Document Image" width="300">  
 
