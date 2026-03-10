@@ -41,7 +41,6 @@ class DittoToolsApplication : Application() {
                             provider = DittoAuthenticationProvider.development(),
                         )
                     }
-                    store.execute("ALTER SYSTEM SET DQL_STRICT_MODE = false")
                     sync.start()
                 }
 

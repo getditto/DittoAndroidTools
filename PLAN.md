@@ -158,7 +158,7 @@ Still needed:
 
 ## Key Learnings
 
-- `app/DittoToolsApplication.kt` already calls `store.execute("ALTER SYSTEM SET DQL_STRICT_MODE = false")` and `disableSyncWithV3()` — the app layer is already v5-aware
+- `app/DittoToolsApplication.kt` already calls `disableSyncWithV3()` — the app layer is already v5-aware
 - `exportlogs/DittoTools.kt` already uses DQL execute — good reference for v5 pattern
 - `DittoExt.kt` in presencedegradationreporter is the main bridge that enables `observeLocalAsFlow` — replacing this is key to unblocking the whole presencedegradationreporter migration
 - v5 presence API returns `Flow<DittoPresenceGraph>` instead of callback — aligns better with Compose
