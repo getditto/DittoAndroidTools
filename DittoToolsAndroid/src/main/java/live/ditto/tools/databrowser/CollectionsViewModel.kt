@@ -3,6 +3,7 @@ package live.ditto.tools.databrowser
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ditto.kotlin.DittoSyncSubscription
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -17,6 +18,8 @@ class CollectionsViewModel : ViewModel() {
     var collections: MutableLiveData<List<String>> = MutableLiveData(emptyList())
     var isStandAlone = false
 
+    private val subscriptions = mutableMapOf<String, DittoSyncSubscription>()
+
     // system:collections is a virtual collection that doesn't support registerObserver,
     // so we poll periodically with store.execute().
     private val pollJob = viewModelScope.launch(Dispatchers.IO) {
@@ -29,6 +32,9 @@ class CollectionsViewModel : ViewModel() {
                     item.value["name"].stringOrNull
                 }
                 collections.postValue(names)
+                if (isStandAlone) {
+                    subscribeToCollections(names)
+                }
             } catch (e: Exception) {
                 // Query may fail if store is not yet ready; retry on next poll
             }
@@ -37,7 +43,23 @@ class CollectionsViewModel : ViewModel() {
     }
 
     fun startSubscription() {
-        // "Stand alone" mode: subscribe to all discovered collections so data syncs in
         isStandAlone = true
+        // Subscribe to all currently known collections
+        collections.value?.let { subscribeToCollections(it) }
+    }
+
+    private fun subscribeToCollections(names: List<String>) {
+        for (name in names) {
+            if (name !in subscriptions) {
+                subscriptions[name] = DittoHandler.ditto.sync.registerSubscription(
+                    "SELECT * FROM $name"
+                )
+            }
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        subscriptions.values.forEach { it.close() }
     }
 }
