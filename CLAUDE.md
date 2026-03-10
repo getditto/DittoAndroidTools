@@ -91,8 +91,23 @@ Key changes:
 - **Initialization**: `Ditto(dependencies, identity)` → `DittoFactory.create(DittoConfig(...))`
 - **Presence**: callback-based `observe {}` → Flow-based `observe()` returning `Flow<DittoPresenceGraph>`
 - **Store**: `observeLocal {}` → `registerObserver(query) {}` with DQL; `DittoDocument` → `DittoQueryResultItem`
+- **Store values**: Direct map access → `DittoCborSerializable` with `.stringOrNull`, `.longOrNull`, etc.
 - **Subscriptions**: `DittoSubscription` → `DittoSyncSubscription` via `ditto.sync.registerSubscription()`
+- **Disk usage**: callback `diskUsage.observe {}` → Flow `diskUsage.observe().collect {}`
 - **Removed types**: `DittoCollection`, `DittoDocument`, `DittoLiveQuery`, `DittoIdentity`, `DefaultAndroidDittoDependencies`
-- **Renames**: `peerKeyString` → `peerKey`, `DittoError` → `DittoException`
+- **Renames**: `peerKeyString` → `peerKey`, `DittoError` → `DittoException`, `isConnectedToDittoCloud` → `isConnectedToDittoServer`, `sdkVersion` → `Ditto.VERSION`, `persistenceDirectory` → `absolutePersistenceDirectory`, `DiskUsageItem` → `DittoDiskUsageItem`, `appId` removed
+- **Strict mode**: `ALTER SYSTEM SET DQL_STRICT_MODE = false` is NOT needed in v5 (off by default). Remove when migrating from v4.
+- **Store writes**: `store.collection(name).upsert(map)` → `store.execute("INSERT INTO ... DOCUMENTS (:doc) ON ID CONFLICT DO UPDATE", cborArgs)` — values must be serialized with `.toDittoCbor()`
+- **system:collections**: Does not support `registerObserver()` in v5. Use `store.execute("SELECT name FROM system:collections")` with polling instead.
 
 Local v5 SDK source reference: `~/getditto/ditto/sdks/kotlin/`
+
+## v5 Migration Patterns Applied
+
+These patterns were used across the codebase and should be followed for any remaining migration work:
+
+- **Presence callbackFlow wrappers deleted**: v4 needed manual `callbackFlow { observe { trySend() }; awaitClose { close() } }` wrappers. v5 `observe()` returns Flow directly. Delete the wrapper extensions.
+- **Observer lifecycle**: Always close `DittoStoreObserver` in `onCleared()`. v4 code often leaked observers.
+- **CBOR value extraction**: Use the priority chain: `stringOrNull ?: longOrNull ?: booleanOrNull ?: doubleOrNull ?: floatOrNull ?: if (isNull) null else toString()`
+- **CBOR map keys**: `item.value.keys` returns `DittoCborSerializable` keys — use `.mapNotNull { it.stringOrNull }` to get string keys.
+- **Stand-alone subscriptions**: When subscribing to "all collections", track subscriptions in a map by name to avoid duplicates, and close them all in `onCleared()`.
