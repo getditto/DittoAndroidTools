@@ -25,7 +25,7 @@ class DocumentsViewModel(private val collectionName: String, isStandAlone: Boole
         null
     }
 
-    private var liveQuery: DittoStoreObserver = createFindAllObserver()
+    private var observer: DittoStoreObserver = createFindAllObserver()
 
     private fun createFindAllObserver(): DittoStoreObserver {
         return DittoHandler.ditto.store.registerObserver(
@@ -49,16 +49,16 @@ class DocumentsViewModel(private val collectionName: String, isStandAlone: Boole
         }
     }
 
-    private fun findAllLiveQuery() {
-        liveQuery.close()
-        liveQuery = createFindAllObserver()
+    private fun findAllObserver() {
+        observer.close()
+        observer = createFindAllObserver()
     }
 
-    private fun findWithFilterLiveQuery(queryString: String) {
+    private fun findWithFilterObserver(queryString: String) {
         try {
             errorMessage.postValue(null)
-            liveQuery.close()
-            liveQuery = DittoHandler.ditto.store.registerObserver(
+            observer.close()
+            observer = DittoHandler.ditto.store.registerObserver(
                 "SELECT * FROM $collectionName WHERE $queryString LIMIT 1000"
             ) { result ->
                 val newDocsList = mutableListOf<Document>()
@@ -88,13 +88,13 @@ class DocumentsViewModel(private val collectionName: String, isStandAlone: Boole
         if (isDQLQuery(queryString)) {
             // User provided explicit DQL query - use server-side filtering
             isDQLMode = true
-            findWithFilterLiveQuery(queryString)
+            findWithFilterObserver(queryString)
         } else {
             // Simple text search - use client-side filtering
             if (isDQLMode) {
                 // Switching from DQL mode back to simple search
                 isDQLMode = false
-                findAllLiveQuery()
+                findAllObserver()
             } else {
                 // Already in simple mode, just filter the existing data
                 applyFilter()
@@ -122,7 +122,7 @@ class DocumentsViewModel(private val collectionName: String, isStandAlone: Boole
 
     override fun onCleared() {
         super.onCleared()
-        liveQuery.close()
+        observer.close()
         subscription?.close()
     }
 

@@ -7,6 +7,8 @@ import com.ditto.kotlin.DittoConnectionType
 import com.ditto.kotlin.DittoPeer
 import com.ditto.kotlin.serialization.DittoCborSerializable
 import com.ditto.kotlin.serialization.toDittoCbor
+import live.ditto.tools.healthmetrics.HealthMetric
+import live.ditto.tools.healthmetrics.HealthMetricProvider
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -17,7 +19,7 @@ data class DittoHeartbeatConfig(
     val id: String,
     val secondsInterval: Int,
     val metaData: Map<String, Any>? = null,
-    val healthMetricProviders: List<live.ditto.tools.healthmetrics.HealthMetricProvider>?,
+    val healthMetricProviders: List<HealthMetricProvider>?,
     val publishToDittoCollection: Boolean = true // Toggle to avoid publishing
 )
 
@@ -34,13 +36,13 @@ data class DittoHeartbeatInfo(
     /**
      * The current state of any `HealthMetric`s tracked by the Heartbeat Tool.
      */
-    var healthMetrics: MutableMap<String, live.ditto.tools.healthmetrics.HealthMetric> = mutableMapOf()
+    var healthMetrics: MutableMap<String, HealthMetric> = mutableMapOf()
 )
 
 lateinit var info: DittoHeartbeatInfo
 
 private fun updateHealthMetrics(config: DittoHeartbeatConfig) {
-    val newHealthMetrics = mutableMapOf<String, live.ditto.tools.healthmetrics.HealthMetric>()
+    val newHealthMetrics = mutableMapOf<String, HealthMetric>()
     config.healthMetricProviders?.forEach { provider ->
         newHealthMetrics[provider.metricName] = provider.getCurrentState()
     }
