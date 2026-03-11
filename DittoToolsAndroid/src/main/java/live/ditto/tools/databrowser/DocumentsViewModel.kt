@@ -3,115 +3,118 @@ package live.ditto.tools.databrowser
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import org.json.JSONObject
 
 class DocumentsViewModel(private val collectionName: String, isStandAlone: Boolean): ViewModel() {
 
-    val docsList: MutableLiveData<MutableList<Document>> = MutableLiveData<MutableList<Document>>(mutableListOf())
+    companion object {
+        const val PAGE_SIZE = 50
+    }
+
+    val docsList: MutableLiveData<MutableList<Document>> = MutableLiveData(mutableListOf())
     var docProperties: MutableLiveData<List<String>> = MutableLiveData(emptyList())
     var selectedDoc = MutableLiveData<Document>()
     var errorMessage = MutableLiveData<String?>()
+    val currentOffset = MutableLiveData(0)
+    val totalCount = MutableLiveData(0)
 
-    // Store all documents for client-side filtering
-    private var allDocuments: MutableList<Document> = mutableListOf()
-    private var currentFilter: String = ""
-    private var isDQLMode: Boolean = false
+    private var currentWhereClause: String = ""
 
-    val subscription = if (isStandAlone) DittoHandler.ditto.store.collection(collectionName).findAll().limit(1000).subscribe() else null
-    private var liveQuery = DittoHandler.ditto.store.collection(collectionName).findAll().limit(1000).observeLocal { docs, _ ->
+    // Keep subscription for sync (standalone only)
+    val subscription = if (isStandAlone) DittoHandler.ditto.store.collection(collectionName).findAll().subscribe() else null
 
-        val newDocsList = mutableListOf<Document>()
-        for(doc in docs) {
-            this.docProperties.postValue(doc.value.keys.map{it}.sorted())
+    // Observers initialized at declaration; re-assigned on page/filter changes
+    private var pageObserver = registerPageObserver("", 0)
+    private var countObserver = registerCountObserver("")
 
-            val docValues = mutableMapOf<String, Any?>()
-            for((key, value) in doc.value) {
-                docValues[key] = value
-            }
-            newDocsList.add(Document(doc.id.toString(), docValues))
+    private fun registerPageObserver(whereClause: String, offset: Int): AutoCloseable {
+        val query = if (whereClause.isEmpty()) {
+            "SELECT * FROM $collectionName ORDER BY _id ASC LIMIT $PAGE_SIZE OFFSET $offset"
+        } else {
+            "SELECT * FROM $collectionName WHERE $whereClause ORDER BY _id ASC LIMIT $PAGE_SIZE OFFSET $offset"
         }
-        allDocuments = newDocsList
-        applyFilter()
-    }
-
-    private fun findAllLiveQuery() {
-        this.liveQuery =  DittoHandler.ditto.store.collection(collectionName).findAll().limit(1000).observeLocal { docs, _ ->
-            val newDocsList = mutableListOf<Document>()
-            for(doc in docs) {
-                this.docProperties.postValue(doc.value.keys.map{it}.sorted())
-
-                val docValues = mutableMapOf<String, Any?>()
-                for((key, value) in doc.value) {
-                    docValues[key] = value
-                }
-                newDocsList.add(Document(doc.id.toString(), docValues))
-            }
-            allDocuments = newDocsList
-            applyFilter()
-        }
-    }
-
-    private fun findWithFilterLiveQuery(queryString: String) {
-        try {
+        return try {
             errorMessage.postValue(null)
-            this.liveQuery =  DittoHandler.ditto.store.collection(collectionName).find(queryString).limit(1000).observeLocal { docs, _ ->
-                val newDocsList = mutableListOf<Document>()
-
-                for(doc in docs) {
-                    this.docProperties.postValue(doc.value.keys.map{it}.sorted())
-
-                    val docValues = mutableMapOf<String, Any?>()
-                    for((key, value) in doc.value) {
-                        docValues[key] = value
+            DittoHandler.ditto.store.registerObserver(query) { result ->
+                val newDocs = mutableListOf<Document>()
+                val allKeys = mutableSetOf<String>()
+                for (item in result.items) {
+                    try {
+                        val json = JSONObject(item.jsonString())
+                        val id = json.opt("_id")?.toString() ?: continue
+                        val docValues = mutableMapOf<String, Any?>()
+                        for (key in json.keys()) {
+                            docValues[key] = json.get(key)
+                        }
+                        allKeys.addAll(docValues.keys)
+                        newDocs.add(Document(id, docValues))
+                    } catch (e: Exception) {
+                        // skip malformed items
                     }
-                    newDocsList.add(Document(doc.id.toString(), docValues))
                 }
-                docsList.postValue(newDocsList)
+                if (allKeys.isNotEmpty()) {
+                    docProperties.postValue(allKeys.sorted())
+                }
+                docsList.postValue(newDocs)
             }
         } catch (e: Exception) {
-            errorMessage.postValue("Invalid DQL query: ${e.message}")
-            docsList.postValue(mutableListOf())
+            errorMessage.postValue("Query error: ${e.message}")
+            AutoCloseable { }
         }
+    }
+
+    private fun registerCountObserver(whereClause: String): AutoCloseable {
+        val query = if (whereClause.isEmpty()) {
+            "SELECT COUNT(*) AS count FROM $collectionName"
+        } else {
+            "SELECT COUNT(*) AS count FROM $collectionName WHERE $whereClause"
+        }
+        return try {
+            DittoHandler.ditto.store.registerObserver(query) { result ->
+                val count = result.items.firstOrNull()?.let {
+                    JSONObject(it.jsonString()).optInt("count", 0)
+                } ?: 0
+                totalCount.postValue(count)
+            }
+        } catch (e: Exception) {
+            AutoCloseable { }
+        }
+    }
+
+    private fun reloadPage(whereClause: String, offset: Int) {
+        pageObserver.close()
+        countObserver.close()
+        currentOffset.value = offset
+        pageObserver = registerPageObserver(whereClause, offset)
+        countObserver = registerCountObserver(whereClause)
+    }
+
+    fun nextPage() {
+        reloadPage(currentWhereClause, (currentOffset.value ?: 0) + PAGE_SIZE)
+    }
+
+    fun previousPage() {
+        reloadPage(currentWhereClause, maxOf(0, (currentOffset.value ?: 0) - PAGE_SIZE))
     }
 
     fun filterDocs(queryString: String) {
-        currentFilter = queryString
-
-        if (isDQLQuery(queryString)) {
-            // User provided explicit DQL query - use server-side filtering
-            liveQuery.close()
-            isDQLMode = true
-            findWithFilterLiveQuery(queryString)
-        } else {
-            // Simple text search - use client-side filtering
-            if (isDQLMode) {
-                // Switching from DQL mode back to simple search
-                // Need to restart the findAll query
-                liveQuery.close()
-                isDQLMode = false
-                findAllLiveQuery()
-            } else {
-                // Already in simple mode, just filter the existing data
-                applyFilter()
-            }
+        currentWhereClause = when {
+            queryString.isEmpty() -> ""
+            isDQLQuery(queryString) -> queryString
+            else -> "_id LIKE '%${queryString.replace("'", "''")}%'"
         }
-    }
-
-    private fun applyFilter() {
-        val filtered = if (currentFilter.isEmpty()) {
-            allDocuments
-        } else {
-            // Filter documents where ID contains the search text (case-insensitive)
-            allDocuments.filter { doc ->
-                doc.id.contains(currentFilter, ignoreCase = true)
-            }.toMutableList()
-        }
-        docsList.postValue(filtered)
+        reloadPage(currentWhereClause, 0)
     }
 
     private fun isDQLQuery(text: String): Boolean {
-        // Check if the text contains DQL operators
         val dqlOperators = listOf("==", "!=", "CONTAINS", "contains", ">", "<", ">=", "<=", "AND", "and", "OR", "or", "IN", "in")
         return dqlOperators.any { text.contains(it) }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        pageObserver.close()
+        countObserver.close()
     }
 
     class MyViewModelFactory(private val collectionName: String, private val isStandAlone: Boolean) :

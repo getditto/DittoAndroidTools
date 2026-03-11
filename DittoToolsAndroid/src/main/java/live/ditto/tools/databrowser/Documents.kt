@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -46,6 +47,8 @@ fun Documents(collectionName: String, isStandAlone: Boolean) {
     val selectedDoc by viewModel.selectedDoc.observeAsState()
     val docsList by viewModel.docsList.observeAsState()
     val errorMessage by viewModel.errorMessage.observeAsState()
+    val currentOffset by viewModel.currentOffset.observeAsState(0)
+    val totalCount by viewModel.totalCount.observeAsState(0)
     var selectedIndex by remember { mutableStateOf(0) }
     var startUp by remember { mutableStateOf(true) }
 
@@ -58,114 +61,122 @@ fun Documents(collectionName: String, isStandAlone: Boolean) {
         }
     }
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            Text(
-                text = "Collection: $collectionName",
-                style = MaterialTheme.typography.headlineMedium
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            SearchBar(onSearch = { searchText ->
-                // Call the search function in the view model
-                viewModel.filterDocs(searchText)
-                selectedIndex = 0
-            })
-            Spacer(modifier = Modifier.height(16.dp))
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Text(
+            text = "Collection: $collectionName",
+            style = MaterialTheme.typography.headlineMedium
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        SearchBar(onSearch = { searchText ->
+            viewModel.filterDocs(searchText)
+            selectedIndex = 0
+            startUp = true
+        })
+        Spacer(modifier = Modifier.height(16.dp))
 
-            errorMessage?.let { error ->
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.errorContainer
-                    )
-                ) {
-                    Text(
-                        text = error,
-                        color = MaterialTheme.colorScheme.onErrorContainer,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-            }
-
-            Text(text = "Docs count: ${docsList?.size ?: "Loading..."}")
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row {
-                Text(
-                    text = "Doc ID:  ",
-                    textAlign = TextAlign.Start
+        errorMessage?.let { error ->
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.errorContainer
                 )
-
-                if (!docsList.isNullOrEmpty()) {
-                    val isLargeDataset = (docsList?.size ?: 0) > 1000
-
-                    if (isLargeDataset) {
-                        // For large datasets, show ID without dropdown to prevent OutOfMemoryError
-                        docsList?.getOrNull(selectedIndex)?.id?.let { docId ->
-                            Text(
-                                text = docId,
-                                textAlign = TextAlign.Start,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    } else {
-                        // For small datasets, show dropdown
-                        Box {
-                            docsList?.getOrNull(selectedIndex)?.id?.let { docId ->
-                                Text(
-                                    text = docId,
-                                    textAlign = TextAlign.Start,
-                                    color = Color.Blue,
-                                    modifier = Modifier
-                                        .clickable {
-                                            showMenu = true
-                                        }
-                                )
-                            }
-
-                            DropdownMenu(
-                                expanded = showMenu,
-                                onDismissRequest = { showMenu = false }
-                            ) {
-                                docsList?.forEachIndexed { index, item ->
-                                    DropdownMenuItem(onClick = {
-                                        selectedIndex = index
-                                        viewModel.selectedDoc.value = item
-                                        showMenu = false
-                                    }, text = {
-                                        Text(text = item.id)
-                                    })
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    Text(
-                        text = "No Docs",
-                        textAlign = TextAlign.Start,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
+            ) {
+                Text(
+                    text = error,
+                    color = MaterialTheme.colorScheme.onErrorContainer,
+                    modifier = Modifier.padding(16.dp)
+                )
             }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
 
-            Divider()
+        // Page info: "Showing 1–50 of 21,000"
+        val pageStart = if (totalCount == 0) 0 else currentOffset + 1
+        val pageEnd = currentOffset + (docsList?.size ?: 0)
+        Text(text = "Showing $pageStart–$pageEnd of $totalCount")
 
-            LazyColumn {
-                items(viewModel.docProperties.value?.map { it } ?: emptyList()) { property ->
-                    selectedDoc?.let {
-                        DocItem(
-                            property = property,
-                            viewModel = viewModel,
-                            selectedDoc = it
+        // Prev / Next navigation
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Button(
+                onClick = { viewModel.previousPage() },
+                enabled = currentOffset > 0,
+                modifier = Modifier.padding(end = 8.dp)
+            ) {
+                Text("← Prev")
+            }
+            Button(
+                onClick = {
+                    viewModel.nextPage()
+                    selectedIndex = 0
+                    startUp = true
+                },
+                enabled = pageEnd < totalCount
+            ) {
+                Text("Next →")
+            }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Row {
+            Text(
+                text = "Doc ID:  ",
+                textAlign = TextAlign.Start
+            )
+
+            if (!docsList.isNullOrEmpty()) {
+                Box {
+                    docsList?.getOrNull(selectedIndex)?.id?.let { docId ->
+                        Text(
+                            text = docId,
+                            textAlign = TextAlign.Start,
+                            color = Color.Blue,
+                            modifier = Modifier.clickable { showMenu = true }
                         )
                     }
+
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false }
+                    ) {
+                        docsList?.forEachIndexed { index, item ->
+                            DropdownMenuItem(onClick = {
+                                selectedIndex = index
+                                viewModel.selectedDoc.value = item
+                                showMenu = false
+                            }, text = {
+                                Text(text = item.id)
+                            })
+                        }
+                    }
+                }
+            } else {
+                Text(
+                    text = "No Docs",
+                    textAlign = TextAlign.Start,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+        }
+
+        Divider()
+
+        LazyColumn {
+            items(viewModel.docProperties.value?.map { it } ?: emptyList()) { property ->
+                selectedDoc?.let {
+                    DocItem(
+                        property = property,
+                        viewModel = viewModel,
+                        selectedDoc = it
+                    )
                 }
             }
         }
+    }
 }
 
 @Composable
@@ -173,8 +184,7 @@ fun DocItem(property: String, viewModel: DocumentsViewModel, selectedDoc: Docume
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {
-            }
+            .clickable { }
             .padding(10.dp)
     ) {
         Text(
@@ -182,9 +192,7 @@ fun DocItem(property: String, viewModel: DocumentsViewModel, selectedDoc: Docume
             fontSize = 16.sp,
             modifier = Modifier.weight(1f)
         )
-        val doc: Document? = viewModel.docsList.value?.find {
-            it == selectedDoc
-        }
+        val doc: Document? = viewModel.docsList.value?.find { it == selectedDoc }
         if (doc != null) {
             Text(doc.properties[property].toString())
         }
@@ -209,14 +217,11 @@ fun SearchBar(onSearch: (String) -> Unit) {
             }
 
             BasicTextField(
-                modifier = Modifier
-                    .padding(),
+                modifier = Modifier.padding(),
                 value = searchText,
                 onValueChange = { searchText = it },
                 singleLine = true,
-                decorationBox = { innerTextField ->
-                    innerTextField()
-                }
+                decorationBox = { innerTextField -> innerTextField() }
             )
         }
     }
