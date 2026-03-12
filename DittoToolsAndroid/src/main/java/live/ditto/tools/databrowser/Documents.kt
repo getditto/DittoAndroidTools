@@ -120,7 +120,7 @@ fun Documents(collectionName: String, isStandAlone: Boolean) {
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
-            Text(text = "Docs count TEST TEST: ${docsList?.size ?: "Loading..."}")
+            Text(text = "Docs count: ${docsList?.size ?: "Loading..."}")
             Spacer(modifier = Modifier.height(16.dp))
 
             Column {
