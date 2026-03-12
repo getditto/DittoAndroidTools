@@ -16,7 +16,6 @@ class DocumentsViewModel(private val collectionName: String, isStandAlone: Boole
     private var currentFilter: String = ""
     private var isDQLMode: Boolean = false
 
-    val subscription = if (isStandAlone) DittoHandler.ditto.store.collection(collectionName).findAll().limit(1000).subscribe() else null
     private var liveQuery = DittoHandler.ditto.store.collection(collectionName).findAll().limit(1000).observeLocal { docs, _ ->
 
         val newDocsList = mutableListOf<Document>()
@@ -34,7 +33,7 @@ class DocumentsViewModel(private val collectionName: String, isStandAlone: Boole
     }
 
     private fun findAllLiveQuery() {
-        this.liveQuery =  DittoHandler.ditto.store.collection(collectionName).findAll().limit(1000).observeLocal { docs, _ ->
+        this.liveQuery =  DittoHandler.ditto.store.collection(collectionName).findAll().limit(50000).observeLocal { docs, _ ->
             val newDocsList = mutableListOf<Document>()
             for(doc in docs) {
                 this.docProperties.postValue(doc.value.keys.map{it}.sorted())
@@ -53,7 +52,7 @@ class DocumentsViewModel(private val collectionName: String, isStandAlone: Boole
     private fun findWithFilterLiveQuery(queryString: String) {
         try {
             errorMessage.postValue(null)
-            this.liveQuery =  DittoHandler.ditto.store.collection(collectionName).find(queryString).limit(1000).observeLocal { docs, _ ->
+            this.liveQuery =  DittoHandler.ditto.store.collection(collectionName).find(queryString).limit(50000).observeLocal { docs, _ ->
                 val newDocsList = mutableListOf<Document>()
 
                 for(doc in docs) {
