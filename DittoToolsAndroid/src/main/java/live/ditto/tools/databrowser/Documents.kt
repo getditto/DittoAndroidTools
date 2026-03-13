@@ -40,7 +40,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 fun Documents(collectionName: String, isStandAlone: Boolean) {
 
     val viewModel: DocumentsViewModel =
-        viewModel(factory = DocumentsViewModel.MyViewModelFactory(collectionName, isStandAlone))
+        viewModel(factory = DocumentsViewModel.Factory(collectionName, isStandAlone))
     var showMenu by remember { mutableStateOf(false) }
 
     val selectedDoc by viewModel.selectedDoc.observeAsState()

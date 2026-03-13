@@ -142,7 +142,7 @@ class DocumentsViewModel(private val collectionName: String, isStandAlone: Boole
             }
     }
 
-    class MyViewModelFactory(private val collectionName: String, private val isStandAlone: Boolean) :
+    class Factory(private val collectionName: String, private val isStandAlone: Boolean) :
         ViewModelProvider.NewInstanceFactory() {
         override fun <T : ViewModel> create(modelClass: Class<T>): T = DocumentsViewModel(collectionName, isStandAlone) as T
     }
