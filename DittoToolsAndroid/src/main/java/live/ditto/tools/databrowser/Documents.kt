@@ -1,7 +1,6 @@
 package live.ditto.tools.databrowser
 
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,8 +21,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -36,35 +33,29 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Documents(collectionName: String, isStandAlone: Boolean) {
 
     val viewModel: DocumentsViewModel =
         viewModel(factory = DocumentsViewModel.MyViewModelFactory(collectionName, isStandAlone))
-    var showMenu by remember { mutableStateOf(false) }
 
     val selectedDoc by viewModel.selectedDoc.observeAsState()
     val docsList by viewModel.docsList.observeAsState()
     val errorMessage by viewModel.errorMessage.observeAsState()
     var selectedIndex by remember { mutableStateOf(0) }
-    var startUp by remember { mutableStateOf(true) }
 
-    // Auto-select first document when docsList loads/changes
-    LaunchedEffect(docsList) {
-        if (!docsList.isNullOrEmpty() && startUp) {
+    // Auto-select first document when docsList first loads
+    LaunchedEffect(docsList?.firstOrNull()) {
+        if (!docsList.isNullOrEmpty()) {
             selectedIndex = 0
             viewModel.selectedDoc.value = docsList!![0]
-            startUp = false
         }
     }
 
@@ -133,47 +124,12 @@ fun Documents(collectionName: String, isStandAlone: Boolean) {
                     )
 
                     if (!docsList.isNullOrEmpty()) {
-                        val isLargeDataset = (docsList?.size ?: 0) > 1000
-
-                        if (isLargeDataset) {
-                            // For large datasets, show ID without dropdown
-                            docsList?.getOrNull(selectedIndex)?.id?.let { docId ->
-                                Text(
-                                    text = docId,
-                                    textAlign = TextAlign.Start,
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                            }
-                        } else {
-                            // For small datasets, show dropdown
-                            Box {
-                                docsList?.getOrNull(selectedIndex)?.id?.let { docId ->
-                                    Text(
-                                        text = docId,
-                                        textAlign = TextAlign.Start,
-                                        color = Color.Blue,
-                                        modifier = Modifier
-                                            .clickable {
-                                                showMenu = true
-                                            }
-                                    )
-                                }
-
-                                DropdownMenu(
-                                    expanded = showMenu,
-                                    onDismissRequest = { showMenu = false }
-                                ) {
-                                    docsList?.forEachIndexed { index, item ->
-                                        DropdownMenuItem(onClick = {
-                                            selectedIndex = index
-                                            viewModel.selectedDoc.value = item
-                                            showMenu = false
-                                        }, text = {
-                                            Text(text = item.id)
-                                        })
-                                    }
-                                }
-                            }
+                        docsList?.getOrNull(selectedIndex)?.id?.let { docId ->
+                            Text(
+                                text = docId,
+                                textAlign = TextAlign.Start,
+                                color = MaterialTheme.colorScheme.primary
+                            )
                         }
                     } else {
                         Text(
@@ -219,7 +175,7 @@ fun Documents(collectionName: String, isStandAlone: Boolean) {
             Divider()
 
             LazyColumn {
-                items(viewModel.docProperties.value?.map { it } ?: emptyList()) { property ->
+                items(viewModel.docProperties.value ?: emptyList()) { property ->
                     selectedDoc?.let {
                         DocItem(
                             property = property,
@@ -237,8 +193,6 @@ fun DocItem(property: String, viewModel: DocumentsViewModel, selectedDoc: Docume
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {
-            }
             .padding(10.dp)
     ) {
         Text(
