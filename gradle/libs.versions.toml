@@ -2,7 +2,7 @@
 
 [versions]
 # https://developer.android.com/studio/releases/gradle-plugin
-android-gradle-plugin = "8.7.1"
+android-gradle-plugin = "8.9.1"
 android-sdk = "36"
 android-minsdk = "24"
 
@@ -21,7 +21,7 @@ core-ktx = "1.9.0"
 espresso-core = "3.5.1"
 material = "1.9.0"
 
-gradle-wrapper = "8.10.2"
+gradle-wrapper = "8.12.1"
 jreleaser = "1.20.0"
 
 [libraries]
