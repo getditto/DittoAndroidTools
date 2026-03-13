@@ -66,9 +66,14 @@ class PeersRepository(
         )
 
         // Mark all existing remote peers as disconnected, then upsert current peers
-        val existingResult = ditto.store.executeRaw("SELECT * FROM $COLLECTION_REMOTE_PEERS")
-        for (item in existingResult.items) {
-            val update = item.value.toPeerConnectedUpdate().copy(connected = false)
+        val disconnectedUpdates = ditto.store.execute(
+            "SELECT * FROM $COLLECTION_REMOTE_PEERS"
+        ) { result ->
+            result.items.map { item ->
+                item.value.toPeerConnectedUpdate().copy(connected = false)
+            }
+        }
+        for (update in disconnectedUpdates) {
             ditto.store.execute(
                 "INSERT INTO $COLLECTION_REMOTE_PEERS DOCUMENTS (:doc) ON ID CONFLICT DO UPDATE",
                 mapOf("doc" to update.toMap().toDittoCbor()).toDittoCbor()

@@ -39,9 +39,10 @@ class LogUtils(filesDir: File, val ditto: Ditto) {
 
         withContext(Dispatchers.IO) {
             logConfigItems.forEach { configItem ->
-                val resultItem = ditto.store.executeRaw("SHOW $configItem").items[0]
-                val cbor = resultItem.value[configItem] as? DittoCborSerializable
-                val intVal = cbor?.longOrNull?.toInt() ?: -1
+                val intVal = ditto.store.execute("SHOW $configItem") { result ->
+                    val cbor = result.items[0].value[configItem] as? DittoCborSerializable
+                    cbor?.longOrNull?.toInt() ?: -1
+                }
                 when(configItem){
                     MAX_AGE -> maxAge = intVal
                     MAX_SIZE -> maxSize = intVal
