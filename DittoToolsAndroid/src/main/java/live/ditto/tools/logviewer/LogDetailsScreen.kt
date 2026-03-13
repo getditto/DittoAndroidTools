@@ -39,7 +39,6 @@ fun LogDetailsScreen(
         factory = LogDetailsScreenViewModelFactory(ditto)
     )
 ) {
-    
     val logConfiguration = logDetailsScreenViewModel.logConfiguration
     val logDirectoryInfo = logDetailsScreenViewModel.logDirectoryInfo
 

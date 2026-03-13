@@ -32,7 +32,7 @@ data class DittoHeartbeatInfo(
     val presenceSnapshotDirectlyConnectedPeers: Map<String, Any>,
     val sdk: String,
     val schema: String,
-    val peerKeyString: String,
+    val peerKey: String,
     /**
      * The current state of any `HealthMetric`s tracked by the Heartbeat Tool.
      */
@@ -67,7 +67,7 @@ fun startHeartbeat(ditto: Ditto, config: DittoHeartbeatConfig): Flow<DittoHeartb
                 secondsInterval = config.secondsInterval,
                 sdk = Ditto.VERSION,
                 schema = HEARTBEAT_COLLECTION_SCHEMA_VALUE,
-                peerKeyString = ditto.presence.graph.localPeer.peerKey
+                peerKey = ditto.presence.graph.localPeer.peerKey
             )
 
         updateHealthMetrics(config)
@@ -112,7 +112,7 @@ suspend fun addToCollection(info: DittoHeartbeatInfo, config: DittoHeartbeatConf
         "metaData" to metaData.mapValues { (_, v) -> anyToCbor(v) }.toDittoCbor(),
         "sdk" to info.sdk.toDittoCbor(),
         "_schema" to info.schema.toDittoCbor(),
-        "peerKey" to info.peerKeyString.toDittoCbor(),
+        "peerKey" to info.peerKey.toDittoCbor(),
     ).toDittoCbor()
 
     ditto.store.execute(

@@ -30,6 +30,11 @@ class PresenceDegradationReporterViewModel(
         repository = repository
     ),
 ) : ViewModel() {
+    override fun onCleared() {
+        super.onCleared()
+        repository.close()
+    }
+
     private var _state = MutableStateFlow(PresenceDegradationReporterUiState(isLoading = true))
     val state = _state.asStateFlow()
 
