@@ -66,7 +66,7 @@ class PeersRepository(
         )
 
         // Mark all existing remote peers as disconnected, then upsert current peers
-        val existingResult = ditto.store.execute("SELECT * FROM $COLLECTION_REMOTE_PEERS")
+        val existingResult = ditto.store.executeRaw("SELECT * FROM $COLLECTION_REMOTE_PEERS")
         for (item in existingResult.items) {
             val update = item.value.toPeerConnectedUpdate().copy(connected = false)
             ditto.store.execute(

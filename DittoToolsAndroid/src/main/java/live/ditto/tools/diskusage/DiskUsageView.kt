@@ -170,7 +170,7 @@ private fun DiskUsageViewPreview() {
         DiskUsageView(
             uiState = DiskUsageState(
                 rootPath = "root",
-                totalSizeInBytes = 200,
+                totalSizeInBytes = 200L,
                 totalSize = "400",
                 children = listOf(
                     DiskUsage(),

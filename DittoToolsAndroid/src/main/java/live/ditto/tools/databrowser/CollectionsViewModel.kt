@@ -25,7 +25,7 @@ class CollectionsViewModel : ViewModel() {
     private val pollJob = viewModelScope.launch(Dispatchers.IO) {
         while (isActive) {
             try {
-                val result = DittoHandler.ditto.store.execute(
+                val result = DittoHandler.ditto.store.executeRaw(
                     "SELECT name FROM system:collections"
                 )
                 val names = result.items.mapNotNull { item ->

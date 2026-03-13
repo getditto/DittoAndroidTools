@@ -39,7 +39,7 @@ class DiskUsageViewModel(
     val uiState: StateFlow<DiskUsageState>
         get() = _uiState.asStateFlow()
 
-    private fun getFileSize(size: Int): String {
+    private fun getFileSize(size: Long): String {
         if (size <= 0) return "0"
         val units = arrayOf("B", "KB", "MB", "GB", "TB")
         val digitGroups = (log10(size.toDouble()) / log10(1024.0)).toInt()
@@ -50,7 +50,7 @@ class DiskUsageViewModel(
 
     // List of 1 for now
     fun updateDiskUsage(path: String, records: List<DittoDiskUsageItem>) {
-        var totalSizeInBytes = 0
+        var totalSizeInBytes = 0L
         val children = mutableListOf<DiskUsage>()
         val sortedRecords = records.sortedBy { it.path }
         for (record in sortedRecords) {

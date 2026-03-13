@@ -13,7 +13,7 @@ androidx-navigation = "2.5.3"
 androidx-test-ext = "1.1.5"
 webkit = "1.7.0"
 datastorePreferences = "1.0.0"
-ditto = "5.0.0-preview.5"
+ditto = "5.0.0-rc.1"
 
 junit = "4.13.2"
 kotlin-gradle-plugin = "2.1.0"
