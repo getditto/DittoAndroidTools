@@ -1,6 +1,5 @@
 package live.ditto.tools.databrowser
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,7 +19,6 @@ import androidx.navigation.NavHostController
 import live.ditto.DittoCollection
 
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun Collections(navController: NavHostController? = null) {
     val collectionsViewModel: CollectionsViewModel = viewModel()
@@ -29,18 +27,12 @@ fun Collections(navController: NavHostController? = null) {
 
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(text = "Data Browser")
-                }
-            )
-        },
-        content = {
+        content = { paddingValues ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(10.dp)
+                    .padding(paddingValues)
+                    .padding(horizontal = 10.dp, vertical = 10.dp)
             ) {
                 Text(
                     text = "Collections",
