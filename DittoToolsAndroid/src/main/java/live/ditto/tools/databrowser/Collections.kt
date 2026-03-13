@@ -62,8 +62,7 @@ fun Collections(navController: NavHostController? = null) {
                         if (navController != null) {
                             ListItem(
                                 collectionName = collectionName,
-                                navController = navController,
-                                isStandAlone = collectionsViewModel.isStandAlone
+                                navController = navController
                             )
                         }
                     }
@@ -99,13 +98,13 @@ fun Collections(navController: NavHostController? = null) {
 }
 
 @Composable
-fun ListItem(collectionName: String, navController: NavHostController, isStandAlone: Boolean) {
+fun ListItem(collectionName: String, navController: NavHostController) {
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                navController.navigate("documents/$collectionName/$isStandAlone")
+                navController.navigate("documents/$collectionName")
             }
             .padding(10.dp)
     ) {
