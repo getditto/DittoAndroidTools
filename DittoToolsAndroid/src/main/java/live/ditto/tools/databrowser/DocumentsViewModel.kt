@@ -132,7 +132,14 @@ class DocumentsViewModel(private val collectionName: String, isStandAlone: Boole
             ?: cbor.booleanOrNull
             ?: cbor.doubleOrNull
             ?: cbor.floatOrNull
-            ?: if (cbor.isNull) null else cbor.toString()
+            ?: when {
+                cbor.isNull -> null
+                cbor is DittoCborSerializable.Dictionary -> cbor.entries.associate { (k, v) ->
+                    (k.stringOrNull ?: k.toString()) to cborToDisplayValue(v)
+                }
+                cbor is DittoCborSerializable.ArrayValue -> cbor.map { cborToDisplayValue(it) }
+                else -> cbor.toString()
+            }
     }
 
     class MyViewModelFactory(private val collectionName: String, private val isStandAlone: Boolean) :
