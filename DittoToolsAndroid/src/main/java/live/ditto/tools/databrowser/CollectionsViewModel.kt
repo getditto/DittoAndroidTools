@@ -53,7 +53,7 @@ class CollectionsViewModel : ViewModel() {
         for (name in names) {
             if (name !in subscriptions) {
                 subscriptions[name] = DittoHandler.ditto.sync.registerSubscription(
-                    "SELECT * FROM $name"
+                    "SELECT * FROM `$name`"
                 )
             }
         }

@@ -20,7 +20,7 @@ class DocumentsViewModel(private val collectionName: String, isStandAlone: Boole
     private var isDQLMode: Boolean = false
 
     val subscription: DittoSyncSubscription? = if (isStandAlone) {
-        DittoHandler.ditto.sync.registerSubscription("SELECT * FROM $collectionName LIMIT 1000")
+        DittoHandler.ditto.sync.registerSubscription("SELECT * FROM `$collectionName` LIMIT 1000")
     } else {
         null
     }
@@ -29,7 +29,7 @@ class DocumentsViewModel(private val collectionName: String, isStandAlone: Boole
 
     private fun createFindAllObserver(): DittoStoreObserver {
         return DittoHandler.ditto.store.registerObserver(
-            "SELECT * FROM $collectionName LIMIT 1000"
+            "SELECT * FROM `$collectionName` LIMIT 1000"
         ) { result ->
             val newDocsList = mutableListOf<Document>()
             for (item in result.items) {
@@ -59,7 +59,7 @@ class DocumentsViewModel(private val collectionName: String, isStandAlone: Boole
             errorMessage.postValue(null)
             observer.close()
             observer = DittoHandler.ditto.store.registerObserver(
-                "SELECT * FROM $collectionName WHERE $queryString LIMIT 1000"
+                "SELECT * FROM `$collectionName` WHERE $queryString LIMIT 1000"
             ) { result ->
                 val newDocsList = mutableListOf<Document>()
                 for (item in result.items) {
