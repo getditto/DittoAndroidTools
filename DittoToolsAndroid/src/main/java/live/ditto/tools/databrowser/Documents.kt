@@ -41,10 +41,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
-fun Documents(collectionName: String, isStandAlone: Boolean) {
+fun Documents(collectionName: String) {
 
     val viewModel: DocumentsViewModel =
-        viewModel(factory = DocumentsViewModel.MyViewModelFactory(collectionName, isStandAlone))
+        viewModel(factory = DocumentsViewModel.MyViewModelFactory(collectionName))
 
     val selectedDoc by viewModel.selectedDoc.observeAsState()
     val docsList by viewModel.docsList.observeAsState()
@@ -59,137 +59,120 @@ fun Documents(collectionName: String, isStandAlone: Boolean) {
         }
     }
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            Text(
-                text = "Collection: $collectionName",
-                style = MaterialTheme.typography.headlineMedium
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            SearchBar(onSearch = { searchText ->
-                // Call the search function in the view model
-                viewModel.filterDocs(searchText)
-                selectedIndex = 0
-            })
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = "Type an ID to search, or use DQL: id == \"value\"  •  name CONTAINS \"text\"",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(start = 4.dp)
-            )
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Text(
+            text = "Collection: $collectionName",
+            style = MaterialTheme.typography.headlineMedium
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        SearchBar(onSearch = { searchText ->
+            viewModel.filterDocs(searchText)
+            selectedIndex = 0
+        })
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = "Type an ID to search, or use DQL: id == \"value\"  •  name CONTAINS \"text\"",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(start = 4.dp)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
 
-            // Show message for large datasets
-            if ((docsList?.size ?: 0) > 1000) {
-                Spacer(modifier = Modifier.height(4.dp))
+        errorMessage?.let { error ->
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.errorContainer
+                )
+            ) {
                 Text(
-                    text = "Large dataset: Use search bar to find documents, or Previous/Next buttons to browse",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(start = 4.dp)
+                    text = error,
+                    color = MaterialTheme.colorScheme.onErrorContainer,
+                    modifier = Modifier.padding(16.dp)
                 )
             }
-
             Spacer(modifier = Modifier.height(16.dp))
+        }
 
-            errorMessage?.let { error ->
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.errorContainer
-                    )
-                ) {
-                    Text(
-                        text = error,
-                        color = MaterialTheme.colorScheme.onErrorContainer,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-            }
+        Text(text = "Docs count: ${docsList?.size ?: "Loading..."}")
+        Spacer(modifier = Modifier.height(16.dp))
 
-            Text(text = "Docs count: ${docsList?.size ?: "Loading..."}")
-            Spacer(modifier = Modifier.height(16.dp))
+        Column {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Doc ID:  ",
+                    textAlign = TextAlign.Start
+                )
 
-            Column {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Doc ID:  ",
-                        textAlign = TextAlign.Start
-                    )
-
-                    if (!docsList.isNullOrEmpty()) {
-                        docsList?.getOrNull(selectedIndex)?.id?.let { docId ->
-                            Text(
-                                text = docId,
-                                textAlign = TextAlign.Start,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    } else {
+                if (!docsList.isNullOrEmpty()) {
+                    docsList?.getOrNull(selectedIndex)?.id?.let { docId ->
                         Text(
-                            text = "No Docs",
+                            text = docId,
                             textAlign = TextAlign.Start,
                             color = MaterialTheme.colorScheme.primary
                         )
                     }
-                }
-
-                // Navigation buttons - below the Doc ID row
-                if (!docsList.isNullOrEmpty()) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Button(
-                            onClick = {
-                                if (selectedIndex > 0) {
-                                    selectedIndex--
-                                    viewModel.selectedDoc.value = docsList!![selectedIndex]
-                                }
-                            },
-                            enabled = selectedIndex > 0
-                        ) {
-                            Text("Previous")
-                        }
-                        Button(
-                            onClick = {
-                                if (selectedIndex < (docsList?.size ?: 0) - 1) {
-                                    selectedIndex++
-                                    viewModel.selectedDoc.value = docsList!![selectedIndex]
-                                }
-                            },
-                            enabled = selectedIndex < (docsList?.size ?: 0) - 1
-                        ) {
-                            Text("Next")
-                        }
-                    }
+                } else {
+                    Text(
+                        text = "No Docs",
+                        textAlign = TextAlign.Start,
+                        color = MaterialTheme.colorScheme.primary
+                    )
                 }
             }
 
-            Divider()
-
-            LazyColumn {
-                items(viewModel.docProperties.value ?: emptyList()) { property ->
-                    selectedDoc?.let {
-                        DocItem(
-                            property = property,
-                            viewModel = viewModel,
-                            selectedDoc = it
-                        )
+            // Navigation buttons - below the Doc ID row
+            if (!docsList.isNullOrEmpty()) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Button(
+                        onClick = {
+                            if (selectedIndex > 0) {
+                                selectedIndex--
+                                viewModel.selectedDoc.value = docsList!![selectedIndex]
+                            }
+                        },
+                        enabled = selectedIndex > 0
+                    ) {
+                        Text("Previous")
+                    }
+                    Button(
+                        onClick = {
+                            if (selectedIndex < (docsList?.size ?: 0) - 1) {
+                                selectedIndex++
+                                viewModel.selectedDoc.value = docsList!![selectedIndex]
+                            }
+                        },
+                        enabled = selectedIndex < (docsList?.size ?: 0) - 1
+                    ) {
+                        Text("Next")
                     }
                 }
             }
         }
+
+        Divider()
+
+        LazyColumn {
+            items(viewModel.docProperties.value ?: emptyList()) { property ->
+                selectedDoc?.let {
+                    DocItem(property = property, selectedDoc = it)
+                }
+            }
+        }
+    }
 }
 
 @Composable
-fun DocItem(property: String, viewModel: DocumentsViewModel, selectedDoc: Document) {
+fun DocItem(property: String, selectedDoc: Document) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -200,12 +183,7 @@ fun DocItem(property: String, viewModel: DocumentsViewModel, selectedDoc: Docume
             fontSize = 16.sp,
             modifier = Modifier.weight(1f)
         )
-        val doc: Document? = viewModel.docsList.value?.find {
-            it == selectedDoc
-        }
-        if (doc != null) {
-            Text(doc.properties[property].toString())
-        }
+        Text(selectedDoc.properties[property].toString())
     }
 }
 

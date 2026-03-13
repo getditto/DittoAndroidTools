@@ -20,10 +20,9 @@ fun DittoDataBrowser(ditto: Ditto) {
             composable("collections") { Collections(navController = navController2)}
 
 
-            composable("documents/{collectionName}/{isStandAlone}") { backStackEntry ->
+            composable("documents/{collectionName}") { backStackEntry ->
                 val collectionName: String = backStackEntry.arguments?.getString("collectionName").toString()
-                val isStandAlone: Boolean = backStackEntry.arguments?.getString("isStandAlone").toBoolean()
-                Documents(collectionName = collectionName, isStandAlone = isStandAlone)
+                Documents(collectionName = collectionName)
             }
 
         }

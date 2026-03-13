@@ -4,12 +4,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
-class DocumentsViewModel(private val collectionName: String, isStandAlone: Boolean): ViewModel() {
+class DocumentsViewModel(private val collectionName: String): ViewModel() {
 
     val docsList: MutableLiveData<MutableList<Document>> = MutableLiveData<MutableList<Document>>(mutableListOf())
-    var docProperties: MutableLiveData<List<String>> = MutableLiveData(emptyList())
-    var selectedDoc = MutableLiveData<Document>()
-    var errorMessage = MutableLiveData<String?>()
+    val docProperties: MutableLiveData<List<String>> = MutableLiveData(emptyList())
+    val selectedDoc = MutableLiveData<Document>()
+    val errorMessage = MutableLiveData<String?>()
 
     // Store all documents for client-side filtering
     private var allDocuments: MutableList<Document> = mutableListOf()
@@ -17,34 +17,13 @@ class DocumentsViewModel(private val collectionName: String, isStandAlone: Boole
     private var isDQLMode: Boolean = false
 
     private var liveQuery = DittoHandler.ditto.store.collection(collectionName).findAll().observeLocal { docs, _ ->
-
-        val newDocsList = mutableListOf<Document>()
-        for(doc in docs) {
-            this.docProperties.postValue(doc.value.keys.map{it}.sorted())
-
-            val docValues = mutableMapOf<String, Any?>()
-            for((key, value) in doc.value) {
-                docValues[key] = value
-            }
-            newDocsList.add(Document(doc.id.toString(), docValues))
-        }
-        allDocuments = newDocsList
+        allDocuments = parseDocs(docs)
         applyFilter()
     }
 
     private fun findAllLiveQuery() {
-        this.liveQuery =  DittoHandler.ditto.store.collection(collectionName).findAll().observeLocal { docs, _ ->
-            val newDocsList = mutableListOf<Document>()
-            for(doc in docs) {
-                this.docProperties.postValue(doc.value.keys.map{it}.sorted())
-
-                val docValues = mutableMapOf<String, Any?>()
-                for((key, value) in doc.value) {
-                    docValues[key] = value
-                }
-                newDocsList.add(Document(doc.id.toString(), docValues))
-            }
-            allDocuments = newDocsList
+        this.liveQuery = DittoHandler.ditto.store.collection(collectionName).findAll().observeLocal { docs, _ ->
+            allDocuments = parseDocs(docs)
             applyFilter()
         }
     }
@@ -52,24 +31,28 @@ class DocumentsViewModel(private val collectionName: String, isStandAlone: Boole
     private fun findWithFilterLiveQuery(queryString: String) {
         try {
             errorMessage.postValue(null)
-            this.liveQuery =  DittoHandler.ditto.store.collection(collectionName).find(queryString).observeLocal { docs, _ ->
-                val newDocsList = mutableListOf<Document>()
-
-                for(doc in docs) {
-                    this.docProperties.postValue(doc.value.keys.map{it}.sorted())
-
-                    val docValues = mutableMapOf<String, Any?>()
-                    for((key, value) in doc.value) {
-                        docValues[key] = value
-                    }
-                    newDocsList.add(Document(doc.id.toString(), docValues))
-                }
-                docsList.postValue(newDocsList)
+            this.liveQuery = DittoHandler.ditto.store.collection(collectionName).find(queryString).observeLocal { docs, _ ->
+                docsList.postValue(parseDocs(docs))
             }
         } catch (e: Exception) {
             errorMessage.postValue("Invalid DQL query: ${e.message}")
             docsList.postValue(mutableListOf())
         }
+    }
+
+    private fun parseDocs(docs: List<live.ditto.DittoDocument>): MutableList<Document> {
+        val result = mutableListOf<Document>()
+        for (doc in docs) {
+            val docValues = mutableMapOf<String, Any?>()
+            for ((key, value) in doc.value) {
+                docValues[key] = value
+            }
+            result.add(Document(doc.id.toString(), docValues))
+        }
+        if (docs.isNotEmpty()) {
+            docProperties.postValue(docs.last().value.keys.sorted())
+        }
+        return result
     }
 
     fun filterDocs(queryString: String) {
@@ -84,7 +67,6 @@ class DocumentsViewModel(private val collectionName: String, isStandAlone: Boole
             // Simple text search - use client-side filtering
             if (isDQLMode) {
                 // Switching from DQL mode back to simple search
-                // Need to restart the findAll query
                 liveQuery.close()
                 isDQLMode = false
                 findAllLiveQuery()
@@ -99,7 +81,6 @@ class DocumentsViewModel(private val collectionName: String, isStandAlone: Boole
         val filtered = if (currentFilter.isEmpty()) {
             allDocuments
         } else {
-            // Filter documents where ID contains the search text (case-insensitive)
             allDocuments.filter { doc ->
                 doc.id.contains(currentFilter, ignoreCase = true)
             }.toMutableList()
@@ -108,13 +89,12 @@ class DocumentsViewModel(private val collectionName: String, isStandAlone: Boole
     }
 
     private fun isDQLQuery(text: String): Boolean {
-        // Check if the text contains DQL operators
         val dqlOperators = listOf("==", "!=", "CONTAINS", "contains", ">", "<", ">=", "<=", "AND", "and", "OR", "or", "IN", "in")
         return dqlOperators.any { text.contains(it) }
     }
 
-    class MyViewModelFactory(private val collectionName: String, private val isStandAlone: Boolean) :
+    class MyViewModelFactory(private val collectionName: String) :
         ViewModelProvider.NewInstanceFactory() {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T = DocumentsViewModel(collectionName, isStandAlone) as T
+        override fun <T : ViewModel> create(modelClass: Class<T>): T = DocumentsViewModel(collectionName) as T
     }
 }
