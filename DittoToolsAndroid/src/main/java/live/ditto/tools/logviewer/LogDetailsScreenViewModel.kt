@@ -14,14 +14,10 @@ import kotlinx.coroutines.launch
 import com.ditto.kotlin.Ditto
 import live.ditto.tools.utils.LogUtils
 import live.ditto.tools.utils.Utils
-import java.io.File
 
-class LogDetailsScreenViewModel(val ditto : Ditto, val filesDir: File) : ViewModel(){
+class LogDetailsScreenViewModel(val ditto : Ditto) : ViewModel(){
 
-    private val dittoLogUtils = LogUtils(
-        ditto = ditto,
-        filesDir = filesDir
-    )
+    private val dittoLogUtils = LogUtils(ditto = ditto)
 
     private val _logConfiguration = mutableStateOf<AnnotatedString>(AnnotatedString(""))
     val logConfiguration = _logConfiguration
@@ -81,13 +77,12 @@ class LogDetailsScreenViewModel(val ditto : Ditto, val filesDir: File) : ViewMod
 }
 
 class LogDetailsScreenViewModelFactory(
-    private val ditto: Ditto,
-    private val filesDir: File
+    private val ditto: Ditto
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(LogDetailsScreenViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return LogDetailsScreenViewModel(ditto, filesDir = filesDir) as T
+            return LogDetailsScreenViewModel(ditto) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

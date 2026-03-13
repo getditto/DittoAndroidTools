@@ -17,13 +17,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import com.ditto.kotlin.Ditto
 import live.ditto.tools.utils.LogUtils
-import java.io.File
 import kotlin.collections.plus
 import kotlin.collections.takeLast
 
-class LogFileViewerScreenViewModel(val ditto : Ditto, val filesDir: File) : ViewModel(){
+class LogFileViewerScreenViewModel(val ditto : Ditto) : ViewModel(){
 
-    private val dittoLogUtils = LogUtils(filesDir = filesDir, ditto = ditto)
+    private val dittoLogUtils = LogUtils(ditto = ditto)
     private var tailJob: Job? = null
     private var _expandedInnerMenu by  mutableStateOf(false)
     val isExpandedInnerMenu : Boolean
@@ -168,13 +167,12 @@ class LogFileViewerScreenViewModel(val ditto : Ditto, val filesDir: File) : View
 }
 
 class LogFileScreenViewModelFactory(
-    private val ditto: Ditto,
-    private val filesDir: File
+    private val ditto: Ditto
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(LogFileViewerScreenViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return LogFileViewerScreenViewModel(ditto, filesDir) as T
+            return LogFileViewerScreenViewModel(ditto) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

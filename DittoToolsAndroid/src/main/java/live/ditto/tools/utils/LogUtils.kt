@@ -22,9 +22,8 @@ import live.ditto.tools.data.LogConfiguration
 import java.io.File
 import java.io.RandomAccessFile
 
-class LogUtils(filesDir: File, val ditto: Ditto) {
-    private val dittoFileDir = filesDir
-    private val dittoLogDir = File("${dittoFileDir.path}/ditto/ditto_logs")
+class LogUtils(val ditto: Ditto) {
+    private val dittoLogDir = File("${ditto.absolutePersistenceDirectory}/ditto_logs")
     private val logConfigItems = listOf(MAX_AGE, MAX_SIZE, MAX_FILES_ON_DISK)
 
     /**

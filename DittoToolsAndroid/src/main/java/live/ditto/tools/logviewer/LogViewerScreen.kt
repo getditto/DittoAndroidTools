@@ -58,7 +58,6 @@ import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -77,10 +76,7 @@ import live.ditto.tools.R
 fun LogViewerScreen(
     ditto: Ditto,
     logFileViewerScreenViewModel: LogFileViewerScreenViewModel = viewModel(
-        factory = LogFileScreenViewModelFactory(
-            ditto,
-            filesDir = LocalContext.current.applicationContext.filesDir
-        )
+        factory = LogFileScreenViewModelFactory(ditto)
     )
 ) {
 

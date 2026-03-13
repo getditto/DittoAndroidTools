@@ -20,7 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -37,10 +36,7 @@ fun LogDetailsScreen(
     onButtonClick: () -> Unit,
     ditto: Ditto,
     logDetailsScreenViewModel: LogDetailsScreenViewModel = viewModel(
-        factory = LogDetailsScreenViewModelFactory(
-            ditto,
-            filesDir = LocalContext.current.applicationContext.filesDir
-        )
+        factory = LogDetailsScreenViewModelFactory(ditto)
     )
 ) {
     
