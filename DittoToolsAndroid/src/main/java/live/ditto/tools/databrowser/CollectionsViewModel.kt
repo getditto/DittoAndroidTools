@@ -2,49 +2,36 @@ package live.ditto.tools.databrowser
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.ditto.kotlin.DittoStoreObserver
 import com.ditto.kotlin.DittoSyncSubscription
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 
 class CollectionsViewModel : ViewModel() {
-
-    companion object {
-        private const val POLL_INTERVAL_MS = 2000L
-    }
 
     var collections: MutableLiveData<List<String>> = MutableLiveData(emptyList())
     var isStandAlone = false
 
     private val subscriptions = mutableMapOf<String, DittoSyncSubscription>()
+    private var collectionsSubscription: DittoSyncSubscription? = null
 
-    // system:collections is a virtual collection that doesn't support registerObserver,
-    // so we poll periodically with store.execute().
-    private val pollJob = viewModelScope.launch(Dispatchers.IO) {
-        while (isActive) {
-            try {
-                val names = DittoHandler.ditto.store.execute(
-                    "SELECT name FROM system:collections"
-                ) { result ->
-                    result.items.mapNotNull { item ->
-                        item.value["name"].stringOrNull
-                    }
-                }
-                collections.postValue(names)
-                if (isStandAlone) {
-                    subscribeToCollections(names)
-                }
-            } catch (e: Exception) {
-                // Query may fail if store is not yet ready; retry on next poll
-            }
-            delay(POLL_INTERVAL_MS)
+    private val observer: DittoStoreObserver = DittoHandler.ditto.store.registerObserver(
+        "SELECT name FROM __collections"
+    ) { result ->
+        val names = result.items.mapNotNull { item ->
+            item.value["name"].stringOrNull
+        }
+        collections.postValue(names)
+        if (isStandAlone) {
+            subscribeToCollections(names)
         }
     }
 
     fun startSubscription() {
         isStandAlone = true
+        if (collectionsSubscription == null) {
+            collectionsSubscription = DittoHandler.ditto.sync.registerSubscription(
+                "SELECT * FROM __collections"
+            )
+        }
         // Subscribe to all currently known collections
         collections.value?.let { subscribeToCollections(it) }
     }
@@ -61,6 +48,8 @@ class CollectionsViewModel : ViewModel() {
 
     override fun onCleared() {
         super.onCleared()
+        observer.close()
+        collectionsSubscription?.close()
         subscriptions.values.forEach { it.close() }
     }
 }
