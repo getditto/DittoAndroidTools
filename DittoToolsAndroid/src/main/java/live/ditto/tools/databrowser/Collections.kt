@@ -16,9 +16,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import android.net.Uri
 import androidx.navigation.NavHostController
 
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun Collections(navController: NavHostController? = null) {
@@ -26,15 +26,7 @@ fun Collections(navController: NavHostController? = null) {
     val collections: List<String> by collectionsViewModel.collections.observeAsState(emptyList())
     var showDialog by remember { mutableStateOf(false) }
 
-
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(text = "Data Browser")
-                }
-            )
-        },
         content = {
             Column(
                 modifier = Modifier
@@ -104,7 +96,7 @@ fun ListItem(collectionName: String, navController: NavHostController) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                navController.navigate("documents/$collectionName")
+                navController.navigate("documents/${Uri.encode(collectionName)}")
             }
             .padding(10.dp)
     ) {

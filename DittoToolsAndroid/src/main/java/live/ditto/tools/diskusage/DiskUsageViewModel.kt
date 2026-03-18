@@ -56,7 +56,7 @@ class DiskUsageViewModel(
         for (record in sortedRecords) {
             totalSizeInBytes += record.sizeInBytes
             val du = DiskUsage(
-                relativePath = record.path.substringAfter("/"),
+                relativePath = record.path.split("/").getOrElse(1) { record.path },
                 sizeInBytes = record.sizeInBytes,
                 size = getFileSize(record.sizeInBytes)
             )

@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import android.net.Uri
 import com.ditto.kotlin.Ditto
 
 @Composable
@@ -21,7 +22,7 @@ fun DittoDataBrowser(ditto: Ditto) {
 
 
             composable("documents/{collectionName}") { backStackEntry ->
-                val collectionName: String = backStackEntry.arguments?.getString("collectionName").toString()
+                val collectionName: String = Uri.decode(backStackEntry.arguments?.getString("collectionName").orEmpty())
                 Documents(collectionName = collectionName)
             }
 

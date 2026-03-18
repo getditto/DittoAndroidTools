@@ -8,7 +8,6 @@ import com.ditto.kotlin.DittoSyncSubscription
 class CollectionsViewModel : ViewModel() {
 
     var collections: MutableLiveData<List<String>> = MutableLiveData(emptyList())
-    var isStandAlone = false
 
     private val subscriptions = mutableMapOf<String, DittoSyncSubscription>()
     private var collectionsSubscription: DittoSyncSubscription? = null
@@ -20,13 +19,12 @@ class CollectionsViewModel : ViewModel() {
             item.value["name"].stringOrNull
         }
         collections.postValue(names)
-        if (isStandAlone) {
+        if (collectionsSubscription != null) {
             subscribeToCollections(names)
         }
     }
 
     fun startSubscription() {
-        isStandAlone = true
         if (collectionsSubscription == null) {
             collectionsSubscription = DittoHandler.ditto.sync.registerSubscription(
                 "SELECT * FROM __collections"

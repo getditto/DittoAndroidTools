@@ -134,8 +134,26 @@ class DocumentsViewModel(private val collectionName: String) : ViewModel() {
             }
     }
 
-    class Factory(private val collectionName: String) :
+    class DocumentsViewModelFactory(private val collectionName: String) :
         ViewModelProvider.NewInstanceFactory() {
         override fun <T : ViewModel> create(modelClass: Class<T>): T = DocumentsViewModel(collectionName) as T
+    }
+}
+
+fun formatDisplayValue(value: Any?): String {
+    return when (value) {
+        null -> "null"
+        is String -> value
+        is Map<*, *> -> buildString {
+            append("{")
+            append(value.entries.joinToString(", ") { (k, v) -> "\"$k\": ${formatDisplayValue(v)}" })
+            append("}")
+        }
+        is List<*> -> buildString {
+            append("[")
+            append(value.joinToString(", ") { formatDisplayValue(it) })
+            append("]")
+        }
+        else -> value.toString()
     }
 }

@@ -39,7 +39,7 @@ class LogUtils(val ditto: Ditto) {
         withContext(Dispatchers.IO) {
             logConfigItems.forEach { configItem ->
                 val intVal = ditto.store.execute("SHOW $configItem") { result ->
-                    val cbor = result.items[0].value[configItem] as? DittoCborSerializable
+                    val cbor = result.items.firstOrNull()?.value?.get(configItem) as? DittoCborSerializable
                     cbor?.longOrNull?.toInt() ?: -1
                 }
                 when(configItem){

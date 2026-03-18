@@ -40,7 +40,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 fun Documents(collectionName: String) {
 
     val viewModel: DocumentsViewModel =
-        viewModel(factory = DocumentsViewModel.Factory(collectionName))
+        viewModel(factory = DocumentsViewModel.DocumentsViewModelFactory(collectionName))
     var showMenu by remember { mutableStateOf(false) }
 
     val selectedDoc by viewModel.selectedDoc.observeAsState()
@@ -189,7 +189,7 @@ fun DocItem(property: String, viewModel: DocumentsViewModel, selectedDoc: Docume
         }
         if (doc != null) {
             Text(
-                text = doc.properties[property].toString(),
+                text = formatDisplayValue(doc.properties[property]),
                 color = MaterialTheme.colorScheme.onBackground
             )
         }
