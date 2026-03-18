@@ -6,7 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import live.ditto.Ditto
+import android.net.Uri
+import com.ditto.kotlin.Ditto
 
 @Composable
 fun DittoDataBrowser(ditto: Ditto) {
@@ -20,10 +21,9 @@ fun DittoDataBrowser(ditto: Ditto) {
             composable("collections") { Collections(navController = navController2)}
 
 
-            composable("documents/{collectionName}/{isStandAlone}") { backStackEntry ->
-                val collectionName: String = backStackEntry.arguments?.getString("collectionName").toString()
-                val isStandAlone: Boolean = backStackEntry.arguments?.getString("isStandAlone").toBoolean()
-                Documents(collectionName = collectionName, isStandAlone = isStandAlone)
+            composable("documents/{collectionName}") { backStackEntry ->
+                val collectionName: String = Uri.decode(backStackEntry.arguments?.getString("collectionName").orEmpty())
+                Documents(collectionName = collectionName)
             }
 
         }

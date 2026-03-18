@@ -5,7 +5,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
-import live.ditto.Ditto
+import kotlinx.coroutines.flow.onCompletion
+import com.ditto.kotlin.Ditto
 import live.ditto.tools.presencedegradationreporter.model.Peer
 import live.ditto.tools.presencedegradationreporter.model.Settings
 import live.ditto.tools.presencedegradationreporter.repositories.PeersRepository
@@ -32,8 +33,8 @@ fun Ditto.presenceDegradationReporterFlow(
 
         PresenceDegradationReporterApiState(
             settings = settings,
-            localPeer =  localPeer,
+            localPeer = localPeer,
             remotePeers = remotePeers
         )
-    }.filterNotNull()
+    }.onCompletion { repository.close() }.filterNotNull()
 }

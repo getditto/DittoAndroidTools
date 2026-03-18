@@ -8,7 +8,8 @@ For support, please contact Ditto Support (<support@ditto.live>).
 
 ## Requirements
 
-* Android 8.0+
+* Android 7.0+ (API 24)
+* Ditto Kotlin SDK v5 (`com.ditto:ditto-kotlin`)
 * Jetpack Compose
 
 ## Installing
@@ -32,14 +33,32 @@ You can find the list of versions and release notes in the [Releases tab](https:
 
 ## Usage
 
-All tools require an initialized instance of Ditto to work. For example, with the Online Playground identity:
+All tools require an initialized instance of Ditto to work. For example, with a server connection:
 
 ```kotlin
-val androidDependencies = DefaultAndroidDittoDependencies(applicationContext)
-val identity = DittoIdentity.OnlinePlayground(androidDependencies, appId = "YOUR_APPID", token = "YOUR_TOKEN", enableDittoCloudSync = true)
-ditto = Ditto(androidDependencies, identity)
-DittoLogger.minimumLogLevel = DittoLogLevel.DEBUG
-ditto.startSync()
+import com.ditto.kotlin.Ditto
+import com.ditto.kotlin.DittoAuthenticationProvider
+import com.ditto.kotlin.DittoConfig
+import com.ditto.kotlin.DittoFactory
+import com.ditto.kotlin.DittoLogLevel
+import com.ditto.kotlin.DittoLogger
+
+DittoLogger.minimumLogLevel = DittoLogLevel.Debug
+
+ditto = DittoFactory.create(
+    DittoConfig(
+        databaseId = "YOUR_APP_ID",
+        connect = DittoConfig.Connect.Server("YOUR_AUTH_URL"),
+    )
+).apply {
+    auth?.expirationHandler = { dittoInstance, _ ->
+        dittoInstance.auth?.login(
+            token = "YOUR_TOKEN",
+            provider = DittoAuthenticationProvider.development(),
+        )
+    }
+    sync.start()
+}
 ```
 
 ### 1. Tools Viewer
@@ -55,6 +74,7 @@ Example code:
 
 ```kotlin
 import live.ditto.tools.toolsviewer.DittoToolsViewer
+
 // minimum code required to get started
 DittoToolsViewer(
     ditto = YOUR_DITTO_INSTANCE
@@ -115,12 +135,9 @@ ExportLogs(onDismiss: () -> Unit)
 <img src="/images/exportLogs.png" alt="Export Logs Image" width="300">
 
 ### 5. Export Logs to Portal
-Export Logs to Portal allows you to export logs from your application into the Ditto Portal associated with your AppID
+Export Logs to Portal allows you to export logs from your application into the Ditto Portal.
 
-> **Note:** For this feature to work, `DQL_STRICT_MODE` must be set to `false`. For more information about DQL strict mode, see the [DQL Strict Mode documentation](https://docs.ditto.live/dql/strict-mode).
-
-
-Include `ExportLogsToPortal()` in your Composable function. You can pass in a lambda function to be called when the dialog is dismissed and a ditto object which will contain your AppID.
+Include `ExportLogsToPortal()` in your Composable function. You can pass in a lambda function to be called when the dialog is dismissed and a ditto object.
 
 ```kotlin
 ExportLogsToPortal(ditto: Ditto, onDismiss: () -> Unit)
@@ -237,22 +254,22 @@ There are two ways you can access the data:
 This is the model of the data and what you can use for reference
 ```kotlin
 {
-    _id: <ditto peerKeyString>,
+    _id: <ditto peerKey>,
     _schema: String,
     secondsInterval: String,
     presenceSnapshotDirectlyConnectedPeersCount: Int,
     lastUpdated: String (ISO-8601),
     sdk: String,
     presenceSnapshotDirectlyConnectedPeers: {
-        <peerKeyString>: {
+        <peerKey>: {
             deviceName: String,
             sdk: String,
-            isConnectedToDittoCloud: Bool,
+            isConnectedToDittoServer: Bool,
             bluetooth: Int,
             p2pWifi: Int,
             lan: Int,
         },
-        <peerKeyString>…,
+        <peerKey>…,
         …
     },
     metaData: {},
@@ -382,13 +399,10 @@ You will need to configure Proguard to ensure the underlying Ditto SDK is not re
 ```proguard
 # proguard-rules.pro
 
-# --- Ditto SDK rules --- 
+# --- Ditto SDK rules ---
 # Selective package definition will allow shrinking of all code in live.ditto.tools and its subpackages.
--keepnames class com.fasterxml.jackson.** { *; }
--keep class live.ditto.* { *; }
--keep class live.ditto.transports.** { *; }
--keep class live.ditto.internal.** { *; }
-# --- End Ditto SDK rules --- 
+-keep class com.ditto.kotlin.** { *; }
+# --- End Ditto SDK rules ---
 
 # --- Ditto Tools names ---
 # The following can be removed to obfuscate tools code further.

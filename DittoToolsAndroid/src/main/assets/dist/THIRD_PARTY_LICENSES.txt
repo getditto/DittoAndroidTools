@@ -1,0 +1,78 @@
+The presence viewer bundles the following third-party libraries:
+
+================================================================================
+vis-network v9.1.9
+https://github.com/visjs/vis-network
+
+Copyright (c) 2014-2017 Almende B.V.
+Copyright (c) 2017-2019 vis.js contributors
+
+vis-network is dual licensed under both
+
+  * The Apache 2.0 License
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  and
+
+  * The MIT License
+    http://opensource.org/licenses/MIT
+
+vis-network may be distributed under either license.
+
+================================================================================
+vis-data v7.1.9
+https://github.com/visjs/vis-data
+
+Copyright (c) 2014-2017 Almende B.V.
+Copyright (c) 2017-2019 vis.js contributors
+
+vis-data is dual licensed under both
+
+  * The Apache 2.0 License
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  and
+
+  * The MIT License
+    http://opensource.org/licenses/MIT
+
+vis-data may be distributed under either license.
+
+================================================================================
+Hammer.js v2.0.7
+https://github.com/hammerjs/hammer.js
+
+Copyright (c) 2016 Jorik Tangelder
+Licensed under the MIT License
+http://opensource.org/licenses/MIT
+
+================================================================================
+keycharm v0.4.0
+https://github.com/nicktijink/keycharm
+
+Licensed under the Apache 2.0 License
+http://www.apache.org/licenses/LICENSE-2.0
+
+================================================================================
+color v4.2.3
+https://github.com/Qix-/color
+
+Copyright (c) 2012 Heather Arthur
+Licensed under the MIT License
+http://opensource.org/licenses/MIT
+
+================================================================================
+core-js
+https://github.com/nicolo-ribaudo/core-js
+
+Copyright (c) 2014-2024 Denis Pushkarev
+Licensed under the MIT License
+http://opensource.org/licenses/MIT
+
+================================================================================
+uuid
+https://github.com/uuidjs/uuid
+
+Copyright (c) 2010-2020 Robert Kieffer and other contributors
+Licensed under the MIT License
+http://opensource.org/licenses/MIT

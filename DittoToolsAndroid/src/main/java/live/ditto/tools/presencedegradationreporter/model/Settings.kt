@@ -1,6 +1,6 @@
 package live.ditto.tools.presencedegradationreporter.model
 
-import live.ditto.DittoDocument
+import com.ditto.kotlin.serialization.DittoCborSerializable
 import live.ditto.tools.presencedegradationreporter.usecase.GetDateFromTimestampUseCase
 
 data class Settings(
@@ -20,9 +20,9 @@ fun Settings.toMap() = mapOf(
     "sessionStartedAt" to sessionStartedAt.toString(),
 )
 
-fun DittoDocument.toSettings() = Settings(
-    expectedPeers = this["expectedPeers"].stringValue.toInt(),
-    reportApiEnabled = this["reportApiEnabled"].stringValue.toBoolean(),
-    hasSeenExpectedPeers = this["hasSeenExpectedPeers"].stringValue.toBoolean(),
-    sessionStartedAt = this["sessionStartedAt"].stringValue.toLong(),
+fun DittoCborSerializable.Dictionary.toSettings() = Settings(
+    expectedPeers = this["expectedPeers"].stringOrNull?.toIntOrNull() ?: 0,
+    reportApiEnabled = this["reportApiEnabled"].stringOrNull?.toBoolean() ?: false,
+    hasSeenExpectedPeers = this["hasSeenExpectedPeers"].stringOrNull?.toBoolean() ?: false,
+    sessionStartedAt = this["sessionStartedAt"].stringOrNull?.toLongOrNull() ?: 0L,
 )

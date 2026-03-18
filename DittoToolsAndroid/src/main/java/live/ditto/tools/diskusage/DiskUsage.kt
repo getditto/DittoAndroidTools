@@ -1,8 +1,7 @@
 package live.ditto.tools.diskusage
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
 import java.io.File
 
@@ -18,20 +17,17 @@ fun DiskUsageScreen(
     val viewModel = viewModel<DiskUsageViewModel> {
         DiskUsageViewModel(onExport = onExport)
     }
-    val observerHandle = remember(ditto.diskUsage, viewModel) {
-        ditto.diskUsage.observe { diskUsageItem ->
-            val children = diskUsageItem.childItems ?: return@observe
+
+    LaunchedEffect(ditto, viewModel) {
+        ditto.diskUsage.observe().collect { diskUsageItem ->
+            val children = diskUsageItem.childItems ?: return@collect
             viewModel.updateDiskUsage(
-                path = ditto.persistenceDirectory,
+                path = ditto.absolutePersistenceDirectory,
                 records = children,
             )
         }
     }
-    DisposableEffect(key1 = observerHandle) {
-        onDispose {
-            observerHandle.close()
-        }
-    }
+
     DiskUsageView(
         ditto = ditto,
         viewModel = viewModel,
@@ -41,6 +37,6 @@ fun DiskUsageScreen(
 
 data class DiskUsage(
     val relativePath: String = "ditto/ditto_store",
-    val sizeInBytes: Int = 0,
+    val sizeInBytes: Long = 0L,
     val size: String = "Calculating...",
 )

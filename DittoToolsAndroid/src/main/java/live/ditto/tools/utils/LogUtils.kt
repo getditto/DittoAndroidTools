@@ -15,15 +15,15 @@ import kotlinx.serialization.json.booleanOrNull
 import kotlinx.serialization.json.doubleOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.longOrNull
-import live.ditto.Ditto
+import com.ditto.kotlin.Ditto
+import com.ditto.kotlin.serialization.DittoCborSerializable
 import live.ditto.tools.R
 import live.ditto.tools.data.LogConfiguration
 import java.io.File
 import java.io.RandomAccessFile
 
-class LogUtils(filesDir: File, val ditto: Ditto) {
-    private val dittoFileDir = filesDir
-    private val dittoLogDir = File("${dittoFileDir.path}/ditto/ditto_logs")
+class LogUtils(val ditto: Ditto) {
+    private val dittoLogDir = File("${ditto.absolutePersistenceDirectory}/ditto_logs")
     private val logConfigItems = listOf(MAX_AGE, MAX_SIZE, MAX_FILES_ON_DISK)
 
     /**
@@ -38,11 +38,14 @@ class LogUtils(filesDir: File, val ditto: Ditto) {
 
         withContext(Dispatchers.IO) {
             logConfigItems.forEach { configItem ->
-                val resultItem = ditto.store.execute("SHOW $configItem").items[0]
+                val intVal = ditto.store.execute("SHOW $configItem") { result ->
+                    val cbor = result.items.firstOrNull()?.value?.get(configItem) as? DittoCborSerializable
+                    cbor?.longOrNull?.toInt() ?: -1
+                }
                 when(configItem){
-                    MAX_AGE -> maxAge = resultItem.value[MAX_AGE] as Int
-                    MAX_SIZE -> maxSize = resultItem.value[MAX_SIZE] as Int
-                    MAX_FILES_ON_DISK -> maxFilesOnDisk = resultItem.value[MAX_FILES_ON_DISK] as Int
+                    MAX_AGE -> maxAge = intVal
+                    MAX_SIZE -> maxSize = intVal
+                    MAX_FILES_ON_DISK -> maxFilesOnDisk = intVal
                 }
             }
         }

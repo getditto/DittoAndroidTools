@@ -2,23 +2,52 @@ package live.ditto.tools.databrowser
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import live.ditto.DittoCollection
-import live.ditto.DittoSubscription
+import com.ditto.kotlin.DittoStoreObserver
+import com.ditto.kotlin.DittoSyncSubscription
 
-class CollectionsViewModel: ViewModel() {
+class CollectionsViewModel : ViewModel() {
 
-    var collections: MutableLiveData<List<DittoCollection>> = MutableLiveData(emptyList())
-    var isStandAlone = false
+    var collections: MutableLiveData<List<String>> = MutableLiveData(emptyList())
 
-    private lateinit var subscription: DittoSubscription
-    val liveQuery = DittoHandler.ditto.store.collections().observeLocal { collections ->
-        this.collections.postValue(collections.collections)
+    private val subscriptions = mutableMapOf<String, DittoSyncSubscription>()
+    private var collectionsSubscription: DittoSyncSubscription? = null
+
+    private val observer: DittoStoreObserver = DittoHandler.ditto.store.registerObserver(
+        "SELECT name FROM __collections"
+    ) { result ->
+        val names = result.items.mapNotNull { item ->
+            item.value["name"].stringOrNull
+        }
+        collections.postValue(names)
+        if (collectionsSubscription != null) {
+            subscribeToCollections(names)
+        }
     }
 
     fun startSubscription() {
-       this.subscription = DittoHandler.ditto.store.collections().subscribe()
-        isStandAlone = true
+        if (collectionsSubscription == null) {
+            collectionsSubscription = DittoHandler.ditto.sync.registerSubscription(
+                "SELECT * FROM __collections"
+            )
+        }
+        // Subscribe to all currently known collections
+        collections.value?.let { subscribeToCollections(it) }
     }
 
+    private fun subscribeToCollections(names: List<String>) {
+        for (name in names) {
+            if (name !in subscriptions) {
+                subscriptions[name] = DittoHandler.ditto.sync.registerSubscription(
+                    "SELECT * FROM `$name`"
+                )
+            }
+        }
+    }
 
+    override fun onCleared() {
+        super.onCleared()
+        observer.close()
+        collectionsSubscription?.close()
+        subscriptions.values.forEach { it.close() }
+    }
 }

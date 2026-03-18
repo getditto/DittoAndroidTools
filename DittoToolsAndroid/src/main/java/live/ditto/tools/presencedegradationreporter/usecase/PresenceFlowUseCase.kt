@@ -1,21 +1,19 @@
 package live.ditto.tools.presencedegradationreporter.usecase
 
+import com.ditto.kotlin.Ditto
+import com.ditto.kotlin.DittoConnectionType
+import com.ditto.kotlin.DittoPeer
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.buffer
-import kotlinx.coroutines.flow.callbackFlow
-import live.ditto.Ditto
-import live.ditto.DittoConnectionType
-import live.ditto.DittoPeer
+import kotlinx.coroutines.flow.map
 import live.ditto.tools.presencedegradationreporter.model.Peer
 import live.ditto.tools.presencedegradationreporter.model.PeerTransportInfo
 
 class PresenceFlowUseCase(
     private val ditto: Ditto
 ) {
-    operator fun invoke(bufferCapacity: Int = Channel.UNLIMITED) = callbackFlow {
-        val observer = ditto.presence.observe { graph ->
+    operator fun invoke(bufferCapacity: Int = Channel.UNLIMITED) = ditto.presence.observe()
+        .map { graph ->
             val seenAt = System.currentTimeMillis()
             val localPeerTransportInfo = resolveTransportInfo(graph.localPeer)
 
@@ -24,7 +22,7 @@ class PresenceFlowUseCase(
                 transportInfo = localPeerTransportInfo,
                 connected = true,
                 lastSeen = seenAt,
-                peerKeyString = graph.localPeer.peerKeyString,
+                peerKeyString = graph.localPeer.peerKey,
             )
 
             val remotePeers = graph.remotePeers.map {
@@ -35,26 +33,24 @@ class PresenceFlowUseCase(
                     transportInfo = peerTransportInfo,
                     connected = true,
                     lastSeen = seenAt,
-                    peerKeyString = it.peerKeyString,
+                    peerKeyString = it.peerKey,
                 )
             }
 
-            trySendBlocking(Pair(localPeer, remotePeers))
+            Pair(localPeer, remotePeers)
         }
-
-        awaitClose { observer.close() }
-    }.buffer(bufferCapacity)
+        .buffer(bufferCapacity)
 
     private fun resolveTransportInfo(peer: DittoPeer): PeerTransportInfo {
-        val lanSet = setOf(
+        val lanTypes = setOf(
             DittoConnectionType.AccessPoint,
             DittoConnectionType.WebSocket
         )
         val connections = peer.connections.map { it.connectionType }
         val bluetoothConnections = connections.count { it == DittoConnectionType.Bluetooth }
-        val lanConnections = connections.count { it in lanSet }
+        val lanConnections = connections.count { it in lanTypes }
         val p2pConnections = connections.count { it == DittoConnectionType.P2PWiFi }
-        val cloudConnections = if (peer.isConnectedToDittoCloud) 1 else 0
+        val cloudConnections = if (peer.isConnectedToDittoServer) 1 else 0
 
         return PeerTransportInfo(
             bluetoothConnections = bluetoothConnections,
