@@ -113,7 +113,7 @@ fun getConnections(
 
         val connectionMap: Map<String, Any?> = mapOf(
             "deviceName" to connection.deviceName,
-            "sdk" to ditto.sdkVersion,
+            "sdk" to (connection.dittoSdkVersion ?: ditto.sdkVersion),
             "isConnectedToDittoCloud" to connection.isConnectedToDittoCloud,
             "bluetooth" to connectionsTypeMap["bt"],
             "p2pWifi" to connectionsTypeMap["p2pWifi"],

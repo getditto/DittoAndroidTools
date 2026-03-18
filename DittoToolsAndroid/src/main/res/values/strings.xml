@@ -97,6 +97,7 @@
     <string name="local_self_peer">LOCAL (SELF) PEER</string>
     <string name="remote_peers">REMOTE PEERS</string>
     <string name="sdk_version">SDK v%1$s</string>
+    <string name="sdk_version_unknown">SDK version unknown</string>
     <string name="logs_will_be_exported_to_portal_for_appid">Logs will be exported to Portal for appID: %1$s</string>
     <string name="exporting">Exporting…</string>
     <string name="export_requested_successfully">Export requested successfully</string>

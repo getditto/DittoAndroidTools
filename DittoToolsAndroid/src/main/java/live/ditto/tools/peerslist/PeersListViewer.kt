@@ -137,7 +137,12 @@ private fun PeerView(peer: DittoPeer) {
             Column {
                 Text("${peer.deviceName}:", style = MaterialTheme.typography.titleLarge)
                 Text(peer.peerKeyString)
-                peer.dittoSdkVersion?.let { Text(stringResource(R.string.sdk_version, it)) }
+                val sdkVersion = peer.dittoSdkVersion
+                if (sdkVersion != null) {
+                    Text(stringResource(R.string.sdk_version, sdkVersion))
+                } else {
+                    Text(stringResource(R.string.sdk_version_unknown))
+                }
             }
         }
     }
