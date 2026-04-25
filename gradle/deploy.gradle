@@ -49,7 +49,7 @@ afterEvaluate {
                 pom {
                     name = 'Ditto Tools'
                     description = 'Ditto Tools'
-                    url = 'https://ditto.live'
+                    url = 'https://www.ditto.com'
 
                     licenses {
                         license {
@@ -62,7 +62,7 @@ afterEvaluate {
                     scm {
                         connection = 'scm:git:github.com/getditto/DittoAndroidTools.git'
                         developerConnection = 'scm:git:ssh://github.com/getditto/DittoAndroidTools.git'
-                        url = 'https://ditto.live'
+                        url = 'https://www.ditto.com'
                     }
 
                     developers {
