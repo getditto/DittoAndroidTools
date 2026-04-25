@@ -69,7 +69,7 @@ afterEvaluate {
                         developer {
                             id = 'ditto'
                             name = 'Ditto'
-                            email = 'support@ditto.live'
+                            email = 'support@ditto.com'
                         }
                     }
 
