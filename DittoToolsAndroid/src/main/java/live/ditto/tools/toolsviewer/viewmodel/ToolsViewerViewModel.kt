@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.MonitorHeart
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.filled.Analytics
 import androidx.lifecycle.ViewModel
 import live.ditto.tools.R
 import live.ditto.tools.toolsviewer.ToolMenuItem
@@ -58,6 +59,11 @@ class ToolsViewerViewModel: ViewModel() {
                         label = R.string.disk_usage_tool_label,
                         route = Screens.DiskUsageScreen.route,
                         icon = Icons.Default.Storage
+                    ),
+                    ToolMenuItem(
+                        label = R.string.disk_usage_inspector_tool_label,
+                        route = Screens.DiskUsageInspectorScreen.route,
+                        icon = Icons.Default.Analytics
                     )
                 )
             ),

@@ -23,6 +23,9 @@ sealed class Screens {
     object ExportLogsToPortalScreen: Screen {
         override val route = "exportLogsToPortal"
     }
+    object DiskUsageInspectorScreen: Screen {
+        override val route = "diskUsageInspector"
+    }
     object DiskUsageScreen: Screen {
         override val route = "diskUsage"
     }

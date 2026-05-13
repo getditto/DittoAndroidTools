@@ -32,6 +32,8 @@ import androidx.navigation.compose.rememberNavController
 import live.ditto.Ditto
 import live.ditto.tools.R
 import live.ditto.tools.databrowser.DittoDataBrowser
+import live.ditto.tools.diskusage.DiskUsageInspectorView
+import live.ditto.tools.diskusage.DiskUsageInspectorViewModel
 import live.ditto.tools.diskusage.DittoDiskUsage
 import live.ditto.tools.exportlogs.ExportLogs
 import live.ditto.tools.exportlogs.ExportLogsToPortal
@@ -132,6 +134,7 @@ private fun DittoToolsViewerScaffold(
                             Screens.ExportLogsScreen.route -> stringResource(R.string.export_logs_tool_label)
                             Screens.ExportLogsToPortalScreen.route -> stringResource(R.string.export_logs_to_portal_tool_label)
                             Screens.DiskUsageScreen.route -> stringResource(R.string.disk_usage_tool_label)
+                            Screens.DiskUsageInspectorScreen.route -> stringResource(R.string.disk_usage_inspector_tool_label)
                             Screens.HealthScreen.route -> stringResource(R.string.health_viewer_tool_label)
                             Screens.HeartbeatScreen.route -> stringResource(R.string.heartbeat_tool_label)
                             Screens.PresenceDegradationReporterScreen.route -> stringResource(R.string.presence_degradation_reporter_tool_label)
@@ -260,6 +263,12 @@ private fun ToolsViewerNavHost(
         }
         composable(Screens.LogViewerScreen.route) {
             LogViewerScreen(ditto = ditto)
+        }
+        composable(Screens.DiskUsageInspectorScreen.route) {
+            val inspectorViewModel = remember {
+                DiskUsageInspectorViewModel(ditto = ditto)
+            }
+            DiskUsageInspectorView(viewModel = inspectorViewModel)
         }
     }
 }

@@ -71,6 +71,7 @@
     <string name="total">Total</string>
     <string name="export_ditto_directory">Export ditto directory</string>
     <string name="do_you_want_to_export_ditto_directory">Do you want to export ditto directory</string>
+    <string name="disk_usage_inspector_tool_label">Disk Usage Inspector</string>
 
 
     <!-- Presence Degradation Reporter -->
