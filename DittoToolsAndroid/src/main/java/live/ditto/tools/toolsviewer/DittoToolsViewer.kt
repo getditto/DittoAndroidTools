@@ -18,18 +18,16 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import live.ditto.Ditto
+import com.ditto.kotlin.Ditto
 import live.ditto.tools.R
 import live.ditto.tools.databrowser.DittoDataBrowser
 import live.ditto.tools.diskusage.DittoDiskUsage
@@ -87,20 +85,11 @@ private fun DittoToolsViewerScaffold(
     val currentRoute = navBackStackEntry?.destination?.route
     val isMainScreen = currentRoute == Screens.MainScreen.route
 
-    // Read parent app's status bar color
-    val view = LocalView.current
-    val statusBarColor = remember {
-        if (!view.isInEditMode) {
-            val colorInt = (view.context as? android.app.Activity)?.window?.statusBarColor
-            colorInt?.let { Color(it) } ?: Color(0xFF6200EE) // Fallback to material purple
-        } else {
-            Color(0xFF6200EE)
-        }
-    }
-
-    // Determine if we should use light or dark content based on background luminance
+    // Use the theme's primary color for the top app bar. Window.statusBarColor is
+    // deprecated in API 35+ (Android 15) and returns transparent with edge-to-edge.
+    val statusBarColor = MaterialTheme.colorScheme.primary
     val useLightContent = statusBarColor.luminance() < 0.5f
-    val contentColor = if (useLightContent) Color.White else Color.Black
+    val contentColor = if (useLightContent) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary
 
     // Background color that adapts to dark mode
     val isSystemInDarkTheme = androidx.compose.foundation.isSystemInDarkTheme()

@@ -2,14 +2,16 @@ package live.ditto.tools.heartbeat
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.ditto.kotlin.Ditto
+import com.ditto.kotlin.DittoConnectionType
+import com.ditto.kotlin.DittoPeer
+import com.ditto.kotlin.serialization.DittoCborSerializable
+import com.ditto.kotlin.serialization.toDittoCbor
+import live.ditto.tools.healthmetrics.HealthMetric
+import live.ditto.tools.healthmetrics.HealthMetricProvider
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import live.ditto.Ditto
-import live.ditto.DittoConnectionType
-import live.ditto.DittoPeer
-import live.ditto.tools.healthmetrics.HealthMetric
-import live.ditto.tools.healthmetrics.HealthMetricProvider
 import org.joda.time.DateTime
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -30,7 +32,7 @@ data class DittoHeartbeatInfo(
     val presenceSnapshotDirectlyConnectedPeers: Map<String, Any>,
     val sdk: String,
     val schema: String,
-    val peerKeyString: String,
+    val peerKey: String,
     /**
      * The current state of any `HealthMetric`s tracked by the Heartbeat Tool.
      */
@@ -59,13 +61,13 @@ fun startHeartbeat(ditto: Ditto, config: DittoHeartbeatConfig): Flow<DittoHeartb
             DittoHeartbeatInfo(
                 id = config.id,
                 lastUpdated = timestamp,
-                presenceSnapshotDirectlyConnectedPeers = getConnections(presenceData, ditto) ,
+                presenceSnapshotDirectlyConnectedPeers = getConnections(presenceData, ditto),
                 metaData = config.metaData,
                 presenceSnapshotDirectlyConnectedPeersCount = presenceData.size,
                 secondsInterval = config.secondsInterval,
-                sdk = ditto.sdkVersion,
+                sdk = Ditto.VERSION,
                 schema = HEARTBEAT_COLLECTION_SCHEMA_VALUE,
-                peerKeyString = ditto.presence.graph.localPeer.peerKeyString
+                peerKey = ditto.presence.graph.localPeer.peerKey
             )
 
         updateHealthMetrics(config)
@@ -74,7 +76,6 @@ fun startHeartbeat(ditto: Ditto, config: DittoHeartbeatConfig): Flow<DittoHeartb
         emit(info)
         delay((config.secondsInterval * 1000L))
     }
-
 }
 
 fun observePeers(ditto: Ditto): List<DittoPeer> {
@@ -82,22 +83,42 @@ fun observePeers(ditto: Ditto): List<DittoPeer> {
     return presenceGraph.remotePeers
 }
 
-fun addToCollection(info: DittoHeartbeatInfo, config: DittoHeartbeatConfig, ditto: Ditto) {
+private fun anyToCbor(value: Any?): DittoCborSerializable = when (value) {
+    is String -> value.toDittoCbor()
+    is Int -> value.toDittoCbor()
+    is Long -> value.toDittoCbor()
+    is Double -> value.toDittoCbor()
+    is Float -> value.toDittoCbor()
+    is Boolean -> value.toDittoCbor()
+    is Map<*, *> -> {
+        @Suppress("UNCHECKED_CAST")
+        val map = value as Map<String, Any?>
+        map.mapValues { (_, v) -> anyToCbor(v) }.toDittoCbor()
+    }
+    is List<*> -> value.map { anyToCbor(it) }.toDittoCbor()
+    null -> DittoCborSerializable.NullValue()
+    else -> value.toString().toDittoCbor()
+}
+
+suspend fun addToCollection(info: DittoHeartbeatInfo, config: DittoHeartbeatConfig, ditto: Ditto) {
     if (!config.publishToDittoCollection) return
     val metaData = config.metaData ?: emptyMap()
     val doc = mapOf(
-        "_id" to info.id,
-        "secondsInterval" to info.secondsInterval,
-        "presenceSnapshotDirectlyConnectedPeersCount" to (info.presenceSnapshotDirectlyConnectedPeersCount),
-        "lastUpdated" to info.lastUpdated,
-        "presenceSnapshotDirectlyConnectedPeers" to info.presenceSnapshotDirectlyConnectedPeers,
-        "metaData" to metaData,
-        "sdk" to info.sdk,
-        "_schema" to info.schema,
-        "peerKey" to info.peerKeyString
-    )
+        "_id" to info.id.toDittoCbor(),
+        "secondsInterval" to info.secondsInterval.toDittoCbor(),
+        "presenceSnapshotDirectlyConnectedPeersCount" to info.presenceSnapshotDirectlyConnectedPeersCount.toDittoCbor(),
+        "presenceSnapshotDirectlyConnectedPeers" to info.presenceSnapshotDirectlyConnectedPeers.mapValues { (_, v) -> anyToCbor(v) }.toDittoCbor(),
+        "lastUpdated" to info.lastUpdated.toDittoCbor(),
+        "metaData" to metaData.mapValues { (_, v) -> anyToCbor(v) }.toDittoCbor(),
+        "sdk" to info.sdk.toDittoCbor(),
+        "_schema" to info.schema.toDittoCbor(),
+        "peerKey" to info.peerKey.toDittoCbor(),
+    ).toDittoCbor()
 
-    ditto.store.collection(HEARTBEAT_COLLECTION_COLLECTION_NAME).upsert(value = doc)
+    ditto.store.execute(
+        "INSERT INTO $HEARTBEAT_COLLECTION_COLLECTION_NAME DOCUMENTS (:doc) ON ID CONFLICT DO UPDATE",
+        mapOf("doc" to doc).toDittoCbor()
+    )
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -108,19 +129,19 @@ fun getConnections(
 
     val connectionsMap: MutableMap<String, Any> = mutableMapOf()
 
-    presenceSnapshotDirectlyConnectedPeers?.forEach { connection ->
-        val connectionsTypeMap = getConnectionTypeCount(dittoPeer = connection)
+    presenceSnapshotDirectlyConnectedPeers?.forEach { peer ->
+        val connectionsTypeMap = getConnectionTypeCount(dittoPeer = peer)
 
         val connectionMap: Map<String, Any?> = mapOf(
-            "deviceName" to connection.deviceName,
-            "sdk" to ditto.sdkVersion,
-            "isConnectedToDittoCloud" to connection.isConnectedToDittoCloud,
+            "deviceName" to peer.deviceName,
+            "sdk" to Ditto.VERSION,
+            "isConnectedToDittoServer" to peer.isConnectedToDittoServer,
             "bluetooth" to connectionsTypeMap["bt"],
             "p2pWifi" to connectionsTypeMap["p2pWifi"],
             "lan" to connectionsTypeMap["lan"],
         )
 
-        connectionsMap[connection.peerKeyString] = connectionMap
+        connectionsMap[peer.peerKey] = connectionMap
     }
 
     return connectionsMap
@@ -140,4 +161,3 @@ fun getConnectionTypeCount(dittoPeer: DittoPeer): Map<String, Int> {
     }
     return mapOf("bt" to bt, "p2pWifi" to p2pWifi, "lan" to lan)
 }
-

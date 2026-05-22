@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
-import live.ditto.DiskUsageItem
-import live.ditto.Ditto
+import com.ditto.kotlin.Ditto
+import com.ditto.kotlin.DittoDiskUsageItem
 import live.ditto.tools.diskusage.usecase.GetDiskUsageMetrics
 import live.ditto.tools.exporter.ZipFolderUseCase
 import live.ditto.tools.healthmetrics.HealthMetric
@@ -39,7 +39,7 @@ class DiskUsageViewModel(
     val uiState: StateFlow<DiskUsageState>
         get() = _uiState.asStateFlow()
 
-    private fun getFileSize(size: Int): String {
+    private fun getFileSize(size: Long): String {
         if (size <= 0) return "0"
         val units = arrayOf("B", "KB", "MB", "GB", "TB")
         val digitGroups = (log10(size.toDouble()) / log10(1024.0)).toInt()
@@ -49,14 +49,14 @@ class DiskUsageViewModel(
     }
 
     // List of 1 for now
-    fun updateDiskUsage(path: String, records: List<DiskUsageItem>) {
-        var totalSizeInBytes = 0
+    fun updateDiskUsage(path: String, records: List<DittoDiskUsageItem>) {
+        var totalSizeInBytes = 0L
         val children = mutableListOf<DiskUsage>()
         val sortedRecords = records.sortedBy { it.path }
         for (record in sortedRecords) {
             totalSizeInBytes += record.sizeInBytes
             val du = DiskUsage(
-                relativePath = record.path,
+                relativePath = record.path.split("/").getOrElse(1) { record.path },
                 sizeInBytes = record.sizeInBytes,
                 size = getFileSize(record.sizeInBytes)
             )
@@ -74,7 +74,7 @@ class DiskUsageViewModel(
     }
 
     suspend fun exportButtonOnClick(ditto: Ditto): File {
-        val inputDirectory = File(ditto.persistenceDirectory)
+        val inputDirectory = File(ditto.absolutePersistenceDirectory)
         val outputZipFile = withContext(dispatcherIO) {
             File.createTempFile("ditto_", ".zip")
         }

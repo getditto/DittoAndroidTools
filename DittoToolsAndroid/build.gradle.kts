@@ -1,8 +1,9 @@
 plugins {
     alias(libs.plugins.com.android.library)
     alias(libs.plugins.org.jetbrains.kotlin.android)
+    alias(libs.plugins.org.jetbrains.kotlin.compose)
     alias(libs.plugins.jreleaser)
-    kotlin("plugin.serialization") version "1.9.25"
+    kotlin("plugin.serialization") version "2.1.0"
 }
 
 val libraryArtifactId by extra("ditto-tools-android")

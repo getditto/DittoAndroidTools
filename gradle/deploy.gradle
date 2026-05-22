@@ -24,9 +24,16 @@ android {
     publishing {
         singleVariant("release") {
             withSourcesJar()
-            withJavadocJar()
+            // withJavadocJar() removed: AGP's task runs Dokka, which bundles an ASM that
+            // can't decode the PermittedSubclasses attribute on Java 17 sealed classes used
+            // by the v5 Ditto SDK. We attach an empty -javadoc.jar below to satisfy Maven
+            // Central's artifact requirement.
         }
     }
+}
+
+tasks.register('javadocJar', Jar) {
+    archiveClassifier.set('javadoc')
 }
 
 afterEvaluate {
@@ -34,6 +41,7 @@ afterEvaluate {
         publications {
             release(MavenPublication) {
                 from components.release
+                artifact tasks.named('javadocJar')
                 artifactId libraryArtifactId
                 groupId = 'live.ditto'
 

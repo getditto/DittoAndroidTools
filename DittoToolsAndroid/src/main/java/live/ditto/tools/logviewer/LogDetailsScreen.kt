@@ -20,7 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -29,7 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import live.ditto.Ditto
+import com.ditto.kotlin.Ditto
 import live.ditto.tools.R
 
 @Composable
@@ -37,13 +36,9 @@ fun LogDetailsScreen(
     onButtonClick: () -> Unit,
     ditto: Ditto,
     logDetailsScreenViewModel: LogDetailsScreenViewModel = viewModel(
-        factory = LogDetailsScreenViewModelFactory(
-            ditto,
-            filesDir = LocalContext.current.applicationContext.filesDir
-        )
+        factory = LogDetailsScreenViewModelFactory(ditto)
     )
 ) {
-    
     val logConfiguration = logDetailsScreenViewModel.logConfiguration
     val logDirectoryInfo = logDetailsScreenViewModel.logDirectoryInfo
 

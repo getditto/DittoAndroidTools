@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import live.ditto.Ditto
+import com.ditto.kotlin.Ditto
 import live.ditto.tools.presencedegradationreporter.model.Peer
 import live.ditto.tools.presencedegradationreporter.model.Settings
 import live.ditto.tools.presencedegradationreporter.repositories.PeersRepository
@@ -30,6 +30,11 @@ class PresenceDegradationReporterViewModel(
         repository = repository
     ),
 ) : ViewModel() {
+    override fun onCleared() {
+        super.onCleared()
+        repository.close()
+    }
+
     private var _state = MutableStateFlow(PresenceDegradationReporterUiState(isLoading = true))
     val state = _state.asStateFlow()
 

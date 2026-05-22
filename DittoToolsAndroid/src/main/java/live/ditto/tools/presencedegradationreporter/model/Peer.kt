@@ -1,6 +1,6 @@
 package live.ditto.tools.presencedegradationreporter.model
 
-import live.ditto.DittoDocument
+import com.ditto.kotlin.serialization.DittoCborSerializable
 import live.ditto.tools.presencedegradationreporter.usecase.GetDateFromTimestampUseCase
 
 data class Peer(
@@ -24,15 +24,15 @@ fun Peer.toMap() = mapOf(
     "peerKeyString" to peerKeyString,
 )
 
-fun DittoDocument.toPeer() = Peer(
-    name = this["_id"].stringValue,
+fun DittoCborSerializable.Dictionary.toPeer() = Peer(
+    name = this["_id"].stringOrNull ?: "",
     transportInfo = PeerTransportInfo(
-        bluetoothConnections = this["bluetoothConnections"].stringValue.toInt(),
-        lanConnections = this["lanConnections"].stringValue.toInt(),
-        p2pConnections = this["p2pConnections"].stringValue.toInt(),
-        cloudConnections = this["cloudConnections"].stringValue.toInt(),
+        bluetoothConnections = this["bluetoothConnections"].stringOrNull?.toIntOrNull() ?: 0,
+        lanConnections = this["lanConnections"].stringOrNull?.toIntOrNull() ?: 0,
+        p2pConnections = this["p2pConnections"].stringOrNull?.toIntOrNull() ?: 0,
+        cloudConnections = this["cloudConnections"].stringOrNull?.toIntOrNull() ?: 0,
     ),
-    connected = this["connected"].stringValue.toBoolean(),
-    lastSeen = this["lastSeen"].stringValue.toLong(),
-    peerKeyString = this["peerKeyString"].stringValue,
+    connected = this["connected"].stringOrNull?.toBoolean() ?: false,
+    lastSeen = this["lastSeen"].stringOrNull?.toLongOrNull() ?: 0L,
+    peerKeyString = this["peerKeyString"].stringOrNull ?: "",
 )

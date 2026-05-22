@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
-import live.ditto.Ditto
+import com.ditto.kotlin.Ditto
 import live.ditto.tools.presencedegradationreporter.components.Dashboard
 import live.ditto.tools.presencedegradationreporter.components.Loading
 import live.ditto.tools.presencedegradationreporter.components.PeersForm
