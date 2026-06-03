@@ -1,6 +1,7 @@
 package live.ditto.tools.toolsviewer
 
 import android.os.Build
+import android.content.Context
 import androidx.annotation.RequiresApi
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.PaddingValues
@@ -29,11 +30,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.compose.ui.platform.LocalContext
 import live.ditto.Ditto
 import live.ditto.tools.R
 import live.ditto.tools.databrowser.DittoDataBrowser
 import live.ditto.tools.diskusage.DiskUsageInspectorView
-import live.ditto.tools.diskusage.DiskUsageInspectorViewModel
+import live.ditto.tools.diskusage.DiskStorageViewModel
+import live.ditto.tools.diskusage.CollectionInspectionViewModel
 import live.ditto.tools.diskusage.DittoDiskUsage
 import live.ditto.tools.exportlogs.ExportLogs
 import live.ditto.tools.exportlogs.ExportLogsToPortal
@@ -265,10 +268,20 @@ private fun ToolsViewerNavHost(
             LogViewerScreen(ditto = ditto)
         }
         composable(Screens.DiskUsageInspectorScreen.route) {
-            val inspectorViewModel = remember {
-                DiskUsageInspectorViewModel(ditto = ditto)
+            val context = LocalContext.current
+            val prefs = remember {
+                context.getSharedPreferences("DittoDiskUsage", Context.MODE_PRIVATE)
             }
-            DiskUsageInspectorView(viewModel = inspectorViewModel)
+            val storageViewModel = remember {
+                DiskStorageViewModel(ditto = ditto, prefs = prefs)
+            }
+            val inspectionViewModel = remember {
+                CollectionInspectionViewModel(ditto = ditto)
+            }
+            DiskUsageInspectorView(
+                storageViewModel = storageViewModel,
+                inspectionViewModel = inspectionViewModel
+            )
         }
     }
 }
