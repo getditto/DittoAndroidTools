@@ -28,24 +28,39 @@ class DittoToolsApplication : Application() {
             try {
                 DittoLogger.minimumLogLevel = DittoLogLevel.Debug
 
-                val appId = BuildConfig.DITTO_ONLINE_PLAYGROUND_APP_ID
-                ditto = DittoFactory.create(
-                    DittoConfig(
-                        databaseId = appId,
-                        connect = DittoConfig.Connect.Server(BuildConfig.DITTO_CUSTOM_AUTH_URL),
-                    )
-                ).apply {
-                    auth?.expirationHandler = { dittoInstance, _ ->
-                        dittoInstance.auth?.login(
-                            token = BuildConfig.DITTO_ONLINE_PLAYGROUND_TOKEN,
-                            provider = DittoAuthenticationProvider.development(),
+                val appId: String? = BuildConfig.DITTO_ONLINE_PLAYGROUND_APP_ID
+                val authUrl: String? = BuildConfig.DITTO_CUSTOM_AUTH_URL
+                val hasCredentials =
+                    !appId.isNullOrEmpty() && appId != "null" &&
+                        !authUrl.isNullOrEmpty() && authUrl != "null"
+
+                ditto = if (hasCredentials) {
+                    DittoFactory.create(
+                        DittoConfig(
+                            databaseId = appId!!,
+                            connect = DittoConfig.Connect.Server(authUrl!!),
                         )
+                    ).apply {
+                        auth?.expirationHandler = { dittoInstance, _ ->
+                            dittoInstance.auth?.login(
+                                token = BuildConfig.DITTO_ONLINE_PLAYGROUND_TOKEN,
+                                provider = DittoAuthenticationProvider.development(),
+                            )
+                        }
+                        sync.start()
                     }
-                    sync.start()
+                } else {
+                    Log.w(TAG, "No Ditto credentials in local.properties — running offline (SmallPeersOnly).")
+                    DittoFactory.create(
+                        DittoConfig(
+                            databaseId = "offline-demo",
+                            connect = DittoConfig.Connect.SmallPeersOnly(null),
+                        )
+                    )
                 }
 
                 Log.d(TAG, "Ditto initialized successfully")
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 Log.e(TAG, "Failed to initialize Ditto", e)
             }
         }

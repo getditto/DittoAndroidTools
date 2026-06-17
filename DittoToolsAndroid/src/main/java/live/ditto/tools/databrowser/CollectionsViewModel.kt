@@ -1,53 +1,32 @@
 package live.ditto.tools.databrowser
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ditto.kotlin.DittoStoreObserver
-import com.ditto.kotlin.DittoSyncSubscription
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class CollectionsViewModel : ViewModel() {
 
-    var collections: MutableLiveData<List<String>> = MutableLiveData(emptyList())
+    private val _collections = MutableStateFlow<List<String>?>(null)
+    val collections: StateFlow<List<String>?> = _collections.asStateFlow()
 
-    private val subscriptions = mutableMapOf<String, DittoSyncSubscription>()
-    private var collectionsSubscription: DittoSyncSubscription? = null
-
-    private val observer: DittoStoreObserver = DittoHandler.ditto.store.registerObserver(
-        "SELECT name FROM __collections"
-    ) { result ->
-        val names = result.items.mapNotNull { item ->
-            item.value["name"].stringOrNull
+    private val observer: DittoStoreObserver? = try {
+        DittoHandler.ditto.store.registerObserver(
+            "SELECT name FROM __collections"
+        ) { result ->
+            val names = result.items
+                .mapNotNull { it.value["name"].stringOrNull }
+                .sorted()
+            _collections.value = names
         }
-        collections.postValue(names)
-        if (collectionsSubscription != null) {
-            subscribeToCollections(names)
-        }
-    }
-
-    fun startSubscription() {
-        if (collectionsSubscription == null) {
-            collectionsSubscription = DittoHandler.ditto.sync.registerSubscription(
-                "SELECT * FROM __collections"
-            )
-        }
-        // Subscribe to all currently known collections
-        collections.value?.let { subscribeToCollections(it) }
-    }
-
-    private fun subscribeToCollections(names: List<String>) {
-        for (name in names) {
-            if (name !in subscriptions) {
-                subscriptions[name] = DittoHandler.ditto.sync.registerSubscription(
-                    "SELECT * FROM `$name`"
-                )
-            }
-        }
+    } catch (t: Throwable) {
+        _collections.value = emptyList()
+        null
     }
 
     override fun onCleared() {
         super.onCleared()
-        observer.close()
-        collectionsSubscription?.close()
-        subscriptions.values.forEach { it.close() }
+        observer?.close()
     }
 }

@@ -1,124 +1,169 @@
 package live.ditto.tools.databrowser
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.ditto.kotlin.DittoStoreObserver
 import com.ditto.kotlin.serialization.DittoCborSerializable
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class DocumentsViewModel(private val collectionName: String) : ViewModel() {
 
-    val docsList: MutableLiveData<MutableList<Document>> = MutableLiveData<MutableList<Document>>(mutableListOf())
-    var docProperties: MutableLiveData<List<String>> = MutableLiveData(emptyList())
-    var selectedDoc = MutableLiveData<Document>()
-    var errorMessage = MutableLiveData<String?>()
+    companion object {
+        const val PAGE_SIZE = 25
+    }
 
-    // Store all documents for client-side filtering
-    private var allDocuments: MutableList<Document> = mutableListOf()
-    private var currentFilter: String = ""
-    private var isDQLMode: Boolean = false
+    data class Page(
+        val docs: List<Document>,
+        val docProperties: List<String>,
+        val offset: Int,
+        val snapshotAtCount: Int,
+    )
 
-    private var observer: DittoStoreObserver = createFindAllObserver()
+    data class PageUiState(
+        val page: Page? = null,
+        val isLoading: Boolean = true,
+        val error: String? = null,
+    )
 
-    private fun createFindAllObserver(): DittoStoreObserver {
-        return DittoHandler.ditto.store.registerObserver(
-            "SELECT * FROM `$collectionName` LIMIT 1000"
-        ) { result ->
-            val newDocsList = mutableListOf<Document>()
-            for (item in result.items) {
-                val valueMap = item.value
-                val keys = valueMap.keys.mapNotNull { it.stringOrNull }.sorted()
-                this.docProperties.postValue(keys)
+    private val _totalCount = MutableStateFlow<Int?>(null)
+    val totalCount: StateFlow<Int?> = _totalCount.asStateFlow()
 
-                val docValues = mutableMapOf<String, Any?>()
-                for (key in keys) {
-                    docValues[key] = cborToDisplayValue(valueMap[key])
+    private val _pageState = MutableStateFlow(PageUiState())
+    val pageState: StateFlow<PageUiState> = _pageState.asStateFlow()
+
+    private val _selectedDoc = MutableStateFlow<Document?>(null)
+    val selectedDoc: StateFlow<Document?> = _selectedDoc.asStateFlow()
+
+    private var whereClause: String = ""
+    private var countObserver: DittoStoreObserver? = null
+
+    init {
+        countObserver = registerCountObserver(whereClause)
+        loadPage(0)
+    }
+
+    fun nextPage() {
+        val current = _pageState.value.page ?: return
+        val total = _totalCount.value ?: return
+        val next = current.offset + PAGE_SIZE
+        if (next < total) loadPage(next)
+    }
+
+    fun previousPage() {
+        val current = _pageState.value.page ?: return
+        val prev = (current.offset - PAGE_SIZE).coerceAtLeast(0)
+        if (prev != current.offset) loadPage(prev)
+    }
+
+    fun refresh() {
+        loadPage(_pageState.value.page?.offset ?: 0)
+    }
+
+    fun selectDoc(doc: Document) {
+        _selectedDoc.value = doc
+    }
+
+    fun filterDocs(query: String) {
+        val newWhere = whereClauseFor(query)
+        if (newWhere == whereClause) return
+        whereClause = newWhere
+        countObserver?.close()
+        countObserver = registerCountObserver(whereClause)
+        loadPage(0)
+    }
+
+    private fun whereClauseFor(input: String): String {
+        val trimmed = input.trim()
+        if (trimmed.isEmpty()) return ""
+        if (looksLikeDql(trimmed)) return trimmed
+        val escaped = trimmed.replace("'", "''")
+        return "_id LIKE '%$escaped%'"
+    }
+
+    private fun looksLikeDql(text: String): Boolean {
+        val operators = listOf("==", "!=", ">=", "<=", " > ", " < ", " AND ", " OR ", " IN ")
+        val upper = " ${text.uppercase()} "
+        return operators.any { upper.contains(it) }
+    }
+
+    private fun loadPage(offset: Int) {
+        _pageState.update { it.copy(isLoading = true, error = null) }
+        viewModelScope.launch {
+            try {
+                val sql = buildString {
+                    append("SELECT * FROM `").append(collectionName).append("`")
+                    if (whereClause.isNotEmpty()) append(" WHERE ").append(whereClause)
+                    append(" ORDER BY _id ASC LIMIT ").append(PAGE_SIZE).append(" OFFSET ").append(offset)
                 }
-                val id = cborToDisplayValue(valueMap["_id"])?.toString() ?: ""
-                newDocsList.add(Document(id, docValues))
-            }
-            allDocuments = newDocsList
-            applyFilter()
-        }
-    }
-
-    private fun findAllObserver() {
-        observer.close()
-        observer = createFindAllObserver()
-    }
-
-    private fun findWithFilterObserver(queryString: String) {
-        try {
-            errorMessage.postValue(null)
-            observer.close()
-            observer = DittoHandler.ditto.store.registerObserver(
-                "SELECT * FROM `$collectionName` WHERE $queryString LIMIT 1000"
-            ) { result ->
-                val newDocsList = mutableListOf<Document>()
-                for (item in result.items) {
-                    val valueMap = item.value
-                    val keys = valueMap.keys.mapNotNull { it.stringOrNull }.sorted()
-                    this.docProperties.postValue(keys)
-
-                    val docValues = mutableMapOf<String, Any?>()
-                    for (key in keys) {
-                        docValues[key] = cborToDisplayValue(valueMap[key])
+                val docs = mutableListOf<Document>()
+                val keys = sortedSetOf<String>()
+                DittoHandler.ditto.store.execute(sql) { result ->
+                    for (item in result.items) {
+                        val itemKeys = item.value.keys.mapNotNull { it.stringOrNull }
+                        keys.addAll(itemKeys)
+                        val props = mutableMapOf<String, Any?>()
+                        for (k in itemKeys) props[k] = cborToDisplay(item.value[k])
+                        val id = cborToDisplay(item.value["_id"])?.toString() ?: ""
+                        docs.add(Document(id, props))
                     }
-                    val id = cborToDisplayValue(valueMap["_id"])?.toString() ?: ""
-                    newDocsList.add(Document(id, docValues))
                 }
-                docsList.postValue(newDocsList)
-            }
-        } catch (e: Exception) {
-            errorMessage.postValue("Invalid DQL query: ${e.message}")
-            docsList.postValue(mutableListOf())
-        }
-    }
-
-    fun filterDocs(queryString: String) {
-        currentFilter = queryString
-
-        if (isDQLQuery(queryString)) {
-            // User provided explicit DQL query - use server-side filtering
-            isDQLMode = true
-            findWithFilterObserver(queryString)
-        } else {
-            // Simple text search - use client-side filtering
-            if (isDQLMode) {
-                // Switching from DQL mode back to simple search
-                isDQLMode = false
-                findAllObserver()
-            } else {
-                // Already in simple mode, just filter the existing data
-                applyFilter()
+                val snapshotCount = atomicCount()
+                val page = Page(
+                    docs = docs,
+                    docProperties = keys.toList(),
+                    offset = offset,
+                    snapshotAtCount = snapshotCount,
+                )
+                _pageState.value = PageUiState(page = page, isLoading = false, error = null)
+                _selectedDoc.value = docs.firstOrNull()
+            } catch (t: Throwable) {
+                _pageState.update {
+                    it.copy(isLoading = false, error = t.message ?: "Query failed")
+                }
+                _selectedDoc.value = null
             }
         }
     }
 
-    private fun applyFilter() {
-        val filtered = if (currentFilter.isEmpty()) {
-            allDocuments
-        } else {
-            // Filter documents where ID contains the search text (case-insensitive)
-            allDocuments.filter { doc ->
-                doc.id.contains(currentFilter, ignoreCase = true)
-            }.toMutableList()
+    private suspend fun atomicCount(): Int {
+        val sql = buildString {
+            append("SELECT COUNT(*) AS c FROM `").append(collectionName).append("`")
+            if (whereClause.isNotEmpty()) append(" WHERE ").append(whereClause)
         }
-        docsList.postValue(filtered)
+        var count = 0
+        DittoHandler.ditto.store.execute(sql) { result ->
+            count = result.items.firstOrNull()?.value?.get("c")?.longOrNull?.toInt() ?: 0
+        }
+        return count
     }
 
-    private fun isDQLQuery(text: String): Boolean {
-        // Check if the text contains DQL operators
-        val dqlOperators = listOf("==", "!=", "CONTAINS", "contains", ">", "<", ">=", "<=", "AND", "and", "OR", "or", "IN", "in")
-        return dqlOperators.any { text.contains(it) }
+    private fun registerCountObserver(where: String): DittoStoreObserver? {
+        val sql = buildString {
+            append("SELECT COUNT(*) AS c FROM `").append(collectionName).append("`")
+            if (where.isNotEmpty()) append(" WHERE ").append(where)
+        }
+        return try {
+            DittoHandler.ditto.store.registerObserver(sql) { result ->
+                val c = result.items.firstOrNull()?.value?.get("c")?.longOrNull?.toInt() ?: 0
+                _totalCount.value = c
+            }
+        } catch (t: Throwable) {
+            _pageState.update { it.copy(error = t.message ?: "Count query failed") }
+            null
+        }
     }
 
     override fun onCleared() {
         super.onCleared()
-        observer.close()
+        countObserver?.close()
     }
 
-    private fun cborToDisplayValue(cbor: DittoCborSerializable): Any? {
+    private fun cborToDisplay(cbor: DittoCborSerializable): Any? {
         return cbor.stringOrNull
             ?: cbor.longOrNull
             ?: cbor.booleanOrNull
@@ -127,16 +172,18 @@ class DocumentsViewModel(private val collectionName: String) : ViewModel() {
             ?: when {
                 cbor.isNull -> null
                 cbor is DittoCborSerializable.Dictionary -> cbor.entries.associate { (k, v) ->
-                    (k.stringOrNull ?: k.toString()) to cborToDisplayValue(v)
+                    (k.stringOrNull ?: k.toString()) to cborToDisplay(v)
                 }
-                cbor is DittoCborSerializable.ArrayValue -> cbor.map { cborToDisplayValue(it) }
+                cbor is DittoCborSerializable.ArrayValue -> cbor.map { cborToDisplay(it) }
                 else -> cbor.toString()
             }
     }
 
-    class DocumentsViewModelFactory(private val collectionName: String) :
+    class Factory(private val collectionName: String) :
         ViewModelProvider.NewInstanceFactory() {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T = DocumentsViewModel(collectionName) as T
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T =
+            DocumentsViewModel(collectionName) as T
     }
 }
 
