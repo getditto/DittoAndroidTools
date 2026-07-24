@@ -1,0 +1,5 @@
+tool=android
+package_version=6.0.0-rc.1
+minimum_sdk_version=5.0.1
+validation_sdk_version=5.0.3
+sdk_release_notes=https://docs.ditto.live/sdk/latest/release-notes/kotlin

@@ -12,7 +12,7 @@ apply(from = "${rootProject.projectDir}/gradle/deploy.gradle")
 apply(from = "${rootProject.projectDir}/gradle/android-common.gradle")
 
 android {
-    namespace = "live.ditto.tools"
+    namespace = "com.ditto.tools"
 }
 
 dependencies {
@@ -41,7 +41,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.webkit)
 
-    implementation(libs.live.ditto.ditto)
+    implementation(libs.ditto.sdk)
 
     // Kotlin Serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")

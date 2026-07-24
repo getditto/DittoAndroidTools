@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias libs.plugins.com.android.application
     alias libs.plugins.org.jetbrains.kotlin.android
@@ -6,33 +8,63 @@ plugins {
 
 apply from: "$rootProject.projectDir/gradle/android-common.gradle"
 
-ext.dittoOnlinePlaygroundAppId = getValueFromLocalProperties('ditto.onlinePlayground.appId', "null")
-ext.dittoOnlinePlaygroundToken = getValueFromLocalProperties('ditto.onlinePlayground.token', "null")
-ext.dittoCustomAuthUrl = getValueFromLocalProperties('ditto.onlinePlayground.customAuthUrl', "null")
-ext.dittoWebsocketUrl = getValueFromLocalProperties('ditto.onlinePlayground.websocketUrl', "null")
+def requiredDittoEnvVars = [
+    "DITTO_APP_ID",
+    "DITTO_PLAYGROUND_TOKEN",
+    "DITTO_AUTH_URL",
+]
 
+def loadEnvProperties = {
+    def properties = new Properties()
+    def envFile = rootProject.file(".env")
 
+    if (envFile.isFile() && envFile.canRead()) {
+        envFile.withInputStream { properties.load(it) }
+        properties.stringPropertyNames().each { key ->
+            def value = properties.getProperty(key)
+            if (value.length() >= 2 && value.startsWith('"') && value.endsWith('"')) {
+                properties.setProperty(key, value.substring(1, value.length() - 1))
+            }
+        }
+    }
+
+    requiredDittoEnvVars.each { key ->
+        if (!properties.getProperty(key)) {
+            properties.setProperty(key, System.getenv(key) ?: "")
+        }
+    }
+
+    properties
+}
+
+def asBuildConfigString = { value ->
+    def escaped = value.replace("\\", "\\\\").replace("\"", "\\\"")
+    "\"${escaped}\""
+}
+
+def dittoEnv = loadEnvProperties()
 
 android {
-    namespace "live.ditto.dittotoolsapp"
+    namespace "com.ditto.dittotoolsapp"
 
     defaultConfig {
-        applicationId "live.ditto.DittoToolsApp"
+        applicationId "com.ditto.DittoToolsApp"
         versionCode 1
         versionName "1.0"
 
-        buildConfigField "String", "DITTO_ONLINE_PLAYGROUND_APP_ID", dittoOnlinePlaygroundAppId
-        buildConfigField "String", "DITTO_ONLINE_PLAYGROUND_TOKEN", dittoOnlinePlaygroundToken
-        buildConfigField "String", "DITTO_CUSTOM_AUTH_URL", dittoCustomAuthUrl
-        buildConfigField "String", "DITTO_WEBSOCKET_URL", dittoWebsocketUrl
+        buildConfigField "String", "DITTO_APP_ID",
+            asBuildConfigString(dittoEnv.getProperty("DITTO_APP_ID"))
+        buildConfigField "String", "DITTO_PLAYGROUND_TOKEN",
+            asBuildConfigString(dittoEnv.getProperty("DITTO_PLAYGROUND_TOKEN"))
+        buildConfigField "String", "DITTO_AUTH_URL",
+            asBuildConfigString(dittoEnv.getProperty("DITTO_AUTH_URL"))
     }
+
     buildTypes {
         release {
             signingConfig signingConfigs.debug
-            release {
-                minifyEnabled true
-                proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            }
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
     }
 
@@ -48,10 +80,10 @@ dependencies {
     implementation libs.androidx.compose.ui.ui
     implementation libs.androidx.compose.ui.uiToolingPreview
     implementation libs.androidx.navigation.navigationCompose
-    implementation libs.live.ditto.ditto
+    implementation libs.ditto.sdk
 
     implementation platform(libs.androidx.compose.composeBom)
-    implementation project(':DittoToolsAndroid')
+    implementation project(":DittoToolsAndroid")
 
     testImplementation libs.junit.junit
 }

@@ -13,7 +13,7 @@ androidx-navigation = "2.5.3"
 androidx-test-ext = "1.1.5"
 webkit = "1.7.0"
 datastorePreferences = "1.0.0"
-ditto = "5.0.0"
+ditto = "5.0.1"
 
 junit = "4.13.2"
 kotlin-gradle-plugin = "2.1.0"
@@ -37,7 +37,7 @@ androidx-datastore-preferences = { module = "androidx.datastore:datastore-prefer
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose" }
 androidx-navigation-navigationCompose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext" }
-live-ditto-ditto = { group = "com.ditto", name = "ditto-kotlin", version.ref = "ditto" }
+ditto-sdk = { group = "com.ditto", name = "ditto-kotlin", version.ref = "ditto" }
 junit-junit = { group = "junit", name = "junit", version.ref = "junit" }
 joda-time-joda-time = { group = "joda-time", name = "joda-time", version = "2.10.10" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
