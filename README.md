@@ -4,13 +4,18 @@ DittoAndroidTools are diagnostic tools for Ditto. You can view connected peers, 
 
 These tools are available via Maven Central.
 
-For support, please contact Ditto Support (<support@ditto.live>).
+> [!IMPORTANT]
+> This repository is a read-only mirror maintained by Ditto's SDK release
+> process. Pull requests opened outside that process are not accepted. To report
+> a problem or request a change, contact Ditto Support (<support@ditto.com>).
 
 ## Requirements
 
-* Android 7.0+ (API 24)
-* Ditto Kotlin SDK v5 (`com.ditto:ditto-kotlin`)
+* Ditto Kotlin SDK 5.0.1 or later (`com.ditto:ditto-kotlin`)
 * Jetpack Compose
+* Package minimum: Android 7.0+ (API 24)
+
+`DittoToolsViewer` and the demo app require Android 8.0+ (API 26).
 
 ## Installing
 Ditto tools are released via Maven Central. Be sure to include it in your list of repositories.
@@ -24,7 +29,7 @@ Include the tools repository:
 
 ```groovy
 dependencies {
-    implementation 'live.ditto:ditto-tools-android:LIBRARY_VERSION'
+    implementation 'com.ditto:ditto-tools-android:LIBRARY_VERSION'
 }
 ```
 You can find the list of versions and release notes in the [Releases tab](https://github.com/getditto/DittoAndroidTools/releases).
@@ -73,7 +78,7 @@ It is available as a Composable element that requires a Ditto instance. Optional
 Example code:
 
 ```kotlin
-import live.ditto.tools.toolsviewer.DittoToolsViewer
+import com.ditto.tools.toolsviewer.DittoToolsViewer
 
 // minimum code required to get started
 DittoToolsViewer(
@@ -91,8 +96,6 @@ DittoToolsViewer(
 )
 ```
 
- <img src="/images/toolsViewer.png" alt="Tools Viewer Image" width="1000">
-
 To integrate it in a Views-based app - see instructions here: https://developer.android.com/develop/ui/compose/migrate/interoperability-apis/compose-in-views
 
 ### 2. Presence Viewer
@@ -108,21 +111,27 @@ DittoPresenceViewer(ditto = ditto)
 
 ### 3. Data Browser
 
-The Ditto Data Browser allows you to view all your collections, documents within each collection and the propeties/values of a document. With the Data Browser, you can observe any changes that are made to your collections and documents in real time.
+The Ditto Data Browser allows you to view all your collections, up to 1,000
+local documents within each collection, and the properties and values of a
+document. With the Data Browser, you can observe local changes to your
+collections and documents in real time.
+
+The Data Browser only observes data already present in the local store. It
+never registers sync subscriptions or changes what the application syncs.
+The application embedding the tool remains responsible for its subscriptions.
+This prevents a diagnostic view from unexpectedly downloading every document
+in a collection.
+
+The document query field accepts a DQL `WHERE` expression, such as
+`title = 'Hello, World!'`. Clear the field and run the query again to show the
+collection without a filter. See the
+[DQL documentation](https://docs.ditto.live/dql/dql) for query syntax.
 
 Within a Composable function, you pass ditto to the constructor:
 
 ```kotlin
 DittoDataBrowser(ditto = ditto)
 ```
-
- <img src="/images/collections.png" alt="Collections Image" width="300">  
-
- <img src="/images/document.png" alt="Document Image" width="300">  
-
-**Standalone App**
-
-If you are using the Data Browser as a standalone app, there is a button, Start Subscriptions, you must press in order to start syncing data. If you are embedding the Data Browser into another application then you do not need to press Start Subscriptions as you should already have your subscriptions running.
 
 ### 4. Export Logs
 Export Logs allows you to export logs from your application into a file.
@@ -243,7 +252,7 @@ startHeartbeat(ditto, config).collect { heartbeatInfo = it }
 
 **User Interface**
 
-You will need to provide your own UI. You can see an example [here](https://github.com/getditto/DittoAndroidTools/blob/HeartBeatTool/app/src/main/java/live/ditto/dittotoolsapp/HeartbeatView.kt).
+You will need to provide your own UI around the values emitted by `startHeartbeat()`.
 
 There are two ways you can access the data:
 1. The Ditto collection you provided
@@ -264,10 +273,14 @@ This is the model of the data and what you can use for reference
         <peerKey>: {
             deviceName: String,
             sdk: String,
-            isConnectedToDittoServer: Bool,
+            isConnectedToDittoCloud: Bool,
             bluetooth: Int,
             p2pWifi: Int,
             lan: Int,
+            connectionTypes: {
+                <SDK connection type>: Int,
+                …
+            },
         },
         <peerKey>…,
         …
@@ -276,6 +289,28 @@ This is the model of the data and what you can use for reference
     healthMetrics: {},
 }
 ```
+
+`connectionTypes` maps every observed SDK connection-type string to its count.
+New code should use this map for connection-type counts. The `bluetooth`,
+`p2pWifi`, and `lan` keys are legacy summary fields retained in heartbeat
+documents for compatibility. The SDK enum names LAN connections `AccessPoint`,
+so that enum case supplies `lan`. WebSocket, Multicast, and other connection
+types are reported by their SDK names in `connectionTypes`.
+
+Wire compatibility is additive: tools released before `connectionTypes` ignore
+that extra field and continue reading the fixed summary fields. Current tools
+also accept older documents without `connectionTypes`, treating the missing map
+as empty. For those documents, the legacy summaries are the only available
+breakdown. The `lan` summary means `AccessPoint` only. Earlier GA tools also
+included WebSocket in `lan`, so documents written by those versions can report
+a larger LAN count. In current documents, WebSocket has its own exact
+`connectionTypes` entry.
+
+The `isConnectedToDittoCloud` field reports whether the peer is connected to
+Ditto Server. SDK v4 exposed this connection state as
+`isConnectedToDittoCloud`; SDK v5 renamed the SDK property to
+`isConnectedToDittoServer`. The heartbeat document schema retains the original
+key so independently versioned tools can exchange and read the same documents.
 
 **Callback:**
 
@@ -290,6 +325,7 @@ data class DittoHeartbeatInfo(
     val presenceSnapshotDirectlyConnectedPeersCount: Int,
     val presenceSnapshotDirectlyConnectedPeers: Map<String, Any>,
     val sdk: String,
+    val peerKey: String,
     var healthMetrics: MutableMap<String, HealthMetric> = mutableMapOf()
 
 )
@@ -298,6 +334,9 @@ data class DittoHeartbeatInfo(
 ### 9. Presence Degradation Reporter
 Tracks the status of your mesh, allowing to define the minimum of required peers that needs to be connected.
 Exposes an API to notify when the condition of minimum required peers is not met.
+
+The SDK enum names LAN connections `AccessPoint`, so the reporter's LAN count
+uses that enum case. WebSocket is a separate transport.
 
 ####  UI Composable
 
@@ -400,13 +439,13 @@ You will need to configure Proguard to ensure the underlying Ditto SDK is not re
 # proguard-rules.pro
 
 # --- Ditto SDK rules ---
-# Selective package definition will allow shrinking of all code in live.ditto.tools and its subpackages.
+# Selective package definition will allow shrinking of all code in com.ditto.tools and its subpackages.
 -keep class com.ditto.kotlin.** { *; }
 # --- End Ditto SDK rules ---
 
 # --- Ditto Tools names ---
 # The following can be removed to obfuscate tools code further.
--keepnames class live.ditto.tools.** { *; }
+-keepnames class com.ditto.tools.** { *; }
 # --- End Ditto Tools names ---
 
 ```
@@ -417,19 +456,18 @@ There are two ways you can test things locally. Either in the demo app, or in an
 
 ### Testing in the Demo App Locally
 
-To run the demo app locally, get valid playground Ditto instance credentials and store them in `local.properties` file. You can find both the app ID and token in the [Ditto Portal](https://portal.ditto.live)
+To run the demo app locally, copy `.env.sample` to `.env` at the repo root and fill in credentials from the [Ditto Portal](https://portal.ditto.live):
 
-```properties
-ditto.onlinePlayground.appId="YOUR_APPID"
-ditto.onlinePlayground.token="YOUR_TOKEN"
-ditto.onlinePlayground.customAuthUrl="YOUR_AUTHURL"
-ditto.onlinePlayground.websocketUrl="YOUR_WEBSOCKETURL"
+```sh
+cp .env.sample .env
 ```
+
+Required keys: `DITTO_APP_ID`, `DITTO_PLAYGROUND_TOKEN`, `DITTO_AUTH_URL`. The app throws at launch if any are empty.
 
 To test your changes to a module in the demo app, make sure to import the local module in `app/build.gradle` dependencies section:
 
 add: `implementation(project(":DittoToolsAndroid"))`
-remove/comment out: `implementation libs.live.ditto.ditto-tools-android`
+remove or comment out the `com.ditto:ditto-tools-android` Maven dependency
 
 ### Testing in an External Project
 
