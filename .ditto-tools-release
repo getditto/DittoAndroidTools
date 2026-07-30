@@ -1,0 +1,4 @@
+tool=android
+package_version=6.0.0-rc.9
+minimum_sdk_version=5.0.1
+validation_sdk_version=5.0.1
