@@ -43,7 +43,7 @@ afterEvaluate {
                 from components.release
                 artifact tasks.named('javadocJar')
                 artifactId libraryArtifactId
-                groupId = 'live.ditto'
+                groupId = 'com.ditto'
 
                 version = findProperty("LIBRARY_VERSION") ?: "SNAPSHOT"
 
@@ -57,7 +57,7 @@ afterEvaluate {
                 pom {
                     name = 'Ditto Tools'
                     description = 'Ditto Tools'
-                    url = 'https://ditto.live'
+                    url = 'https://www.ditto.com'
 
                     licenses {
                         license {
@@ -70,14 +70,14 @@ afterEvaluate {
                     scm {
                         connection = 'scm:git:github.com/getditto/DittoAndroidTools.git'
                         developerConnection = 'scm:git:ssh://github.com/getditto/DittoAndroidTools.git'
-                        url = 'https://ditto.live'
+                        url = 'https://www.ditto.com'
                     }
 
                     developers {
                         developer {
                             id = 'ditto'
                             name = 'Ditto'
-                            email = 'support@ditto.live'
+                            email = 'support@ditto.com'
                         }
                     }
 
@@ -165,6 +165,9 @@ afterEvaluate {
                         url = 'https://central.sonatype.com/api/v1/publisher'
                         stagingRepository('build/staging-deploy')
                         verifyPom = false  // Disable strict POM validation for Android libraries
+                        namespace = 'com.ditto'
+                        connectTimeout = 20
+                        readTimeout = 300
                     }
                 }
             }
